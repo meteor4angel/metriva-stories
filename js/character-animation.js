@@ -1,0 +1,14 @@
+(()=>{'use strict';
+const modal=document.getElementById('modal'),motion=matchMedia('(prefers-reduced-motion: reduce)');let current=null,timer=null,paused=false;try{paused=localStorage.getItem('metrivastories_story01_motion')==='paused'}catch{}
+const frames=Object.fromEntries(['clara','bellamy','finch'].map(name=>[name,Object.fromEntries(['idle','blink','speaking','thoughtful'].map(frame=>[frame,`assets/character-${name}${frame==='idle'?'':'-'+frame}.png`]))]));
+const loaded=new Map();function preload(url){if(!loaded.has(url))loaded.set(url,new Promise(resolve=>{const image=new Image();image.onload=()=>resolve(true);image.onerror=()=>resolve(false);image.src=url}));return loaded.get(url)}
+function stop(){if(timer)clearInterval(timer);timer=null;current=null}
+async function bind(){const image=modal.classList.contains('hidden')?null:modal.querySelector('.vn-sprite img[data-character]');if(!image){stop();return}if(current===image)return;stop();current=image;const name=image.dataset.character,group=frames[name],expression=image.dataset.expression||'idle';image.dataset.animationMode=paused?'paused':motion.matches?'reduced-motion':'animated';
+ const stage=image.closest('.vn-stage');stage.classList.toggle('motion-paused',paused||motion.matches);stage.classList.toggle('is-speaking',image.dataset.speaking==='true'&&!motion.matches&&!paused);const toggle=stage.querySelector('[data-action="toggle-motion"]');if(toggle)toggle.textContent=paused?'Resume motion':'Pause motion';if(!group){image.dataset.frame='idle';return}
+ const available=await Promise.all(Object.values(group).map(preload));if(current!==image)return;if(available.some(v=>!v)){image.dataset.animationError='missing-frame';return}
+ const apply=frame=>{if(image.dataset.frame!==frame){image.src=group[frame];image.dataset.frame=frame}};apply(expression);if(motion.matches||paused)return;
+ const started=performance.now(),speakFor=Math.min(6500,Math.max(1800,(image.dataset.dialogueText||'').length*48));let blinkAt=started+2200,blinkUntil=0;
+ timer=setInterval(()=>{if(current!==image||!image.isConnected||modal.classList.contains('hidden')){stop();return}const now=performance.now();if(now>=blinkAt){blinkUntil=now+170;blinkAt=now+4400}const talking=image.dataset.speaking==='true'&&now-started<speakFor;stage.classList.toggle('is-speaking',talking);if(now<blinkUntil){apply('blink')}else if(talking&&(now-started)%480<230){apply('speaking')}else{apply(expression)}},70);
+}
+new MutationObserver(bind).observe(modal,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});document.addEventListener('click',e=>{if(e.target.closest('[data-action="toggle-motion"]')){paused=!paused;try{localStorage.setItem('metrivastories_story01_motion',paused?'paused':'enabled')}catch{}stop();bind()}});motion.addEventListener('change',()=>{stop();bind()});window.addEventListener('pagehide',stop);bind();
+})();

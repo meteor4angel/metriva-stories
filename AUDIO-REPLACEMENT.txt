@@ -1,0 +1,13 @@
+REPLACING STORY 02 AUDIO
+
+Open AUDIO-SCRIPTS.csv to find each filename and its exact dialogue.
+Export your replacement as MP3 and overwrite the matching file in
+assets/voices/. Keep the filename unchanged.
+
+Example: 01-reading-evelyn-introduction.mp3 is Evelyn's opening speech.
+Files ending in answer or follow-up identify the corresponding question.
+Files containing player are your spoken questions or follow-up lines.
+
+The player adds one second before speech and one second after it.
+You do not need to add silence to your replacement recordings.
+Refresh the page after replacing a file. Progress stays in the browser.

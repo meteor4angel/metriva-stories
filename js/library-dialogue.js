@@ -1,0 +1,31 @@
+window.LIBRARY_CAST={
+ evelyn:{name:'Evelyn Hart',role:'The librarian',bio:'A dedicated librarian with a curious mind and a deep love for stories.'},
+ ada:{name:'Ada Vale',role:'The archivist',bio:'The senior archivist and Eleanor’s niece. Calm, wise and protective of the past.'},
+ theo:{name:'Theo Mercer',role:'The book conservator',bio:'A skilled conservator with a playful personality and an eye for detail.'},
+ eleanor:{name:'Eleanor Vale',role:'The forgotten author',bio:'Her story lives through letters, recordings and the archives she left behind.'}
+};
+// Each question has an answer, a player follow-up and a final character reply.
+window.LIBRARY_DIALOGUE=[
+[{who:'evelyn',intro:'Welcome to Willowmere. I found this damaged music box in the returns cupboard. The voice inside asks us to look where the first stories were kept. Will you help me follow it?',questions:[
+['Who was Eleanor Vale?','Her name appears on the staff photograph, but not in our public dedication. That difference deserves a careful look.','So an omission is a lead, not proof?','Exactly. Let the records tell us what happened before we decide why.'],
+['What is missing from the catalog?','Someone scratched out an accession entry. The books on the cart may still hold the original shelf reference.','I will compare the catalog stamps.','Try arranging them from the smallest number to the largest. Look inside the final book.'],
+['Why does the clock matter?','The wall clock stopped at 9:15, but the recording has three full chimes. Those are different observations.','The recording may belong to another time.','Yes. We should restore it before treating it as a timeline of tonight.']]}],
+[{who:'theo',intro:'This listening room still has its original equipment. I can repair the mechanism, but you will need to put the surviving fragments in order.',questions:[
+['Where did the recording come from?','Behind a wall panel during the west-wing renovation. I thought it was music until I heard the voice.','Did you tell Evelyn?','I brought her the music box. I should also have told her exactly where it was found.'],
+['What is the metallic click?','An old west-wing latch. New doors have a different mechanism; I have repaired enough of both to recognize it.','Then the voice is pointing to a physical place.','That is a reasonable lead. Compare the sound with the old plans instead of guessing.'],
+['How do we order the fragments?','First comes the clock chime, then footsteps, then the whispered title. The background sounds join at the damaged edges.','I will reconstruct that sequence.','Once they line up, the final latch sound should be clear.']]}],
+[{who:'ada',intro:'Eleanor was my aunt. She cataloged these shelves long before the modern map was drawn. I have kept her papers, though I never knew how much was missing.',questions:[
+['What did Eleanor do for the library?','She assembled the first collection. The dedication remembers the building’s donor, but says little about who filled its shelves.','Can we verify her contribution?','The original accession ledger and purchase receipts should let us do that. My memories alone are not enough.'],
+['Where is B-17?','The public map stops at B-16. The handwritten correction points beyond the sliding bookcase.','The floor marks suggest it can move.','Then compare the old plan and the catalog slip. Do not force it until you know which shelf to open.'],
+['Why keep her papers private?','I wanted to protect them from another hurried renovation. I also feared people would dismiss a family claim.','We can present the records with their context.','Thank you. Recognition should come from evidence, not from how loudly we ask.']]}],
+[{who:'theo',intro:'I hid the revised plans. They were going to seal the room before anyone inspected it. I wanted to protect the books, but keeping quiet was wrong.',questions:[
+['Why did you hide the plans?','The new wall would have closed the old alcove. I panicked and thought delaying the work was the only way to save it.','You could have asked for an inspection.','I know. I will give Evelyn both plans and explain what I did.'],
+['How do we align the drawings?','Use permanent features: the west window, central pillar and original staircase. They survive on both plans.','That should reveal the covered space.','Yes. Set those three landmarks in that order; the wall outline will stop misleading us.'],
+['What should we restore first?','The damaged manuscript needs a stable surface and careful documentation before any repair.','We should preserve the original marks.','Absolutely. A clean-looking page is no improvement if it erases the evidence.']]}],
+[{who:'ada',intro:'These are Eleanor’s words at last. The looping E and sharp V appear on the manuscript, receipts and first catalog ledger. Let us compare them carefully.',questions:[
+['Do the signatures prove the author?','The manuscript says E. Vale. The full signature in the founding ledger connects those initials to Eleanor Vale, with the same distinctive handwriting.','And the receipts corroborate her role.','Yes. Together they show authorship, purchases and the work of building the first collection.'],
+['What does recognition mean to you?','It means her story can be read in its proper place. I do not want to replace one incomplete dedication with another.','We should retain the building donor’s contribution too.','Exactly. There is room in the history for everyone who helped.']]},
+{who:'eleanor',historical:true,intro:'You open Eleanor’s manuscript. This is a recollection through her written words, not a conversation with someone living. “A library begins when a story finds someone who needs it.”',questions:[
+['Read the manuscript’s opening','“I have gathered books for the curious child, the tired worker, and anyone who has been told a story is not for them.”','She imagined a library open to everyone.','“A shelf is only wood until we make room beside it.”'],
+['Read her note about recognition','“If my name is lost, let the books remain. Yet I hope whoever comes after us will tell the whole story.”','Preserving her work includes preserving its history.','“Leave a record of whose hands carried these pages. The next reader deserves the truth.”']]}]
+];
