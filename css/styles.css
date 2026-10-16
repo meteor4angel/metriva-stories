@@ -132,12 +132,17 @@
             }
 
         .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
-            gap: 18px
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px
         }
 
         .card {
+            flex: 1 1 280px;
+            max-width: 370px;
+            display: flex;
+            flex-direction: column;
             background: var(--paper);
             border: 1px solid #e5d8c4;
             border-radius: 14px;
@@ -146,13 +151,16 @@
         }
 
         .cover {
-            height: 175px;
+            aspect-ratio: 3 / 2;
             background-position: center;
             background-size: cover
         }
 
         .cardmain {
-            padding: 17px
+            padding: 17px;
+            display: flex;
+            flex: 1;
+            flex-direction: column
         }
 
         .card h3 {
@@ -163,8 +171,11 @@
         .card p {
             font-size: 13px;
             color: var(--muted);
-            min-height: 40px
+            min-height: 0
         }
+
+        .card .pill {align-self: flex-start}
+        .card .meta {margin-top: auto}
 
         .pill {
             display: inline-block;
@@ -557,3 +568,27 @@ body{background:#faf5eb;color:#3d4038}
 .scene .scenehead { position:absolute; z-index:2; pointer-events:none; }
 .scene .scenefoot { position:absolute; z-index:2; pointer-events:none; }
 .scene::before { pointer-events:none; }
+
+/* Card artwork has separate files from the playable scenes and can be framed independently. */
+.card .cover {
+    position: relative;
+    isolation: isolate;
+    background-size: auto 112%;
+    filter: brightness(1.08) contrast(.97) saturate(1.03);
+}
+.card .cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 244, 222, var(--thumbnail-light, .20));
+    mix-blend-mode: screen;
+    pointer-events: none;
+}
+.card-vanishing-letter .cover { background-position: 55% 55%; }
+.card-echoes-library .cover { background-position: 60% 50%; --thumbnail-light: .24; }
+.card-midnight-train .cover,
+.card-letters-after-midnight .cover {
+    --thumbnail-light: 0;
+    filter: brightness(1.06) contrast(1.03) saturate(1.04);
+}
+.card-days-we-almost-met .cover { --thumbnail-light: .08; }

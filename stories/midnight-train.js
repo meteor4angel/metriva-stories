@@ -5,7 +5,7 @@ window.MIDNIGHT={
     {
       "title": "Carriage Four",
       "subtitle": "A passenger disappears. Her belongings do not.",
-      "intro": "At 11:58 PM, the Nightingale Express jolts to a stop in the mountains. When it moves again, the woman in carriage four is gone. Conductor Elias Ward insists nobody occupied her compartment. You remember speaking to her beside the dining-car door.",
+      "intro": "At 12:02 AM, the Nightingale Express jolts to a stop in the mountains. When it moves again, the woman in carriage four is gone. Conductor Elias Ward insists nobody occupied her compartment. You remember speaking to her beside the dining-car door.",
       "spots": [
         {
           "id": "ticket",
@@ -71,7 +71,7 @@ window.MIDNIGHT={
     {
       "title": "The Dining Car",
       "subtitle": "The last ordinary minutes before midnight.",
-      "intro": "June, the dining-car attendant, remembers Nora ordering tea. Three receipts and a stopped kitchen timer preserve the last moments before the unscheduled stop.",
+      "intro": "June, the dining-car attendant, remembers Nora ordering tea. Her service records trace Nora’s movements in the minutes before the unscheduled stop.",
       "spots": [
         {
           "id": "tea",
@@ -88,8 +88,8 @@ window.MIDNIGHT={
           "icon": "◷",
           "x": 73,
           "y": 34,
-          "text": "11:49 PM — A traveler asks June to wind his damaged pocket watch. She writes the time in her service log.",
-          "clue": "Watch · 11:49"
+          "text": "11:49 PM — Nora checks her silver watch and leaves the dining car. June records the time beside Nora’s unfinished tea.",
+          "clue": "Nora leaves · 11:49"
         },
         {
           "id": "water",
@@ -203,7 +203,7 @@ window.MIDNIGHT={
     {
       "title": "The Baggage Car",
       "subtitle": "A freight transfer at the wrong hour.",
-      "intro": "A loose freight crate knocks against the baggage-car wall. Someone changed the shipping records, but a damaged pocket watch and a freight slip tell a more precise story.",
+      "intro": "A loose crate knocks against the baggage-car wall. Its inspection files have been disguised as tools. Owen Hale, the traveler with an old railway key, knows who moved the missing case.",
       "spots": [
         {
           "id": "freight",
@@ -243,11 +243,11 @@ window.MIDNIGHT={
         },
         {
           "id": "traveler",
-          "label": "Talk to traveler",
+          "label": "Talk to Owen",
           "icon": "☏",
           "x": 26,
           "y": 35,
-          "text": "“My father inspected the Blackthorn bridge,” he says. “He kept copies because someone changed the safety report. Nora asked me to bring the key to the signal tower.”",
+          "text": "“My father inspected the Blackthorn bridge,” Owen says. “He kept copies because someone changed the safety report. Nora asked me for the signal-tower key.”",
           "clue": "Traveler’s testimony"
         }
       ],
@@ -257,7 +257,7 @@ window.MIDNIGHT={
         "Both records show the same time after midnight.",
         "Choose 00:07 AM."
       ],
-      "success": "The missing case was transferred at 12:07 AM. The traveler admits his father hid the original inspection report in Blackthorn’s signal tower.",
+      "success": "The missing case left the baggage car at 12:07 AM. Owen gave Nora the tower key so she could protect his father’s original report.",
       "required": [
         "freight",
         "pocket",

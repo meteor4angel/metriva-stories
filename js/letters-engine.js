@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const story=window.LETTERS,sceneImages=["assets/letters-ch1.jpg", "assets/letters-ch2.jpg", "assets/letters-ch3.jpg", "assets/letters-ch4.jpg", "assets/letters-ch5.jpg"],KEY='metrivastories_letters_after_midnight_v01',initial=()=>({chapter:0,found:[],solved:[],ending:null});
+const story=window.LETTERS,sceneImages=["assets/cover-letters-after-midnight.png", "assets/letters-ch2.jpg", "assets/letters-ch3.jpg", "assets/letters-ch4.jpg", "assets/letters-ch5.jpg"],KEY='metrivastories_letters_after_midnight_v01',initial=()=>({chapter:0,found:[],solved:[],ending:null});
 let state;try{state={...initial(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{state=initial()}
 const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
 const chapter=()=>story.chapters[state.chapter],has=id=>state.found.includes(id),solved=i=>state.solved.includes(i);

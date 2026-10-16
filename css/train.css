@@ -1,0 +1,49 @@
+.train-scene{background:#18231f}.train-scene .scene-art{filter:saturate(.96) contrast(1.02)}
+.train-cast{grid-template-columns:repeat(auto-fit,minmax(82px,1fr))}.train-cast button{min-width:0;max-width:112px}.train-cast .portrait{height:88px;aspect-ratio:auto;background:linear-gradient(#263b34,#111b18)}.train-cast .portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 14%}
+.people-book .portrait{height:170px;aspect-ratio:auto;background:#20332d}.people-book .portrait img{width:100%;height:100%;object-fit:contain;object-position:center bottom}
+.train-evidence button{display:grid;grid-template-columns:42px 1fr;gap:4px 10px;text-align:left;align-items:center}.train-evidence button>span{grid-row:1/3;font-size:25px;color:#a8742f}.train-evidence button small{grid-column:2;display:block;color:#655d50;line-height:1.35}
+.train-vn{min-height:min(700px,82vh);background-color:#243731;background-position:center;background-size:cover;border-radius:18px;overflow:hidden}.train-vn:before{background-image:linear-gradient(90deg,rgba(6,13,12,.12),rgba(6,13,12,.02)),var(--stage);background-position:center;background-size:cover;filter:none}.train-vn .vn-sprite{align-self:end;height:min(650px,76vh);display:flex;align-items:flex-end}.train-vn .train-actor{width:min(46vw,520px);height:100%;aspect-ratio:auto;background:transparent;border:0;border-radius:0;overflow:visible;transform-origin:center bottom;animation:trainBreathe 4.6s ease-in-out infinite}.train-vn .train-actor img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 18px 20px rgba(0,0,0,.34));transition:opacity .12s}.train-vn .train-actor[data-expression="speaking"]{animation:trainSpeak .7s ease-in-out infinite}.train-vn.player-turn .train-actor{animation:trainListen 3.8s ease-in-out infinite}.train-vn.player-turn .train-actor img{filter:brightness(.8) saturate(.78) drop-shadow(0 18px 20px rgba(0,0,0,.34))}.train-vn.motion-paused .train-actor{animation:none}.train-vn .vn-card{box-shadow:0 22px 55px rgba(0,0,0,.32)}
+.sequence{display:grid;gap:10px;margin:18px 0}.sequence>div{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;border:1px solid #d7c29b;border-radius:12px;padding:10px;background:#fffaf0}
+@keyframes trainBreathe{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(.15deg)}}@keyframes trainSpeak{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px) scale(1.004)}}@keyframes trainListen{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-.25deg)}}
+@media(max-width:760px){.train-vn{min-height:auto;display:grid}.train-vn .vn-sprite{height:42vh;min-height:290px}.train-vn .train-actor{width:100%;max-width:100%}.train-vn .vn-card{margin:0 10px 10px}.train-evidence button{grid-template-columns:34px 1fr}}
+@media(prefers-reduced-motion:reduce){.train-vn .train-actor{animation:none}}
+
+/* Story 03 conversation window follows the approved Story 01/02 structure. */
+.dialog-conversation{width:auto;max-height:none;padding:22px;background:#193127ad;border:0;overflow:auto}
+.dialog-conversation>.dialog{width:min(1180px,100%);max-height:94dvh;padding:0;overflow:hidden;background:#fff9ed;border:1px solid #dcc49b}
+.dialog-conversation>.dialog>.dialog-top{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 22px;background:#fff9ed;border-bottom:1px solid #dfd1b9}
+.dialog-conversation .train-vn{grid-template-columns:minmax(0,1.55fr) minmax(300px,.9fr);min-height:min(760px,calc(94dvh - 62px));padding:24px;gap:10px}
+.dialog-conversation .train-vn .vn-sprite{height:min(720px,calc(94dvh - 86px));overflow:hidden;align-self:end}
+.dialog-conversation .train-vn .train-actor{width:100%;height:100%}
+.dialog-conversation .train-vn .train-actor img{transform:scale(1.72) translateY(31%);transform-origin:center bottom}
+.dialog-conversation .train-vn .vn-card{max-width:430px;justify-self:end;margin:0 8px 28px 0;padding:24px}
+.train-vn.is-speaking .train-actor{animation:trainSpeak .72s ease-in-out infinite}
+@media(max-width:700px){.dialog-conversation{padding:10px}.dialog-conversation .train-vn{grid-template-columns:1fr;min-height:0;padding:12px}.dialog-conversation .train-vn .vn-sprite{height:46dvh;min-height:330px}.dialog-conversation .train-vn .train-actor img{transform:scale(1.52) translateY(29%)}.dialog-conversation .train-vn .vn-card{max-width:none;width:100%;margin:0;padding:19px}}
+
+/* Match the compact chapter navigation used by Stories 01 and 02. */
+.train-evidence{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.train-evidence button{min-height:132px;width:100%;padding:16px;border:1px solid var(--line);border-radius:12px;background:#fcf8ee;color:var(--ink);box-shadow:0 3px 12px #5546250d;grid-template-columns:38px minmax(0,1fr);align-content:center}
+.train-evidence button:hover{background:#fffdf7;border-color:#bea77d}
+.train-evidence button>b{font-size:16px;line-height:1.3}.train-evidence button>small{font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+@media(max-width:900px){.train-evidence{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.train-evidence{grid-template-columns:1fr}.train-evidence button{min-height:112px}}
+
+/* Ward pilot: use the approved Story 01/02 conversation proportions unchanged. */
+.dialog-conversation .train-vn{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(260px,44%) minmax(0,1fr);gap:20px;align-items:end;min-height:620px;padding:30px;overflow:hidden;background-image:none}
+.dialog-conversation .train-vn:before{content:'';position:absolute;inset:-8px;background:linear-gradient(90deg,#17302312,#142b3159),var(--stage) center/cover;filter:blur(2px);z-index:-2}
+.dialog-conversation .train-vn:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#1c352677,transparent 65%);z-index:-1}
+.dialog-conversation .train-vn .vn-sprite{height:560px;min-width:0;display:flex;align-items:end;justify-content:center;overflow:visible;margin:0}
+.dialog-conversation .train-vn .vn-sprite img[data-character]{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;transform:none;transform-origin:50% 90%}
+.dialog-conversation .train-vn .vn-card{position:relative;max-width:none;width:auto;justify-self:stretch;margin:0 0 12px;padding:25px}
+.dialog-conversation .train-vn.is-speaking .vn-sprite{animation:character-speak 3.33s ease-in-out infinite}.dialog-conversation .train-vn:not(.is-speaking) .vn-sprite{animation:character-breathe 4.8s ease-in-out infinite}.dialog-conversation .train-vn.motion-paused .vn-sprite{animation:none;transform:none}
+@media(max-width:800px){.dialog-conversation .train-vn{grid-template-columns:1fr;padding:15px;gap:0;min-height:0}.dialog-conversation .train-vn .vn-sprite{height:340px;max-width:400px;justify-self:center;width:100%;margin-bottom:-8px}.dialog-conversation .train-vn .vn-card{width:100%;margin:0;padding:20px}}
+
+/* Frame expressions as close portraits, leaving the lower body outside the stage. */
+.dialog-conversation .train-vn .vn-sprite{overflow:hidden}
+.dialog-conversation .train-vn .vn-sprite img[data-character]{object-fit:cover;object-position:center top;transform:scale(1.24);transform-origin:50% 0}
+@media(max-width:800px){.dialog-conversation .train-vn .vn-sprite img[data-character]{transform:scale(1.14)}}
+.train-clue-image{display:block;width:min(100%,500px);max-height:350px;margin:16px auto;border-radius:12px;object-fit:contain;background:#f2e9d7}
+.train-clue-person{width:min(100%,340px);height:250px;object-fit:cover;object-position:center 9%;background:#263a34}
+.people-book .portrait img{object-fit:cover;object-position:center 9%}
+.train-stage-direction{font-size:15px;line-height:1.5;color:#6d6b60;font-style:italic;margin:16px 0 4px}
+.train-stage-direction+.dialogue-line{min-height:0;margin-top:8px}
