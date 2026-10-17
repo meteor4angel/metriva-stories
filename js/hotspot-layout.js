@@ -5,7 +5,7 @@
       const els=[...scene.querySelectorAll('.hotspot')];
       if(!els.length)return;
       const w=scene.clientWidth||800,h=scene.clientHeight||460;
-      const r=27,top=Math.min(125,h*.28),bottom=Math.max(top+65,h-76),gap=58;
+      const r=27,top=r,bottom=h-r,gap=58;
       const p=els.map((el,i)=>({el,x:Math.max(r,Math.min(w-r,parseFloat(el.dataset.originalX||el.style.left)*w/100)),y:Math.max(top,Math.min(bottom,parseFloat(el.dataset.originalY||el.style.top)*h/100))}));
       els.forEach((el,i)=>{if(!el.dataset.originalX){el.dataset.originalX=parseFloat(el.style.left);el.dataset.originalY=parseFloat(el.style.top)}});
       for(let k=0;k<90;k++){

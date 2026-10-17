@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Mira's calendar showing next Saturday free after four">
+<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#fffaf2"/><stop offset="1" stop-color="#f6dcc2"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#8c6e5c" flood-opacity=".25"/></filter></defs>
+<rect width="640" height="480" fill="url(#g)"/>
+<circle cx="540" cy="65" r="88" fill="#f9e7a5" opacity=".5"/><path d="M0 390Q160 340 310 400T640 370v110H0" fill="#e6d6c5" opacity=".6"/>
+<rect x="146" y="35" width="348" height="410" rx="32" fill="#293b46" filter="url(#s)"/><rect x="157" y="46" width="326" height="388" rx="24" fill="#fffdf9"/>
+<text x="190" y="100" font-family="Arial,sans-serif" font-size="21" fill="#364d54">Calendar</text><text x="190" y="140" font-family="Arial,sans-serif" font-size="30" font-weight="bold" fill="#263f45">Next Saturday</text>
+<rect x="185" y="176" width="270" height="128" rx="16" fill="#eaf4ed" stroke="#8fb6a2" stroke-width="2"/>
+<text x="205" y="215" font-family="Arial,sans-serif" font-size="20" fill="#426951">FREE AFTER 4:00</text><text x="205" y="252" font-family="Georgia,serif" font-size="22" fill="#264235">Riverside terrace</text><text x="205" y="280" font-family="Georgia,serif" font-size="18" fill="#557065">Coffee? Ask Theo.</text>
+<path d="M204 348h230M204 375h170" stroke="#d7d1c7" stroke-width="11" stroke-linecap="round"/>
+</svg>

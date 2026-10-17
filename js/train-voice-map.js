@@ -26,5 +26,19 @@ window.TRAIN_VOICES = Object.fromEntries([
   ['Owen Hale', 'I moved a document case onto the maintenance trolley. The watch struck the rail and stopped.', '04-baggage-owen-q02-answer.mp3'],
   ['Owen Hale', 'Nora took the original records. The altered manifest was meant to hide the transfer.', '04-baggage-owen-q02-follow-up.mp3'],
   ['Owen Hale', 'No. The steel door swells in damp weather. I warned her not to let it close.', '04-baggage-owen-q03-answer.mp3'],
-  ['Owen Hale', 'And the freight is due soon. We have to turn back now.', '04-baggage-owen-q03-follow-up.mp3']
+  ['Owen Hale', 'And the freight is due soon. We have to turn back now.', '04-baggage-owen-q03-follow-up.mp3'],
+  ['Elias Ward', 'Ask what you need. Please keep your questions away from the other passengers.', '01-carriage-elias-introduction.mp3'],
+  ['Elias Ward', 'Because her name on the manifest could put her in danger. She asked me to protect her assignment.', '01-carriage-elias-q01-answer.mp3'],
+  ['Elias Ward', 'Yes. I thought secrecy would protect her. I did not expect her to leave the train.', '01-carriage-elias-q01-follow-up.mp3'],
+  ['Elias Ward', 'The emergency brake engaged at a red signal. Four minutes later, the line cleared.', '01-carriage-elias-q02-answer.mp3'],
+  ['Elias Ward', 'The carriage doors should have remained locked. “Should” is doing too much work tonight.', '01-carriage-elias-q02-follow-up.mp3'],
+  ['Elias Ward', 'She would only say it concerned the Blackthorn bridge and an altered inspection report.', '01-carriage-elias-q03-answer.mp3'],
+  ['Elias Ward', 'That is what I fear. Find her before the next freight reaches that bridge.', '01-carriage-elias-q03-follow-up.mp3'],
+  ['Elias Ward', 'I protected Nora’s identity and nearly lost sight of her safety. I will answer for that.', '05-tower-elias-introduction.mp3'],
+  ['Elias Ward', 'Yes. I altered the passenger copy of the manifest. I will explain why and accept the consequences.', '05-tower-elias-q01-answer.mp3'],
+  ['Elias Ward', 'Including my mistake. Protection without trust can become another kind of silence.', '05-tower-elias-q01-follow-up.mp3'],
+  ['Elias Ward', 'If we set the main-line signal now, it has enough braking distance.', '05-tower-elias-q02-answer.mp3'],
+  ['Elias Ward', 'I will watch the track circuit. You take the levers.', '05-tower-elias-q02-follow-up.mp3'],
+  ['Elias Ward', 'The bridge closes, investigators secure the report, and every maintenance record is reviewed.', '05-tower-elias-q03-answer.mp3'],
+  ['Elias Ward', 'Published with evidence, witnesses, and no missing names.', '05-tower-elias-q03-follow-up.mp3']
 ].map(([speaker, text, file]) => [JSON.stringify([speaker, text]), 'assets/voices/' + file]));

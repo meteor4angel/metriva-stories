@@ -1,0 +1,38 @@
+.days-cast{grid-template-columns:repeat(2,minmax(0,110px));justify-content:start}
+.days-objects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.days-objects button{display:flex;flex-direction:column;align-items:stretch;gap:5px;min-width:0;padding:5px;text-align:center;overflow:hidden}
+.days-objects button img{display:block;width:100%;height:72px;object-fit:contain;border-radius:5px;background:#fff}
+.days-objects button span{font-size:11px;line-height:1.25}
+.days-cast .portrait{height:108px;aspect-ratio:auto;background:#dfc5a5}
+.days-cast .portrait img{width:100%;height:100%;object-fit:cover;object-position:center 18%}
+.person-entry{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line)}
+.person-entry:last-child{border-bottom:0}
+.person-entry img{display:block;width:120px;height:130px;object-fit:cover;object-position:center 17%;border-radius:12px}
+.person-entry h3{margin:0 0 2px}.person-entry p{margin:8px 0 0}
+.days-clue-image{display:block;width:auto;height:auto;max-width:min(100%,600px);max-height:400px;object-fit:contain;margin:17px auto;border-radius:12px;background:#fff}
+.days-conversation-overlay{padding:20px;background:#193127ad;overflow:auto}
+.days-conversation-overlay>.dialog{width:min(1180px,100%);max-height:94dvh;overflow:hidden;padding:0}
+.days-conversation-overlay .dialog-top{padding:12px 20px;background:#fffaf0;border-bottom:1px solid var(--line)}
+.days-vn{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(260px,44%) minmax(0,1fr);align-items:end;gap:20px;min-height:620px;padding:28px;overflow:hidden;background:#c9a578}
+.days-vn:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#352b1825,#3e30112b),var(--stage) center/cover no-repeat;filter:blur(2px);z-index:0}
+.days-vn:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#452a1c66,transparent 65%);z-index:1;pointer-events:none}
+.days-actor{position:relative;z-index:2;height:560px;width:100%;display:flex;align-items:end;justify-content:center;overflow:hidden;animation:daysBreathe 5.2s ease-in-out infinite}
+.days-actor img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 14%;background:transparent;border:0;border-radius:0;box-shadow:none;filter:none;mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent),linear-gradient(#000 83%,transparent 100%);mask-composite:intersect;mask-repeat:no-repeat}
+.days-actor.is-speaking{animation:none}
+.days-actor.is-theo:not(.is-speaking){animation:daysTheoSettle 6.8s ease-in-out infinite}
+.days-vn.motion-paused .days-actor{animation:none}
+.days-dialogue{position:relative;z-index:2;align-self:end;background:#fffaf0f5;border:1px solid #d9c29e;border-radius:16px;box-shadow:0 20px 40px #21160842;padding:24px;margin-bottom:12px;min-height:340px}
+.days-dialogue>.eyebrow{font-size:10px}.days-dialogue .speaker{font-size:15px}
+.days-line{font:21px/1.7 Georgia,serif;margin:14px 0 24px;min-height:68px}
+.days-action{font:italic 15px/1.6 Georgia,serif;color:#666455;margin:14px 0 6px}
+.days-controls{display:flex;gap:8px;flex-wrap:wrap}
+.days-controls .quiet{font-size:12px;padding:8px 10px}
+.days-voice-status{min-height:1.4em;margin:8px 0 0;font:12px/1.4 Arial,sans-serif;color:var(--muted)}
+.days-sequence{display:grid;gap:10px;margin:18px 0}.days-sequence>div{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fffdf7}
+@keyframes daysBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.004)}}
+@keyframes daysTheoSettle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.003)}}
+@keyframes daysSpeak{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.15deg)}}
+@media(max-width:900px){.days-conversation-overlay{padding:12px}.days-vn{grid-template-columns:1fr;gap:0;min-height:0;padding:12px}.days-actor{height:35dvh;min-height:280px;max-width:420px;justify-self:center}.days-dialogue{margin:0;min-height:0}}
+@media(max-width:600px){.person-entry{grid-template-columns:85px 1fr;gap:12px}.person-entry img{width:85px;height:100px}.days-line{font-size:18px}.days-vn{padding:9px}.days-actor{height:32dvh;min-height:230px}}
+@media(max-width:650px){.days-objects{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.days-actor{animation:none!important}}

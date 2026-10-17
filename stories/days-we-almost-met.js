@@ -18,10 +18,10 @@ window.DAYS_STORY = {
         },
         {
           "id": "receipt",
-          "label": "Café receipt",
+          "label": "Mira’s café receipt",
           "x": 54,
           "y": 76,
-          "text": "Today’s café receipt reads APR 12 · 10:42. Theo’s bookmark lists his neighborhood reading shift at 11:00.",
+          "text": "Mira’s café receipt reads APR 12 · 10:42 AM. It fell beside her bag when she dropped her book.",
           "clue": "Receipt · Apr 12 · 10:42",
           "icon": "▣"
         },
@@ -102,7 +102,7 @@ window.DAYS_STORY = {
         },
         {
           "id": "tea",
-          "label": "Two cups of tea",
+          "label": "Tea and coffee",
           "x": 71,
           "y": 79,
           "text": "Mira ordered mint tea. Theo drinks black coffee. The librarian offered them a shared table; neither assumed the other would stay.",
@@ -180,8 +180,8 @@ window.DAYS_STORY = {
           "label": "Garden volunteer poster",
           "x": 12,
           "y": 35,
-          "text": "“Please use Market Street entrance during repairs.” The note is signed by the garden coordinator.",
-          "clue": "Entrance · Market Street",
+          "text": "The sunflower poster says “Volunteers Welcome!” The neighborhood map shows the open route to the garden along Market Street.",
+          "clue": "Garden cleanup · volunteers welcome",
           "icon": "✿"
         }
       ],
@@ -194,8 +194,8 @@ window.DAYS_STORY = {
       ],
       "puzzle": "route",
       "hint": [
-        "Look for the closure notice and the entrance named on the poster.",
-        "Canal Walk is closed; the garden asks volunteers to use Market Street.",
+        "Look for the closure notice and compare the open routes on the map.",
+        "Canal Walk is closed; the map marks Market Street open for the garden.",
         "Choose Market Street, not the canal shortcut."
       ],
       "success": "They walk to the cleanup along Market Street, talking about small ambitions: a home full of plants, a book they might write, a city they want to keep kind."
@@ -228,7 +228,7 @@ window.DAYS_STORY = {
           "label": "Fundraiser program",
           "x": 79,
           "y": 35,
-          "text": "The song is called “Sunday Window.” It was taught at the community center to anyone who wanted to learn.",
+          "text": "The fundraiser program lists “Sunday Window” as today’s music. Mira recognizes it from an open community-center class, linking this garden gathering to the melody on the sheet music.",
           "clue": "Program · Sunday Window",
           "icon": "▤"
         },
@@ -246,8 +246,8 @@ window.DAYS_STORY = {
           "label": "Community photograph",
           "x": 46,
           "y": 36,
-          "text": "An old photograph shows the community center’s open music class. Mira and Theo were both there at different times, years apart.",
-          "clue": "Music class · shared place",
+          "text": "A framed photograph shows volunteers together beneath the community garden’s flower-covered pergola. Mira recognizes the place where she first heard “Sunday Window” at an open music class.",
+          "clue": "Community garden · shared place",
           "icon": "▧"
         }
       ],
@@ -276,8 +276,8 @@ window.DAYS_STORY = {
           "label": "Theo’s message",
           "x": 23,
           "y": 68,
-          "text": "“I enjoyed today. Would you like to meet again next weekend? No worries if you’re busy.” The invitation is clear and considerate.",
-          "clue": "Invitation · next weekend",
+          "text": "Theo writes that he enjoyed today. Mira asks, “Meet next Saturday?” Theo replies, “Yes, 4:30 works!” Their plan is clear on the phone.",
+          "clue": "Messages · next Saturday at 4:30",
           "icon": "✉"
         },
         {
@@ -285,7 +285,7 @@ window.DAYS_STORY = {
           "label": "Mira’s calendar",
           "x": 49,
           "y": 75,
-          "text": "Mira is free next Saturday after 4 PM. She also wants Sunday to herself. She can make a plan that respects both.",
+          "text": "Mira has written ‘Coffee with Theo · Saturday 4:30 PM’ in her calendar. Sunday remains free for herself.",
           "clue": "Calendar · Saturday after 4",
           "icon": "▤"
         },
@@ -312,7 +312,7 @@ window.DAYS_STORY = {
           "label": "Mira’s journal",
           "x": 68,
           "y": 68,
-          "text": "“I like that he asks instead of assuming. I like that I can say what I want.” The next step belongs to both of them.",
+          "text": "Mira writes: “I liked that he asked. I liked that I could say what I wanted, and he listened. Next Saturday feels like a choice we both made.”",
           "clue": "Journal · mutual choice",
           "icon": "✎"
         }

@@ -1,0 +1,22 @@
+.timeline-cards [draggable="true"],
+.timeline-slots [draggable="true"] {
+  cursor: grab;
+  user-select: none;
+}
+
+.timeline-cards .timeline-dragging,
+.timeline-slots .timeline-dragging {
+  opacity: .55;
+  cursor: grabbing;
+}
+
+.timeline-slots .timeline-drop {
+  border-style: dashed;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+
+.timeline-slots .timeline-drop.timeline-over {
+  background: #e5efdf;
+  border-color: #497b59;
+  box-shadow: inset 0 0 0 2px #497b59;
+}

@@ -5,7 +5,7 @@ window.LETTERS = {
     {
       "title": "The Attic",
       "subtitle": "Some letters were never meant to be lost.",
-      "intro": "Alex Morgan arrives at Aunt Iris’s apartment to pack away the belongings she left behind. Behind a cedar trunk are four torn pages and an envelope addressed to Julian Ellis. Rain taps softly on the skylight.",
+      "intro": "In 2005, Alex Morgan returns to Aunt Iris’s apartment to pack away the belongings she left behind. The attic has barely changed in decades: a cedar trunk, an oil lamp, four torn pages, and an envelope addressed to Julian Ellis. Rain taps softly on the skylight.",
       "spots": [
         {
           "id": "paper",
@@ -31,7 +31,7 @@ window.LETTERS = {
           "icon": "✉",
           "x": 51,
           "y": 38,
-          "text": "The envelope is addressed to Julian Ellis, 18 Lantern Lane. It has no postmark.",
+          "text": "Turning the envelope over reveals an address to Julian Ellis, 18 Lantern Lane. It has no postmark.",
           "clue": "Unsent envelope"
         },
         {
@@ -40,7 +40,7 @@ window.LETTERS = {
           "icon": "▧",
           "x": 79,
           "y": 45,
-          "text": "Iris and a young man stand beside a rooftop garden. On the reverse: “Iris & Julian · 1987.”",
+          "text": "Iris and a young man stand together on a rooftop. On the reverse: “Iris & Julian · 1987.”",
           "clue": "1987 rooftop photograph"
         },
         {
@@ -71,7 +71,7 @@ window.LETTERS = {
     {
       "title": "Across the Street",
       "subtitle": "The bookbinder kept a story of his own.",
-      "intro": "Rowan Ellis lets you explore his grandfather Julian’s old bookbinding studio. You share the letter you found. Rowan brings out a tin of stationery, surprised to see Iris’s name.",
+      "intro": "Across the street, Rowan Ellis lets Alex explore his grandfather Julian’s bookbinding studio. Its old press and ink bottles still fill the worktable. Alex shares the torn letter, and Rowan opens a tin of stationery, surprised to see Iris’s name.",
       "spots": [
         {
           "id": "ink",
@@ -137,7 +137,7 @@ window.LETTERS = {
     {
       "title": "The Unsent Years",
       "subtitle": "A lifetime is hiding between dates.",
-      "intro": "At the kitchen table, Alex and Rowan arrange both bundles by their dates. The silence between some letters is longer than either expected.",
+      "intro": "Back at the studio, Alex sets a closed flip phone beside the ink bottle while they arrange both bundles by date. The letters span 1987 to 2004; the silence between them is longer than either expected.",
       "spots": [
         {
           "id": "iris87",
@@ -145,7 +145,7 @@ window.LETTERS = {
           "icon": "✉",
           "x": 27,
           "y": 56,
-          "text": "Dated June 12, 1987. Iris writes that she will wait at the station on Friday.",
+          "text": "Dated June 12, 1987. Iris writes in green ink that she keeps thinking of Julian and cannot quite believe the previous day.",
           "clue": "Iris · June 12, 1987"
         },
         {
@@ -154,7 +154,7 @@ window.LETTERS = {
           "icon": "✉",
           "x": 72,
           "y": 60,
-          "text": "Dated June 13, 1987. Julian writes that he will meet Iris at the rooftop garden after the storm clears.",
+          "text": "Dated June 13, 1987. Julian replies in violet ink that Iris’s letter found him and that he still hopes to say the words aloud.",
           "clue": "Julian · June 13, 1987"
         },
         {
@@ -163,7 +163,7 @@ window.LETTERS = {
           "icon": "▤",
           "x": 49,
           "y": 43,
-          "text": "Dated September 2, 1995. Iris writes, “I still pass the rooftop sometimes.”",
+          "text": "The postcard is dated September 1995. Turning it over reveals Iris’s line: “I still pass the rooftop sometimes.”",
           "clue": "Iris · September 1995"
         },
         {
@@ -172,7 +172,7 @@ window.LETTERS = {
           "icon": "✎",
           "x": 76,
           "y": 38,
-          "text": "Dated April 8, 2004. Julian writes, “Some stories do not end. We simply stop telling them aloud.”",
+          "text": "Opening the envelope dated April 2004 reveals Julian’s line: “Some stories do not end. We simply stop telling them aloud.”",
           "clue": "Julian · April 2004"
         },
         {
@@ -181,7 +181,7 @@ window.LETTERS = {
           "icon": "▣",
           "x": 22,
           "y": 39,
-          "text": "The calendar confirms Friday was June 19, 1987. The rooftop stairs were closed that evening because of storm damage.",
+          "text": "The June 1987 calendar circles Friday the 19th and carries a storm reminder. A notice at the rooftop later gives the closure time.",
           "clue": "June 19 storm record"
         }
       ],
@@ -191,7 +191,7 @@ window.LETTERS = {
         "Start with 1987, then 1995, then 2004.",
         "Order: Iris June 12 → Julian June 13 → Iris September 1995 → Julian April 2004."
       ],
-      "success": "The two first letters show different meeting places. Iris waited at the station; Julian waited on the roof. The date of the storm connects their misunderstanding.",
+      "success": "The dated letters trace years of unanswered hope. June 19, 1987 is circled beside a storm reminder; the rooftop may explain what happened that evening.",
       "required": [
         "iris87",
         "julian87",
@@ -203,7 +203,7 @@ window.LETTERS = {
     {
       "title": "The Rooftop Garden",
       "subtitle": "The meeting place still remembers.",
-      "intro": "Rowan opens the long-unused rooftop door. Ivy climbs a white trellis, and a faded tile mosaic glows in the afternoon sun. A small brass box is hidden near the old bench.",
+      "intro": "Rowan leads Alex up the exterior stair to the rooftop garden. The old interior door is still boarded after the storm. Ivy climbs a white trellis, a tile mosaic glows in the afternoon sun, and a brass keepsake box rests near the bench.",
       "spots": [
         {
           "id": "mosaic",
@@ -211,7 +211,7 @@ window.LETTERS = {
           "icon": "✦",
           "x": 52,
           "y": 53,
-          "text": "Three engraved stars are labeled DAWN, NOON, and DUSK. A plaque reads “Follow the day from first light to last.”",
+          "text": "Three stars run across the compass mosaic, from the eastern side through its center to the western side. Read them as Dawn, Noon, and Dusk: follow the day from first light to last.",
           "clue": "Mosaic order · Dawn Noon Dusk"
         },
         {
@@ -220,8 +220,8 @@ window.LETTERS = {
           "icon": "▤",
           "x": 26,
           "y": 66,
-          "text": "The bench bears the initials I + J and a date: June 19, 1987.",
-          "clue": "Bench · June 19, 1987"
+          "text": "The weathered bench bears the initials I + J, carved where Iris and Julian once sat together.",
+          "clue": "Garden bench · I + J"
         },
         {
           "id": "door",
@@ -238,7 +238,7 @@ window.LETTERS = {
           "icon": "♧",
           "x": 72,
           "y": 72,
-          "text": "The box has three rotating star dials. Their symbols correspond to the mosaic’s Dawn, Noon, and Dusk.",
+          "text": "The brass keepsake box has three rotating star dials, echoing the three-star mosaic on the garden floor.",
           "clue": "Three-star keepsake lock"
         },
         {
@@ -253,7 +253,7 @@ window.LETTERS = {
       ],
       "puzzle": "stars",
       "hint": [
-        "The plaque gives the order in plain language.",
+        "The mosaic traces a day across its three stars.",
         "Think morning, midday, and evening.",
         "Choose Dawn → Noon → Dusk."
       ],
@@ -269,7 +269,7 @@ window.LETTERS = {
     {
       "title": "The Letter Never Sent",
       "subtitle": "Sometimes the truth arrives late, but it still matters.",
-      "intro": "Back in Iris’s apartment, Alex and Rowan spread the recovered letters across the writing desk. The last note explains why the meeting failed. What happened is no longer a mystery—but what to do with the letters is a choice.",
+      "intro": "As evening falls, Alex and Rowan spread the recovered letters across the rooftop’s stone table beside the opened brass box. The last note explains why the meeting failed. What happened is no longer a mystery—but what to do with the letters is a choice.",
       "spots": [
         {
           "id": "station",

@@ -42,7 +42,12 @@
 .dialog-conversation .train-vn .vn-sprite{overflow:hidden}
 .dialog-conversation .train-vn .vn-sprite img[data-character]{object-fit:cover;object-position:center top;transform:scale(1.24);transform-origin:50% 0}
 @media(max-width:800px){.dialog-conversation .train-vn .vn-sprite img[data-character]{transform:scale(1.14)}}
-.train-clue-image{display:block;width:min(100%,500px);max-height:350px;margin:16px auto;border-radius:12px;object-fit:contain;background:#f2e9d7}
+.train-clue-image{display:block;width:min(100%,720px);max-height:480px;margin:16px auto;border-radius:12px;object-fit:contain;background:#f2e9d7}
+.train-document-detail{display:grid;place-items:center;width:min(100%,500px);min-height:310px;margin:16px auto;border-radius:12px;background:linear-gradient(125deg,#743d2b99,#3e241d99),url('../assets/train-ch2-dining.png') center 81%/190% auto;box-shadow:inset 0 0 0 1px #5a34283d;overflow:hidden}
+.train-document-paper{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;width:min(85%,350px);min-height:245px;padding:24px 20px;color:#342b22;background:#f6e9cc;border:1px solid #bca47e;box-shadow:4px 7px 18px #25171377;transform:rotate(-2deg);text-align:center;font-family:Georgia,serif}
+.train-document-paper small{font:700 10px/1.4 Arial,sans-serif;letter-spacing:.2em;color:#6b6048}.train-document-paper span{font-size:13px;letter-spacing:.12em}.train-document-paper strong{font-size:24px;line-height:1.2}.train-document-paper p{margin:0;font-size:16px}.train-document-paper b{font-size:15px;border-top:1px solid #aa9779;padding-top:10px;width:100%}
+.train-document-ticket{background-image:linear-gradient(125deg,#743d2b88,#3e241d88),url('../assets/cover-midnight-train.png');background-position:center,46% 66%;background-size:auto,190% auto}.train-document-chart{background-image:linear-gradient(125deg,#743d2b88,#3e241d88),url('../assets/cover-midnight-train.png');background-position:center,22% 20%;background-size:auto,190% auto}
+.train-document-chart .train-document-paper{gap:7px}.train-document-chart .train-document-paper strong{font-size:18px}.train-document-chart .train-document-paper p{font-size:17px}.train-document-chart .train-document-paper b{text-decoration:line-through;text-decoration-color:#6c5147;text-decoration-thickness:2px}
 .train-clue-person{width:min(100%,340px);height:250px;object-fit:cover;object-position:center 9%;background:#263a34}
 .people-book .portrait img{object-fit:cover;object-position:center 9%}
 .train-stage-direction{font-size:15px;line-height:1.5;color:#6d6b60;font-style:italic;margin:16px 0 4px}

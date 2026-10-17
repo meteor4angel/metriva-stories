@@ -1,0 +1,46 @@
+
+{
+  "schemaVersion": 1,
+  "storyId": "vanishing-letter",
+  "chapters": [
+    {
+      "id": "flower-shop",
+      "number": 1,
+      "evidence": [
+        {
+          "id": "register",
+          "markerLabel": "Register",
+          "title": "The Receipt",
+          "zoomTitle": "Examining the Receipt",
+          "notebookTitle": "Receipt",
+		  "notebookDetail": "6:12 PM · Lavender ribbon",
+          "question": "Why was a ribbon sold after closing?"
+        },
+        {
+          "id": "window",
+          "markerLabel": "Back window",
+          "title": "The Loose Latch",
+          "zoomTitle": "Examining the Loose Latch",
+          "notebookTitle": "Damp soil on window",
+          "question": "Who might have approached this window?"
+        },
+        {
+          "id": "letter",
+          "markerLabel": "Writing desk",
+          "title": "The Broken Seal",
+          "zoomTitle": "Examining the Broken Seal",
+          "notebookTitle": "Crescent moon seal",
+          "question": "What happened to the letter on this desk?"
+        },
+        {
+          "id": "miso",
+          "markerLabel": "Miso",
+          "title": "The Brass Token",
+          "zoomTitle": "Examining the Brass Token",
+          "notebookTitle": "Brass garden token",
+          "question": "Where might this token belong?"
+        }
+      ]
+    }
+  ]
+}

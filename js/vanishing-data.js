@@ -59,11 +59,11 @@ window.VANISHING_DATA={
         },
         {
           "id": "pots",
-          "label": "Seedling trays",
+          "label": "Soil tray",
           "x": 68,
           "y": 69,
           "icon": "✿",
-          "text": "Fresh potting soil matches the texture on the back window sill. The trays themselves are undisturbed.",
+          "text": "Fresh potting soil in the wooden tray matches the texture on the back window sill. Its surface is undisturbed.",
           "clue": "Matching greenhouse soil"
         },
         {
