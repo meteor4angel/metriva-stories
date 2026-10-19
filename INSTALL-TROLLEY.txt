@@ -1,0 +1,1 @@
+Replace echoes-library.html, js/library-engine.js, css/library-storybook.css, and images/story02/* in the project root. Export your save first. Hard-refresh with Ctrl+F5. The original lower-shelf books are now part of the artwork; there is no artificial brown panel, placeholder book, or drawer. Chapter 1 still uses the same book-swap and B-17 reveal logic.

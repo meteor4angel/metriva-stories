@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f0e4">
+  <title>__TITLE__ · Metriva Stories</title>
+  <link rel="stylesheet" href="css/story-engine.css?v=story02-bookshelf-20261019c">
+</head>
+<body>
+  <header class="story6-top"><a href="index.html" class="story6-brand">❦ Metriva <span>STORIES</span></a><nav><a href="index.html#catalog">All stories</a></nav></header>
+  <main id="story-root" class="story6-shell" aria-live="polite"></main>
+  <div id="story-modal" class="s6-overlay is-hidden"></div>
+  <footer class="story6-footer">Metriva Stories · <span>__TITLE__</span> · Saved on this device</footer>
+  <script type="application/json" id="story-definition">__STORY_JSON__</script>
+  <script src="js/story-engine.js?v=story02-bookshelf-20261019c"></script>
+  <script>window.MetrivaStoryEngine.boot({dataSource:new MetrivaStoryEngine.InlineJsonStorySource(document.getElementById('story-definition').textContent),repository:new MetrivaStoryEngine.LocalProgressRepository(),mount:'#story-root',modal:'#story-modal'});</script>
+</body>
+</html>

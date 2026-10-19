@@ -30,7 +30,7 @@ function bind(){
       const now=performance.now(),elapsed=now-start;
       if(now>=nextBlink){blinkUntil=now+210;nextBlink=now+3200+Math.random()*1400}
       const blinking=now<blinkUntil&&loaded[blinkFrame]?.complete&&loaded[blinkFrame]?.naturalWidth>0;
-      const talking=spoken&&elapsed<speakFor;
+      const talking=spoken&&(image.dataset.audioManaged==='true'?image.dataset.audioSpeaking==='true':elapsed<speakFor);
       actor.classList.toggle('is-speaking',talking);
       const beat=elapsed%2600;
       const frame=blinking?blinkFrame:base==='thoughtful'?base:!talking||beat<250||beat>2420?'idle':beat<700?'soft':beat<1080?'speaking':beat<1450?'soft':beat<1850?'emphasis':beat<2150?'speaking':'soft';

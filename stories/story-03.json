@@ -1,0 +1,963 @@
+{
+  "schemaVersion": 1,
+  "id": "midnight-train",
+  "number": 3,
+  "title": "The Midnight Train",
+  "genre": "Suspense Adventure",
+  "description": "A passenger vanishes after an unscheduled midnight stop.",
+  "duration": "10–20 min",
+  "tagline": "A vanished passenger. An erased station. One warning before the next train.",
+  "theme": "On the Nightingale Express, Nora Bell disappears after an unscheduled stop. Her clues expose a falsified bridge inspection report and a freight train in danger.",
+  "saveVersion": 1,
+  "legacyPage": "midnight-train.html",
+  "legacySaveKey": "metrivastories_midnight_train_v02",
+  "legacySaveKeys": [
+    "metrivastories_midnight_train_v01"
+  ],
+  "autoVoice": true,
+  "characterPortraits": {
+    "ward": "assets/train-ward-idle.png",
+    "june": "assets/train-june-idle.png",
+    "tomas": "assets/train-tomas-idle.png",
+    "owen": "assets/train-owen-idle.png",
+    "nora": "assets/train-nora-idle.png"
+  },
+  "characterSprites": {
+    "ward": {
+      "src": "assets/train-ward-idle.png",
+      "columns": 1,
+      "rows": 1,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": "assets/train-ward-idle.png",
+        "blink": "assets/train-ward-blink.png",
+        "speaking": "assets/train-ward-speaking.png",
+        "thoughtful": "assets/train-ward-thoughtful.png"
+      }
+    },
+    "june": {
+      "src": "assets/train-june-idle.png",
+      "columns": 1,
+      "rows": 1,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": "assets/train-june-idle.png",
+        "blink": "assets/train-june-blink.png",
+        "speaking": "assets/train-june-speaking.png",
+        "thoughtful": "assets/train-june-thoughtful.png"
+      }
+    },
+    "tomas": {
+      "src": "assets/train-tomas-idle.png",
+      "columns": 1,
+      "rows": 1,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": "assets/train-tomas-idle.png",
+        "blink": "assets/train-tomas-blink.png",
+        "speaking": "assets/train-tomas-speaking.png",
+        "thoughtful": "assets/train-tomas-thoughtful.png"
+      }
+    },
+    "owen": {
+      "src": "assets/train-owen-idle.png",
+      "columns": 1,
+      "rows": 1,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": "assets/train-owen-idle.png",
+        "blink": "assets/train-owen-blink.png",
+        "speaking": "assets/train-owen-speaking.png",
+        "thoughtful": "assets/train-owen-thoughtful.png"
+      }
+    },
+    "nora": {
+      "src": "assets/train-nora-idle.png",
+      "columns": 1,
+      "rows": 1,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": "assets/train-nora-idle.png",
+        "blink": "assets/train-nora-blink.png",
+        "speaking": "assets/train-nora-speaking.png",
+        "thoughtful": "assets/train-nora-thoughtful.png"
+      }
+    }
+  },
+  "chapters": [
+    {
+      "id": "carriage-four",
+      "title": "Carriage Four",
+      "location": "Carriage Four",
+      "subtitle": "A passenger disappears. Her belongings do not.",
+      "scene": "assets/cover-midnight-train.png",
+      "intro": "At 12:02 AM, the Nightingale Express jolts to a stop in the mountains. When it moves again, the woman in carriage four is gone. Conductor Elias Ward insists nobody occupied her compartment. You remember speaking to her beside the dining-car door.",
+      "evidence": [
+        {
+          "id": "ticket",
+          "title": "Nora’s ticket",
+          "icon": "▤",
+          "position": {
+            "x": 39,
+            "y": 64
+          },
+          "detail": "A valid ticket for the 11:30 departure reads: NORA BELL · CARRIAGE 4 · SEAT 4C. The conductor’s copy has a punched crescent at the top.",
+          "note": "Ticket · seat 4C",
+          "detailImage": "assets/train-clue-ticket.png"
+        },
+        {
+          "id": "tag",
+          "title": "Suitcase tag",
+          "icon": "▣",
+          "position": {
+            "x": 58,
+            "y": 90
+          },
+          "detail": "A blue suitcase on the seat is tagged N. BELL / 4C. Its handle is still warm from being carried.",
+          "note": "Suitcase tag · 4C",
+          "detailFrame": {
+            "x": 38,
+            "y": 60,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "chart",
+          "title": "Compartment chart",
+          "icon": "⌗",
+          "position": {
+            "x": 22,
+            "y": 19
+          },
+          "detail": "The carriage chart lists 4A: June P., 4B: Vacant, 4C: Nora Bell, 4D: Reserved for staff. Someone has crossed out 4C in pencil.",
+          "note": "Seat chart · 4C",
+          "detailImage": "assets/train-clue-chart.png"
+        },
+        {
+          "id": "coat",
+          "title": "Abandoned coat",
+          "icon": "♧",
+          "position": {
+            "x": 40,
+            "y": 54
+          },
+          "detail": "A damp coat hangs near seat 4C. In its pocket: a note, “Find the junction before 12:10. Do not trust the printed route.”",
+          "note": "Junction warning",
+          "detailImage": "assets/train-clue-coat.png"
+        },
+        {
+          "id": "ward",
+          "title": "Talk to Ward",
+          "icon": "☏",
+          "position": {
+            "x": 7,
+            "y": 45
+          },
+          "detail": "“I checked the manifest at departure,” Ward says. His eyes linger on the crossed-out name. “I cannot discuss the passenger’s assignment.”",
+          "note": "Ward’s guarded response",
+          "detailImage": "assets/train-ward-idle.png",
+          "detailImageWidth": 1024,
+          "detailImageHeight": 1536,
+          "conversationOnInspect": "ward"
+        }
+      ],
+      "characters": [
+        {
+          "id": "ward",
+          "name": "Elias Ward",
+          "role": "Conductor",
+          "bio": "The Nightingale Express conductor. Precise, protective, and carrying more responsibility than he admits.",
+          "intro": "Ask what you need. Please keep your questions away from the other passengers.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Why deny Nora was aboard?",
+              "reply": "Because her name on the manifest could put her in danger. She asked me to protect her assignment.",
+              "followUp": "Crossing out her seat made it look as though she never boarded.",
+              "followReply": "Yes. I thought secrecy would protect her. I did not expect her to leave the train."
+            },
+            {
+              "id": "q2",
+              "ask": "What happened during the stop?",
+              "reply": "The emergency brake engaged at a red signal. Four minutes later, the line cleared.",
+              "followUp": "Could someone have stepped onto the junction platform?",
+              "followReply": "The carriage doors should have remained locked. “Should” is doing too much work tonight."
+            },
+            {
+              "id": "q3",
+              "ask": "What was Nora investigating?",
+              "reply": "She would only say it concerned the Blackthorn bridge and an altered inspection report.",
+              "followUp": "Then her disappearance and the missing report are connected.",
+              "followReply": "That is what I fear. Find her before the next freight reaches that bridge."
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "train-seat",
+        "title": "Which seat was removed from the compartment chart?",
+        "type": "choice",
+        "prompt": "Which seat was removed from the compartment chart?",
+        "answer": "4C",
+        "success": "The documents agree: Nora Bell boarded and occupied 4C. Ward’s denial is deliberate, but why would he protect a missing passenger?",
+        "options": [
+          {
+            "id": "4A",
+            "label": "Seat 4A"
+          },
+          {
+            "id": "4B",
+            "label": "Seat 4B"
+          },
+          {
+            "id": "4C",
+            "label": "Seat 4C"
+          },
+          {
+            "id": "4D",
+            "label": "Seat 4D"
+          }
+        ],
+        "presentation": {
+          "evidenceRefs": [
+            "ticket",
+            "tag",
+            "chart"
+          ]
+        }
+      },
+      "hints": [
+        "Compare the passenger ticket, luggage tag, and seat chart.",
+        "All three documents point to the same carriage and seat.",
+        "Choose seat 4C."
+      ],
+      "clue": "The documents agree: Nora Bell boarded and occupied 4C. Ward’s denial is deliberate, but why would he protect a missing passenger?",
+      "gate": {
+        "allEvidence": [
+          "ticket",
+          "tag",
+          "chart",
+          "coat",
+          "ward"
+        ]
+      }
+    },
+    {
+      "id": "dining-car",
+      "title": "The Dining Car",
+      "location": "The Dining Car",
+      "subtitle": "The last ordinary minutes before midnight.",
+      "scene": "assets/train-ch2-dining.png",
+      "intro": "June, the dining-car attendant, remembers Nora ordering tea. Her service records trace Nora’s movements in the minutes before the unscheduled stop.",
+      "evidence": [
+        {
+          "id": "tea",
+          "title": "Tea receipt",
+          "icon": "▤",
+          "position": {
+            "x": 36,
+            "y": 81
+          },
+          "detail": "11:42 PM — Nora orders peppermint tea. June remembers the blue coat and a folded map.",
+          "note": "Tea · 11:42",
+          "detailImage": "assets/train-clue-tea.webp"
+        },
+        {
+          "id": "watch",
+          "title": "Pocket watch",
+          "icon": "◷",
+          "position": {
+            "x": 54,
+            "y": 76
+          },
+          "detail": "11:49 PM — Nora checks her gold pocket watch and leaves the dining car. June records the time beside Nora’s unfinished tea.",
+          "note": "Nora leaves · 11:49",
+          "detailImage": "assets/train-clue-watch.webp"
+        },
+        {
+          "id": "water",
+          "title": "Water receipt",
+          "icon": "◈",
+          "position": {
+            "x": 53,
+            "y": 87
+          },
+          "detail": "11:54 PM — June delivers water to the engineer. She sees Nora walk toward carriage four afterward.",
+          "note": "Water · 11:54",
+          "detailImage": "assets/train-clue-water.webp"
+        },
+        {
+          "id": "journal",
+          "title": "Service journal",
+          "icon": "▤",
+          "position": {
+            "x": 12,
+            "y": 84
+          },
+          "detail": "The dining log has three lines: tea 11:42, watch 11:49, water 11:54. The kitchen timer was reset at 11:55.",
+          "note": "Dining service log",
+          "detailImage": "assets/train-clue-journal.webp"
+        },
+        {
+          "id": "june",
+          "title": "Talk to June",
+          "icon": "☏",
+          "position": {
+            "x": 24,
+            "y": 35
+          },
+          "detail": "“She wasn’t frightened,” June says. “She asked whether Blackthorn Junction was still on the old line. I told her the express never stops there.”",
+          "note": "June’s testimony",
+          "detailImage": "assets/train-june-idle.png",
+          "detailImageWidth": 1024,
+          "detailImageHeight": 1536,
+          "conversationOnInspect": "june"
+        }
+      ],
+      "characters": [
+        {
+          "id": "june",
+          "name": "June Park",
+          "role": "Dining-car attendant",
+          "bio": "Observant and composed. June remembers the details passengers overlook.",
+          "intro": "Nora sat here alone, but she kept watching the service corridor clock.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "When did Nora leave the dining car?",
+              "reply": "Her tea was served at 11:42. She left seven minutes later, just after checking a silver watch.",
+              "followUp": "That places her departure at 11:49.",
+              "followReply": "Exactly. The water carafe arrived at 11:54, after her chair was already empty."
+            },
+            {
+              "id": "q2",
+              "ask": "Did she speak to anyone?",
+              "reply": "A man in a tan travel coat passed her a folded note. They did not greet each other.",
+              "followUp": "Owen Hale?",
+              "followReply": "I did not know his name, but he carried an old brass key on a blue ribbon."
+            },
+            {
+              "id": "q3",
+              "ask": "What did Nora seem afraid of?",
+              "reply": "Not a person. A deadline. She asked how quickly someone could walk from carriage four to the rear platform.",
+              "followUp": "She intended to leave during the stop.",
+              "followReply": "Or meet someone there. Either way, she planned around the timetable."
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "train-timeline",
+        "title": "Order the dining-car events",
+        "type": "sequence",
+        "prompt": "Arrange the dining-car events from earliest to latest.",
+        "answer": [
+          "tea",
+          "watch",
+          "water"
+        ],
+        "success": "Nora was seen at 11:54, only minutes before the stop. June’s testimony contradicts the official manifest and places Nora near carriage four.",
+        "items": [
+          {
+            "id": "water",
+            "label": "Water · 11:54"
+          },
+          {
+            "id": "watch",
+            "label": "Nora leaves · 11:49"
+          },
+          {
+            "id": "tea",
+            "label": "Tea · 11:42"
+          }
+        ],
+        "presentation": {
+          "mode": "timeline",
+          "topLabel": "Earliest",
+          "bottomLabel": "Latest"
+        }
+      },
+      "hints": [
+        "Read the timestamps on all three dining-car records.",
+        "The tea came first, then the watch, then the water.",
+        "Order: tea 11:42 → watch 11:49 → water 11:54."
+      ],
+      "clue": "Nora was seen at 11:54, only minutes before the stop. June’s testimony contradicts the official manifest and places Nora near carriage four.",
+      "gate": {
+        "allEvidence": [
+          "tea",
+          "watch",
+          "water",
+          "journal",
+          "june"
+        ]
+      }
+    },
+    {
+      "id": "unscheduled-stop",
+      "title": "The Unscheduled Stop",
+      "location": "The Unscheduled Stop",
+      "subtitle": "One route. Two timetables. A station erased from the map.",
+      "scene": "assets/train-ch3-observation.png",
+      "intro": "In the observation carriage, a route display flickers between the printed timetable and the train’s actual movement log. The mountain outside is dark except for one abandoned signal tower.",
+      "evidence": [
+        {
+          "id": "printed",
+          "title": "Printed route map",
+          "icon": "⌗",
+          "position": {
+            "x": 56,
+            "y": 82
+          },
+          "detail": "The advertised route goes Northbridge → Ash Vale → Briarford. No intermediate stop is listed.",
+          "note": "Published route",
+          "detailImage": "assets/train-clue-printed.png"
+        },
+        {
+          "id": "log",
+          "title": "Engine movement log",
+          "icon": "▤",
+          "position": {
+            "x": 88,
+            "y": 83
+          },
+          "detail": "The engine log reads: Northbridge 23:30; Ash Vale 23:48; BLK JCT 00:02; Briarford 00:41.",
+          "note": "Actual route log",
+          "detailImage": "assets/train-clue-log.png"
+        },
+        {
+          "id": "mile",
+          "title": "Route display",
+          "icon": "⌁",
+          "position": {
+            "x": 75,
+            "y": 14
+          },
+          "detail": "The route display names Northbridge, Ash Vale, and Briarford. Its mileage scale puts Ash Vale at 18, an unnamed point at 26, and Briarford at 44. The engine log’s BLK JCT falls at that missing point.",
+          "note": "Junction mileposts",
+          "detailImage": "assets/train-clue-mile.png"
+        },
+        {
+          "id": "signal",
+          "title": "Signal report",
+          "icon": "◉",
+          "position": {
+            "x": 68,
+            "y": 39
+          },
+          "detail": "The signal record reports a red aspect at Blackthorn Junction at 00:02, lasting four minutes.",
+          "note": "Red signal · 00:02",
+          "detailFrame": {
+            "x": 48,
+            "y": 19,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "tomas",
+          "title": "Talk to Tomas",
+          "icon": "☏",
+          "position": {
+            "x": 84,
+            "y": 34
+          },
+          "detail": "Engineer Tomas says, “Dispatch told me the signal was faulty. I stopped at the old junction because a red aspect is a red aspect.”",
+          "note": "Engineer’s account",
+          "detailImage": "assets/train-tomas-idle.png",
+          "detailImageWidth": 1024,
+          "detailImageHeight": 1536,
+          "conversationOnInspect": "tomas"
+        }
+      ],
+      "characters": [
+        {
+          "id": "tomas",
+          "name": "Tomas Reed",
+          "role": "Locomotive engineer",
+          "bio": "A practical railway engineer who treats every red signal as a warning worth respecting.",
+          "intro": "Dispatch called it a fault. I stopped because red still means stop.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Where exactly did we stop?",
+              "reply": "Blackthorn Junction, milepost twenty-six. It was removed from passenger timetables years ago.",
+              "followUp": "But it remains in the engine movement log.",
+              "followReply": "I know this much. The railway remembers places that printed maps prefer to forget."
+            },
+            {
+              "id": "q2",
+              "ask": "Could Nora reach the tower?",
+              "reply": "From the rear platform, yes. There is a maintenance path beside the siding.",
+              "followUp": "Why would the carriage doors unlock?",
+              "followReply": "A manual release was used. Only staff and someone with an old railway key would know it."
+            },
+            {
+              "id": "q3",
+              "ask": "Why was the junction abandoned?",
+              "reply": "After the bridge inspection dispute, passenger service stopped using the siding. Freight still crosses the bridge.",
+              "followUp": "Even though the safety report was questioned?",
+              "followReply": "The public report called it serviceable. I have never trusted that word."
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "train-station",
+        "title": "Where did the train stop?",
+        "type": "choice",
+        "prompt": "Where did the train stop?",
+        "answer": "blackthorn",
+        "success": "The express stopped at Blackthorn Junction at 12:02 AM. Nora had warned you to find that very junction.",
+        "options": [
+          {
+            "id": "ash",
+            "label": "Ash Vale"
+          },
+          {
+            "id": "blackthorn",
+            "label": "Blackthorn Junction · 12:02 AM"
+          },
+          {
+            "id": "briar",
+            "label": "Briarford"
+          }
+        ],
+        "presentation": {
+          "evidenceRefs": [
+            "printed",
+            "log",
+            "mile"
+          ]
+        }
+      },
+      "hints": [
+        "The movement log abbreviates the missing stop.",
+        "Match BLK JCT to the milepost chart.",
+        "Choose Blackthorn Junction at 00:02."
+      ],
+      "clue": "The express stopped at Blackthorn Junction at 12:02 AM. Nora had warned you to find that very junction.",
+      "gate": {
+        "allEvidence": [
+          "printed",
+          "log",
+          "mile",
+          "signal",
+          "tomas"
+        ]
+      }
+    },
+    {
+      "id": "baggage-car",
+      "title": "The Baggage Car",
+      "location": "The Baggage Car",
+      "subtitle": "A freight transfer at the wrong hour.",
+      "scene": "assets/train-ch4-baggage.png",
+      "intro": "A loose crate knocks against the baggage-car wall. Its inspection files have been disguised as tools. Owen Hale, the traveler with an old railway key, knows who moved the missing case.",
+      "evidence": [
+        {
+          "id": "freight",
+          "title": "Freight transfer slip",
+          "icon": "▤",
+          "position": {
+            "x": 34,
+            "y": 66
+          },
+          "detail": "TRANSFER · BLACKTHORN JUNCTION · 00:07. Two sealed document cases were loaded onto a maintenance trolley.",
+          "note": "Transfer · 00:07",
+          "detailImage": "assets/train-clue-freight.png"
+        },
+        {
+          "id": "pocket",
+          "title": "Damaged pocket watch",
+          "icon": "◷",
+          "position": {
+            "x": 85,
+            "y": 86
+          },
+          "detail": "The traveler’s watch stopped at 00:07 after striking a metal rail. Its glass is cracked at the seven-minute mark.",
+          "note": "Watch stopped · 00:07",
+          "detailFrame": {
+            "x": 60,
+            "y": 60,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "crate",
+          "title": "Freight crate",
+          "icon": "▣",
+          "position": {
+            "x": 63,
+            "y": 49
+          },
+          "detail": "A stencil reads BRIDGE INSPECTION FILES — RETURN TO DISPATCH. One document case is missing.",
+          "note": "Bridge inspection files",
+          "detailFrame": {
+            "x": 43,
+            "y": 29,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "manifest",
+          "title": "Cargo manifest",
+          "icon": "▤",
+          "position": {
+            "x": 8,
+            "y": 68
+          },
+          "detail": "The manifest was altered from “Inspection records” to “Tools.” The overwritten ink has not dried fully.",
+          "note": "Altered cargo manifest",
+          "detailImage": "assets/train-clue-manifest.png"
+        },
+        {
+          "id": "traveler",
+          "title": "Talk to Owen",
+          "icon": "☏",
+          "position": {
+            "x": 37,
+            "y": 40
+          },
+          "detail": "“My father inspected the Blackthorn bridge,” Owen says. “He kept copies because someone changed the safety report. Nora asked me for the signal-tower key.”",
+          "note": "Traveler’s testimony",
+          "detailImage": "assets/train-owen-idle.png",
+          "detailImageWidth": 1024,
+          "detailImageHeight": 1536,
+          "conversationOnInspect": "owen"
+        }
+      ],
+      "characters": [
+        {
+          "id": "owen",
+          "name": "Owen Hale",
+          "role": "Railway traveler",
+          "bio": "The son of a bridge inspector, carrying a brass key and his father’s unfinished work.",
+          "intro": "My father kept the original report because someone changed his conclusion.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Why did you give Nora the key?",
+              "reply": "She promised to bring the report into daylight. My father died believing nobody had listened.",
+              "followUp": "You trusted her with the signal-tower key.",
+              "followReply": "I trusted the evidence. Nora was the first person willing to follow it."
+            },
+            {
+              "id": "q2",
+              "ask": "What happened at 12:07?",
+              "reply": "I moved a document case onto the maintenance trolley. The watch struck the rail and stopped.",
+              "followUp": "But one case is missing from the crate.",
+              "followReply": "Nora took the original records. The altered manifest was meant to hide the transfer."
+            },
+            {
+              "id": "q3",
+              "ask": "Did you trap Nora in the tower?",
+              "reply": "No. The steel door swells in damp weather. I warned her not to let it close.",
+              "followUp": "Then she may be locked inside by accident.",
+              "followReply": "And the freight is due soon. We have to turn back now."
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "train-time",
+        "title": "When was the case transferred?",
+        "type": "choice",
+        "prompt": "When was the case transferred?",
+        "answer": "0007",
+        "success": "The missing case left the baggage car at 12:07 AM. Owen gave Nora the tower key so she could protect his father’s original report.",
+        "options": [
+          {
+            "id": "0002",
+            "label": "12:02 AM"
+          },
+          {
+            "id": "0007",
+            "label": "12:07 AM"
+          },
+          {
+            "id": "0022",
+            "label": "12:22 AM"
+          }
+        ],
+        "presentation": {
+          "evidenceRefs": [
+            "freight",
+            "pocket",
+            "manifest"
+          ]
+        }
+      },
+      "hints": [
+        "Compare the transfer slip with the damaged watch.",
+        "Both records show the same time after midnight.",
+        "Choose 00:07 AM."
+      ],
+      "clue": "The missing case left the baggage car at 12:07 AM. Owen gave Nora the tower key so she could protect his father’s original report.",
+      "gate": {
+        "allEvidence": [
+          "freight",
+          "pocket",
+          "crate",
+          "manifest",
+          "traveler"
+        ]
+      }
+    },
+    {
+      "id": "last-platform",
+      "title": "The Last Platform",
+      "location": "The Last Platform",
+      "subtitle": "The truth waits behind an abandoned signal.",
+      "scene": "assets/train-ch5-tower.png",
+      "intro": "The express reverses onto the junction siding. Inside the signal tower, Nora is trapped behind a jammed steel door. An approaching freight train is scheduled to cross the bridge in minutes.",
+      "evidence": [
+        {
+          "id": "diagram",
+          "title": "Signal diagram",
+          "icon": "⌗",
+          "position": {
+            "x": 72,
+            "y": 30
+          },
+          "detail": "The tower diagram marks three levers: 1 = siding points, 2 = bridge warning, 3 = main-line stop. The emergency instruction reads: STOP MAIN LINE, WARN BRIDGE, THEN ALIGN SIDING.",
+          "note": "Emergency signal instructions",
+          "detailImage": "assets/train-clue-diagram.webp"
+        },
+        {
+          "id": "lever",
+          "title": "Lever cabinet",
+          "icon": "▣",
+          "position": {
+            "x": 31,
+            "y": 59
+          },
+          "detail": "The brass levers are numbered 1, 2, 3. Their labels are legible: 1 SIDING, 2 BRIDGE WARNING, 3 MAIN-LINE STOP.",
+          "note": "Numbered signal levers",
+          "detailFrame": {
+            "x": 11,
+            "y": 39,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "report",
+          "title": "Inspection report",
+          "icon": "▤",
+          "position": {
+            "x": 79,
+            "y": 68
+          },
+          "detail": "Behind a loose wall panel is the original inspection report: BRIDGE UNSAFE — CLOSE PENDING REPAIR. The public report was altered to “serviceable.”",
+          "note": "Original safety report",
+          "detailFrame": {
+            "x": 59,
+            "y": 48,
+            "width": 40,
+            "height": 40
+          }
+        },
+        {
+          "id": "nora",
+          "title": "Talk to Nora",
+          "icon": "☏",
+          "position": {
+            "x": 93,
+            "y": 43
+          },
+          "detail": "Through the door Nora calls: “I came to recover the report. Ward knew I was undercover, but he didn’t know I’d left the train. Please stop the freight first!”",
+          "note": "Nora’s explanation",
+          "detailImage": "assets/train-nora-idle.png",
+          "detailImageWidth": 1024,
+          "detailImageHeight": 1536,
+          "conversationOnInspect": "nora"
+        },
+        {
+          "id": "schedule",
+          "title": "Freight timetable",
+          "icon": "◷",
+          "position": {
+            "x": 17,
+            "y": 85
+          },
+          "detail": "A freight train is due to cross at 00:22. The emergency signals must be set before it reaches the bridge.",
+          "note": "Freight due · 00:22",
+          "detailImage": "assets/train-clue-schedule.webp"
+        }
+      ],
+      "characters": [
+        {
+          "id": "nora",
+          "name": "Nora Bell",
+          "role": "Investigative journalist",
+          "bio": "A quietly brave reporter investigating falsified railway safety records.",
+          "intro": "I have the report. Stop the train first. Rescue me second.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Are you hurt?",
+              "reply": "Only my pride. The door closed behind me, and the release wheel will not move.",
+              "followUp": "We will get you out after the signals are safe.",
+              "followReply": "Good. The bridge matters more than one locked door."
+            },
+            {
+              "id": "q2",
+              "ask": "What does the report prove?",
+              "reply": "The bridge was declared unsafe pending repairs. Someone changed that conclusion before filing it.",
+              "followUp": "And freight traffic continued.",
+              "followReply": "Every train since then has crossed under a false safety clearance. We can correct it tonight."
+            },
+            {
+              "id": "q3",
+              "ask": "What signal order is safe?",
+              "reply": "Stop the main line, warn the bridge, then align the siding. The diagram numbers those actions three, two, one.",
+              "followUp": "Three, two, one. I understand.",
+              "followReply": "Set them carefully. The mechanism will lock after the third lever."
+            }
+          ]
+        },
+        {
+          "id": "ward",
+          "name": "Elias Ward",
+          "role": "Conductor",
+          "bio": "The Nightingale Express conductor. Precise, protective, and carrying more responsibility than he admits.",
+          "intro": "I protected Nora’s identity and nearly lost sight of her safety. I will answer for that.",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Will you testify?",
+              "reply": "Yes. I altered the passenger copy of the manifest. I will explain why and accept the consequences.",
+              "followUp": "The truth needs the whole record.",
+              "followReply": "Including my mistake. Protection without trust can become another kind of silence."
+            },
+            {
+              "id": "q2",
+              "ask": "Can the freight stop in time?",
+              "reply": "If we set the main-line signal now, it has enough braking distance.",
+              "followUp": "Then we follow the emergency order.",
+              "followReply": "I will watch the track circuit. You take the levers."
+            },
+            {
+              "id": "q3",
+              "ask": "What happens after tonight?",
+              "reply": "The bridge closes, investigators secure the report, and every maintenance record is reviewed.",
+              "followUp": "And Nora’s story?",
+              "followReply": "Published with evidence, witnesses, and no missing names."
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "train-signals",
+        "title": "Set the emergency signals",
+        "type": "sequence",
+        "prompt": "Arrange the emergency levers in the safe order.",
+        "answer": [
+          "3",
+          "2",
+          "1"
+        ],
+        "success": "The main line locks at danger. The freight train brakes before the bridge. Nora is freed, and the original safety report is delivered to railway investigators.",
+        "items": [
+          {
+            "id": "1",
+            "label": "1 · Align siding"
+          },
+          {
+            "id": "2",
+            "label": "2 · Warn bridge"
+          },
+          {
+            "id": "3",
+            "label": "3 · Stop main line"
+          }
+        ],
+        "presentation": {
+          "mode": "timeline",
+          "topLabel": "First action",
+          "bottomLabel": "Last action"
+        }
+      },
+      "hints": [
+        "The emergency instruction states the safe order in words.",
+        "Stop the main line first, warn the bridge second, align the siding last.",
+        "Pull lever 3 → lever 2 → lever 1."
+      ],
+      "clue": "The main line locks at danger. The freight train brakes before the bridge. Nora is freed, and the original safety report is delivered to railway investigators.",
+      "gate": {
+        "allEvidence": [
+          "diagram",
+          "lever",
+          "report",
+          "nora",
+          "schedule"
+        ]
+      },
+      "endings": [
+        {
+          "id": "deliver",
+          "label": "The Report Delivered",
+          "text": "You and Nora place the original report directly into an investigator’s hands. Blackthorn Bridge closes before dawn."
+        },
+        {
+          "id": "witness",
+          "label": "The Nightingale Testifies",
+          "text": "You remain with June, Tomas, Owen, and Ward until every statement is signed. Their accounts protect Nora’s report from being dismissed."
+        }
+      ]
+    }
+  ],
+  "voiceMap": {
+    "[\"Nora Bell\",\"I have the report. Stop the train first. Rescue me second.\"]": "assets/voices/05-tower-nora-introduction.mp3",
+    "[\"Nora Bell\",\"Only my pride. The door closed behind me, and the release wheel will not move.\"]": "assets/voices/05-tower-nora-q01-answer.mp3",
+    "[\"Nora Bell\",\"Good. The bridge matters more than one locked door.\"]": "assets/voices/05-tower-nora-q01-follow-up.mp3",
+    "[\"Nora Bell\",\"The bridge was declared unsafe pending repairs. Someone changed that conclusion before filing it.\"]": "assets/voices/05-tower-nora-q02-answer.mp3",
+    "[\"Nora Bell\",\"Every train since then has crossed under a false safety clearance. We can correct it tonight.\"]": "assets/voices/05-tower-nora-q02-follow-up.mp3",
+    "[\"Nora Bell\",\"Stop the main line, warn the bridge, then align the siding. The diagram numbers those actions three, two, one.\"]": "assets/voices/05-tower-nora-q03-answer.mp3",
+    "[\"Nora Bell\",\"Set them carefully. The mechanism will lock after the third lever.\"]": "assets/voices/05-tower-nora-q03-follow-up.mp3",
+    "[\"June Park\",\"Nora sat here alone, but she kept watching the service corridor clock.\"]": "assets/voices/02-dining-june-introduction.mp3",
+    "[\"June Park\",\"Her tea was served at 11:42. She left seven minutes later, just after checking a silver watch.\"]": "assets/voices/02-dining-june-q01-answer.mp3",
+    "[\"June Park\",\"Exactly. The water carafe arrived at 11:54, after her chair was already empty.\"]": "assets/voices/02-dining-june-q01-follow-up.mp3",
+    "[\"June Park\",\"A man in a tan travel coat passed her a folded note. They did not greet each other.\"]": "assets/voices/02-dining-june-q02-answer.mp3",
+    "[\"June Park\",\"I did not know his name, but he carried an old brass key on a blue ribbon.\"]": "assets/voices/02-dining-june-q02-follow-up.mp3",
+    "[\"June Park\",\"Not a person. A deadline. She asked how quickly someone could walk from carriage four to the rear platform.\"]": "assets/voices/02-dining-june-q03-answer.mp3",
+    "[\"June Park\",\"Or meet someone there. Either way, she planned around the timetable.\"]": "assets/voices/02-dining-june-q03-follow-up.mp3",
+    "[\"Tomas Reed\",\"Dispatch called it a fault. I stopped because red still means stop.\"]": "assets/voices/03-junction-tomas-introduction.mp3",
+    "[\"Tomas Reed\",\"Blackthorn Junction, milepost twenty-six. It was removed from passenger timetables years ago.\"]": "assets/voices/03-junction-tomas-q01-answer.mp3",
+    "[\"Tomas Reed\",\"I know this much. The railway remembers places that printed maps prefer to forget.\"]": "assets/voices/03-junction-tomas-q01-follow-up.mp3",
+    "[\"Tomas Reed\",\"From the rear platform, yes. There is a maintenance path beside the siding.\"]": "assets/voices/03-junction-tomas-q02-answer.mp3",
+    "[\"Tomas Reed\",\"A manual release was used. Only staff and someone with an old railway key would know it.\"]": "assets/voices/03-junction-tomas-q02-follow-up.mp3",
+    "[\"Tomas Reed\",\"After the bridge inspection dispute, passenger service stopped using the siding. Freight still crosses the bridge.\"]": "assets/voices/03-junction-tomas-q03-answer.mp3",
+    "[\"Tomas Reed\",\"The public report called it serviceable. I have never trusted that word.\"]": "assets/voices/03-junction-tomas-q03-follow-up.mp3",
+    "[\"Owen Hale\",\"My father kept the original report because someone changed his conclusion.\"]": "assets/voices/04-baggage-owen-introduction.mp3",
+    "[\"Owen Hale\",\"She promised to bring the report into daylight. My father died believing nobody had listened.\"]": "assets/voices/04-baggage-owen-q01-answer.mp3",
+    "[\"Owen Hale\",\"I trusted the evidence. Nora was the first person willing to follow it.\"]": "assets/voices/04-baggage-owen-q01-follow-up.mp3",
+    "[\"Owen Hale\",\"I moved a document case onto the maintenance trolley. The watch struck the rail and stopped.\"]": "assets/voices/04-baggage-owen-q02-answer.mp3",
+    "[\"Owen Hale\",\"Nora took the original records. The altered manifest was meant to hide the transfer.\"]": "assets/voices/04-baggage-owen-q02-follow-up.mp3",
+    "[\"Owen Hale\",\"No. The steel door swells in damp weather. I warned her not to let it close.\"]": "assets/voices/04-baggage-owen-q03-answer.mp3",
+    "[\"Owen Hale\",\"And the freight is due soon. We have to turn back now.\"]": "assets/voices/04-baggage-owen-q03-follow-up.mp3",
+    "[\"Elias Ward\",\"Ask what you need. Please keep your questions away from the other passengers.\"]": "assets/voices/01-carriage-elias-introduction.mp3",
+    "[\"Elias Ward\",\"Because her name on the manifest could put her in danger. She asked me to protect her assignment.\"]": "assets/voices/01-carriage-elias-q01-answer.mp3",
+    "[\"Elias Ward\",\"Yes. I thought secrecy would protect her. I did not expect her to leave the train.\"]": "assets/voices/01-carriage-elias-q01-follow-up.mp3",
+    "[\"Elias Ward\",\"The emergency brake engaged at a red signal. Four minutes later, the line cleared.\"]": "assets/voices/01-carriage-elias-q02-answer.mp3",
+    "[\"Elias Ward\",\"The carriage doors should have remained locked. “Should” is doing too much work tonight.\"]": "assets/voices/01-carriage-elias-q02-follow-up.mp3",
+    "[\"Elias Ward\",\"She would only say it concerned the Blackthorn bridge and an altered inspection report.\"]": "assets/voices/01-carriage-elias-q03-answer.mp3",
+    "[\"Elias Ward\",\"That is what I fear. Find her before the next freight reaches that bridge.\"]": "assets/voices/01-carriage-elias-q03-follow-up.mp3",
+    "[\"Elias Ward\",\"I protected Nora’s identity and nearly lost sight of her safety. I will answer for that.\"]": "assets/voices/05-tower-elias-introduction.mp3",
+    "[\"Elias Ward\",\"Yes. I altered the passenger copy of the manifest. I will explain why and accept the consequences.\"]": "assets/voices/05-tower-elias-q01-answer.mp3",
+    "[\"Elias Ward\",\"Including my mistake. Protection without trust can become another kind of silence.\"]": "assets/voices/05-tower-elias-q01-follow-up.mp3",
+    "[\"Elias Ward\",\"If we set the main-line signal now, it has enough braking distance.\"]": "assets/voices/05-tower-elias-q02-answer.mp3",
+    "[\"Elias Ward\",\"I will watch the track circuit. You take the levers.\"]": "assets/voices/05-tower-elias-q02-follow-up.mp3",
+    "[\"Elias Ward\",\"The bridge closes, investigators secure the report, and every maintenance record is reviewed.\"]": "assets/voices/05-tower-elias-q03-answer.mp3",
+    "[\"Elias Ward\",\"Published with evidence, witnesses, and no missing names.\"]": "assets/voices/05-tower-elias-q03-follow-up.mp3"
+  },
+  "resolution": {
+    "title": "The bridge is safe",
+    "prompt": "The freight brakes before Blackthorn Bridge. Nora is freed with the original report in her hands. How will you secure the evidence?",
+    "finalNote": "Case complete · Nora is safe · Blackthorn Bridge is closed for repairs."
+  }
+}

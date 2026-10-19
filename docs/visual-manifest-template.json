@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "sceneId": "story-id.location-id",
+  "master": {
+    "src": "assets/location-master.png",
+    "width": 1600,
+    "height": 900
+  },
+  "environment": {
+    "layout": "Describe fixed furniture, architecture, camera viewpoint, and each clue's supporting surface.",
+    "lighting": "Describe the direction, color, and source of light.",
+    "landmarks": ["window on left", "desk near window", "bookshelf behind desk"]
+  },
+  "objects": [
+    {
+      "id": "story-id.location-id.physical-object-id",
+      "name": "Porcelain cup",
+      "footprint": {"x": 44, "y": 60, "width": 8, "height": 13},
+      "depth": 0.8,
+      "layer": 2,
+      "appearance": "White porcelain with blue floral motifs, small chip on handle, handle facing the window.",
+      "material": "porcelain",
+      "support": "right half of wooden desk",
+      "nearby": [],
+      "initialState": "default",
+      "states": {"default": {"visible": true}}
+    }
+  ],
+  "views": [
+    {
+      "id": "cup-view",
+      "objectId": "story-id.location-id.physical-object-id",
+      "frame": {"x": 36, "y": 50, "width": 24, "height": 30},
+      "visibleObjectIds": ["story-id.location-id.physical-object-id"],
+      "source": "master-crop"
+    }
+  ]
+}

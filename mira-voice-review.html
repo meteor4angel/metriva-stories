@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mira · Voice review</title>
+<style>
+:root{color-scheme:light;--ink:#2e4036;--green:#315542;--line:#ddcfb5;--muted:#676e65}
+*{box-sizing:border-box}body{margin:0;background:#eee8dc;color:var(--ink);font:17px/1.6 Georgia,serif}main{max-width:960px;margin:24px auto;padding:28px;background:#fffaf0;border-radius:18px}h1{font-size:34px;margin:0 0 8px}h2{font-size:21px;margin:4px 0}.intro{margin:8px 0 20px}.tag,.hint,.player-label,.note-label,.flag,summary,.toolbar,button,select,textarea,.status{font:14px/1.5 Arial,sans-serif}.tag{color:var(--muted)}.toolbar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 0;background:#fffaf0;border-bottom:1px solid var(--line)}button,select{padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:#fffdf6;color:var(--ink)}button{cursor:pointer}.primary{background:var(--green);color:white;border-color:var(--green)}button:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #af8248;outline-offset:3px}.status{min-height:22px;color:var(--muted);margin:10px 0}.clip{border-top:1px solid var(--line);padding:24px 0;scroll-margin-top:150px}.clip.playing{border-left:4px solid var(--green);padding-left:16px}.clip[hidden]{display:none}.script{font-size:20px;margin:14px 0}.script strong{color:#744d28}.player-label,.note-label{display:block;margin:10px 0 5px}audio{display:block;width:100%;height:44px}.clip-actions{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:10px 0}.flag{display:flex;gap:8px;align-items:center}.flag input{width:18px;height:18px}textarea{width:100%;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fffdf8}summary{cursor:pointer;color:var(--green)}details{margin:14px 0}.hint{color:var(--muted);margin:6px 0}.opening-check{background:#f1ead9;border:1px solid var(--line);border-radius:12px;padding:18px;margin:22px 0}.opening-check h2{margin-top:0}.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}.footnote{font:13px/1.6 Arial,sans-serif;color:var(--muted)}@media(max-width:620px){main{margin:0;padding:18px;border-radius:0}h1{font-size:28px}.compare{grid-template-columns:1fr}.toolbar button{flex:1}.script{font-size:18px}}
+</style></head><body><main>
+<span class="tag">METRIVA · THE DAYS WE ALMOST MET</span><h1>Mira · Original review</h1><p class="opening-check"><a href="mira-voice-review-v2.html">Open the revised recordings from your notes →</a></p>
+<p class="intro">Listen to all 25 recordings across the five chapters. The first word is highlighted. Use <b>Replay opening</b> to hear the first few seconds, compare the original, and mark any clip that needs attention.</p>
+<div class="toolbar"><label for="chapter">Chapter</label><select id="chapter"><option value="all">All chapters</option><option value="1">01 · A Chance Encounter</option><option value="2">02 · Shared Pages</option><option value="3">03 · A Rainy Detour</option><option value="4">04 · A Familiar Song</option><option value="5">05 · The Right Time</option></select><button id="play-all" class="primary">Play all shown</button><button id="stop">Stop</button><button id="export">Export review notes</button></div>
+<p class="status" id="status" role="status" aria-live="polite">25 clips ready. Notes are saved in this browser when local storage is available.</p>
+<section class="opening-check"><h2>Opening “I” · compare these two versions</h2><p class="script">“<strong>I</strong> keep telling myself this bag is big enough for one more book.”</p><div class="compare"><div><p class="player-label">Previous game version</p><audio controls preload="none" src="assets/voices/days/days-mira-ch01-intro.mp3"></audio></div><div><p class="player-label">Stronger opening · review only</p><audio controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-intro-opening-clearer-review.mp3"></audio></div></div><p class="hint">The comparison gently raises only the opening word by 4 dB. Voice, pitch and pacing are unchanged. It has not replaced the game audio.</p></section>
+<article class="clip" data-index="0" data-chapter="1" id="clip-0">
+      <div class="clip-heading"><span class="tag">Chapter 01 · A Chance Encounter</span><h2>Introduction</h2></div>
+      <p class="script">“<strong>I</strong> keep telling myself this bag is big enough for one more book.”</p>
+      <label class="player-label" for="game-0">Previous game recording</label>
+      <audio id="game-0" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch01-intro.mp3"></audio>
+      <div class="clip-actions"><button data-opening="0">Replay opening</button><label class="flag"><input type="checkbox" data-flag="0"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-intro.mp3"></audio></details>
+      <label class="note-label" for="note-0">Your note</label><textarea id="note-0" data-note="0" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="1" data-chapter="1" id="clip-1">
+      <div class="clip-heading"><span class="tag">Chapter 01 · A Chance Encounter</span><h2>Question 1 · Answer</h2></div>
+      <p class="script">“<strong>A</strong> bent corner. I think it will survive.”</p>
+      <label class="player-label" for="game-1">Previous game recording</label>
+      <audio id="game-1" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch01-q1-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="1">Replay opening</button><label class="flag"><input type="checkbox" data-flag="1"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-q1-answer.mp3"></audio></details>
+      <label class="note-label" for="note-1">Your note</label><textarea id="note-1" data-note="1" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="2" data-chapter="1" id="clip-2">
+      <div class="clip-heading"><span class="tag">Chapter 01 · A Chance Encounter</span><h2>Question 1 · Reply</h2></div>
+      <p class="script">“<strong>Years</strong> ago. I wanted to remember that a place can feel like home.”</p>
+      <label class="player-label" for="game-2">Previous game recording</label>
+      <audio id="game-2" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch01-q1-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="2">Replay opening</button><label class="flag"><input type="checkbox" data-flag="2"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-q1-reply.mp3"></audio></details>
+      <label class="note-label" for="note-2">Your note</label><textarea id="note-2" data-note="2" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="3" data-chapter="1" id="clip-3">
+      <div class="clip-heading"><span class="tag">Chapter 01 · A Chance Encounter</span><h2>Question 2 · Answer</h2></div>
+      <p class="script">“<strong>I</strong> came for coffee, but a chapter sounds nice.”</p>
+      <label class="player-label" for="game-3">Previous game recording</label>
+      <audio id="game-3" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch01-q2-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="3">Replay opening</button><label class="flag"><input type="checkbox" data-flag="3"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-q2-answer.mp3"></audio></details>
+      <label class="note-label" for="note-3">Your note</label><textarea id="note-3" data-note="3" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="4" data-chapter="1" id="clip-4">
+      <div class="clip-heading"><span class="tag">Chapter 01 · A Chance Encounter</span><h2>Question 2 · Reply</h2></div>
+      <p class="script">“<strong>That</strong> makes staying feel much easier.”</p>
+      <label class="player-label" for="game-4">Previous game recording</label>
+      <audio id="game-4" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch01-q2-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="4">Replay opening</button><label class="flag"><input type="checkbox" data-flag="4"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch01-q2-reply.mp3"></audio></details>
+      <label class="note-label" for="note-4">Your note</label><textarea id="note-4" data-note="4" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="5" data-chapter="2" id="clip-5">
+      <div class="clip-heading"><span class="tag">Chapter 02 · Shared Pages</span><h2>Introduction</h2></div>
+      <p class="script">“<strong>I</strong> came back for the books. Seeing you again is a lovely bonus.”</p>
+      <label class="player-label" for="game-5">Previous game recording</label>
+      <audio id="game-5" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch02-intro.mp3"></audio>
+      <div class="clip-actions"><button data-opening="5">Replay opening</button><label class="flag"><input type="checkbox" data-flag="5"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch02-intro.mp3"></audio></details>
+      <label class="note-label" for="note-5">Your note</label><textarea id="note-5" data-note="5" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="6" data-chapter="2" id="clip-6">
+      <div class="clip-heading"><span class="tag">Chapter 02 · Shared Pages</span><h2>Question 1 · Answer</h2></div>
+      <p class="script">“<strong>The</strong> shelf numbers look like the answer.”</p>
+      <label class="player-label" for="game-6">Previous game recording</label>
+      <audio id="game-6" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch02-q1-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="6">Replay opening</button><label class="flag"><input type="checkbox" data-flag="6"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch02-q1-answer.mp3"></audio></details>
+      <label class="note-label" for="note-6">Your note</label><textarea id="note-6" data-note="6" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="7" data-chapter="2" id="clip-7">
+      <div class="clip-heading"><span class="tag">Chapter 02 · Shared Pages</span><h2>Question 1 · Reply</h2></div>
+      <p class="script">“<strong>Exactly.</strong> The little things are easier together.”</p>
+      <label class="player-label" for="game-7">Previous game recording</label>
+      <audio id="game-7" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch02-q1-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="7">Replay opening</button><label class="flag"><input type="checkbox" data-flag="7"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch02-q1-reply.mp3"></audio></details>
+      <label class="note-label" for="note-7">Your note</label><textarea id="note-7" data-note="7" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="8" data-chapter="2" id="clip-8">
+      <div class="clip-heading"><span class="tag">Chapter 02 · Shared Pages</span><h2>Question 2 · Answer</h2></div>
+      <p class="script">“<strong>I</strong> signed up before I knew you might be there.”</p>
+      <label class="player-label" for="game-8">Previous game recording</label>
+      <audio id="game-8" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch02-q2-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="8">Replay opening</button><label class="flag"><input type="checkbox" data-flag="8"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch02-q2-answer.mp3"></audio></details>
+      <label class="note-label" for="note-8">Your note</label><textarea id="note-8" data-note="8" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="9" data-chapter="2" id="clip-9">
+      <div class="clip-heading"><span class="tag">Chapter 02 · Shared Pages</span><h2>Question 2 · Reply</h2></div>
+      <p class="script">“<strong>I</strong> do not. That is why I can say yes.”</p>
+      <label class="player-label" for="game-9">Previous game recording</label>
+      <audio id="game-9" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch02-q2-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="9">Replay opening</button><label class="flag"><input type="checkbox" data-flag="9"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch02-q2-reply.mp3"></audio></details>
+      <label class="note-label" for="note-9">Your note</label><textarea id="note-9" data-note="9" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="10" data-chapter="3" id="clip-10">
+      <div class="clip-heading"><span class="tag">Chapter 03 · A Rainy Detour</span><h2>Introduction</h2></div>
+      <p class="script">“<strong>The</strong> rain changed my route. I would still like to make the cleanup.”</p>
+      <label class="player-label" for="game-10">Previous game recording</label>
+      <audio id="game-10" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch03-intro.mp3"></audio>
+      <div class="clip-actions"><button data-opening="10">Replay opening</button><label class="flag"><input type="checkbox" data-flag="10"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch03-intro.mp3"></audio></details>
+      <label class="note-label" for="note-10">Your note</label><textarea id="note-10" data-note="10" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="11" data-chapter="3" id="clip-11">
+      <div class="clip-heading"><span class="tag">Chapter 03 · A Rainy Detour</span><h2>Question 1 · Answer</h2></div>
+      <p class="script">“<strong>The</strong> canal path is closed. The poster points to Market Street.”</p>
+      <label class="player-label" for="game-11">Previous game recording</label>
+      <audio id="game-11" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch03-q1-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="11">Replay opening</button><label class="flag"><input type="checkbox" data-flag="11"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch03-q1-answer.mp3"></audio></details>
+      <label class="note-label" for="note-11">Your note</label><textarea id="note-11" data-note="11" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="12" data-chapter="3" id="clip-12">
+      <div class="clip-heading"><span class="tag">Chapter 03 · A Rainy Detour</span><h2>Question 1 · Reply</h2></div>
+      <p class="script">“<strong>The</strong> bakery clock says two fifteen. We do.”</p>
+      <label class="player-label" for="game-12">Previous game recording</label>
+      <audio id="game-12" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch03-q1-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="12">Replay opening</button><label class="flag"><input type="checkbox" data-flag="12"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch03-q1-reply.mp3"></audio></details>
+      <label class="note-label" for="note-12">Your note</label><textarea id="note-12" data-note="12" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="13" data-chapter="3" id="clip-13">
+      <div class="clip-heading"><span class="tag">Chapter 03 · A Rainy Detour</span><h2>Question 2 · Answer</h2></div>
+      <p class="script">“<strong>That</strong> is kind, but I brought one.”</p>
+      <label class="player-label" for="game-13">Previous game recording</label>
+      <audio id="game-13" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch03-q2-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="13">Replay opening</button><label class="flag"><input type="checkbox" data-flag="13"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch03-q2-answer.mp3"></audio></details>
+      <label class="note-label" for="note-13">Your note</label><textarea id="note-13" data-note="13" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="14" data-chapter="3" id="clip-14">
+      <div class="clip-heading"><span class="tag">Chapter 03 · A Rainy Detour</span><h2>Question 2 · Reply</h2></div>
+      <p class="script">“<strong>Yes.</strong> That I would like.”</p>
+      <label class="player-label" for="game-14">Previous game recording</label>
+      <audio id="game-14" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch03-q2-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="14">Replay opening</button><label class="flag"><input type="checkbox" data-flag="14"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch03-q2-reply.mp3"></audio></details>
+      <label class="note-label" for="note-14">Your note</label><textarea id="note-14" data-note="14" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="15" data-chapter="4" id="clip-15">
+      <div class="clip-heading"><span class="tag">Chapter 04 · A Familiar Song</span><h2>Introduction</h2></div>
+      <p class="script">“<strong>I</strong> know that melody. We used to play it at the community center.”</p>
+      <label class="player-label" for="game-15">Previous game recording</label>
+      <audio id="game-15" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch04-intro.mp3"></audio>
+      <div class="clip-actions"><button data-opening="15">Replay opening</button><label class="flag"><input type="checkbox" data-flag="15"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch04-intro.mp3"></audio></details>
+      <label class="note-label" for="note-15">Your note</label><textarea id="note-15" data-note="15" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="16" data-chapter="4" id="clip-16">
+      <div class="clip-heading"><span class="tag">Chapter 04 · A Familiar Song</span><h2>Question 1 · Answer</h2></div>
+      <p class="script">“<strong>The</strong> opening notes: C, E, G, E.”</p>
+      <label class="player-label" for="game-16">Previous game recording</label>
+      <audio id="game-16" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch04-q1-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="16">Replay opening</button><label class="flag"><input type="checkbox" data-flag="16"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch04-q1-answer.mp3"></audio></details>
+      <label class="note-label" for="note-16">Your note</label><textarea id="note-16" data-note="16" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="17" data-chapter="4" id="clip-17">
+      <div class="clip-heading"><span class="tag">Chapter 04 · A Familiar Song</span><h2>Question 1 · Reply</h2></div>
+      <p class="script">“<strong>Only</strong> if we can laugh when I miss a note.”</p>
+      <label class="player-label" for="game-17">Previous game recording</label>
+      <audio id="game-17" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch04-q1-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="17">Replay opening</button><label class="flag"><input type="checkbox" data-flag="17"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch04-q1-reply.mp3"></audio></details>
+      <label class="note-label" for="note-17">Your note</label><textarea id="note-17" data-note="17" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="18" data-chapter="4" id="clip-18">
+      <div class="clip-heading"><span class="tag">Chapter 04 · A Familiar Song</span><h2>Question 2 · Answer</h2></div>
+      <p class="script">“<strong>Yes.</strong> I did not notice we were both in the same community group.”</p>
+      <label class="player-label" for="game-18">Previous game recording</label>
+      <audio id="game-18" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch04-q2-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="18">Replay opening</button><label class="flag"><input type="checkbox" data-flag="18"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch04-q2-answer.mp3"></audio></details>
+      <label class="note-label" for="note-18">Your note</label><textarea id="note-18" data-note="18" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="19" data-chapter="4" id="clip-19">
+      <div class="clip-heading"><span class="tag">Chapter 04 · A Familiar Song</span><h2>Question 2 · Reply</h2></div>
+      <p class="script">“<strong>Almost.</strong> I like that we met when we could actually talk.”</p>
+      <label class="player-label" for="game-19">Previous game recording</label>
+      <audio id="game-19" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch04-q2-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="19">Replay opening</button><label class="flag"><input type="checkbox" data-flag="19"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch04-q2-reply.mp3"></audio></details>
+      <label class="note-label" for="note-19">Your note</label><textarea id="note-19" data-note="19" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="20" data-chapter="5" id="clip-20">
+      <div class="clip-heading"><span class="tag">Chapter 05 · The Right Time</span><h2>Introduction</h2></div>
+      <p class="script">“<strong>I</strong> have time next Saturday. I want to decide what that means together.”</p>
+      <label class="player-label" for="game-20">Previous game recording</label>
+      <audio id="game-20" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch05-intro.mp3"></audio>
+      <div class="clip-actions"><button data-opening="20">Replay opening</button><label class="flag"><input type="checkbox" data-flag="20"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch05-intro.mp3"></audio></details>
+      <label class="note-label" for="note-20">Your note</label><textarea id="note-20" data-note="20" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="21" data-chapter="5" id="clip-21">
+      <div class="clip-heading"><span class="tag">Chapter 05 · The Right Time</span><h2>Question 1 · Answer</h2></div>
+      <p class="script">“<strong>An</strong> honest invitation, and room to answer honestly.”</p>
+      <label class="player-label" for="game-21">Previous game recording</label>
+      <audio id="game-21" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch05-q1-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="21">Replay opening</button><label class="flag"><input type="checkbox" data-flag="21"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch05-q1-answer.mp3"></audio></details>
+      <label class="note-label" for="note-21">Your note</label><textarea id="note-21" data-note="21" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="22" data-chapter="5" id="clip-22">
+      <div class="clip-heading"><span class="tag">Chapter 05 · The Right Time</span><h2>Question 1 · Reply</h2></div>
+      <p class="script">“<strong>That</strong> sounds like something I can choose.”</p>
+      <label class="player-label" for="game-22">Previous game recording</label>
+      <audio id="game-22" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch05-q1-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="22">Replay opening</button><label class="flag"><input type="checkbox" data-flag="22"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch05-q1-reply.mp3"></audio></details>
+      <label class="note-label" for="note-22">Your note</label><textarea id="note-22" data-note="22" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="23" data-chapter="5" id="clip-23">
+      <div class="clip-heading"><span class="tag">Chapter 05 · The Right Time</span><h2>Question 2 · Answer</h2></div>
+      <p class="script">“<strong>Of</strong> course. That is a real choice too.”</p>
+      <label class="player-label" for="game-23">Previous game recording</label>
+      <audio id="game-23" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch05-q2-answer.mp3"></audio>
+      <div class="clip-actions"><button data-opening="23">Replay opening</button><label class="flag"><input type="checkbox" data-flag="23"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch05-q2-answer.mp3"></audio></details>
+      <label class="note-label" for="note-23">Your note</label><textarea id="note-23" data-note="23" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<article class="clip" data-index="24" data-chapter="5" id="clip-24">
+      <div class="clip-heading"><span class="tag">Chapter 05 · The Right Time</span><h2>Question 2 · Reply</h2></div>
+      <p class="script">“<strong>No.</strong> We already have books and the garden.”</p>
+      <label class="player-label" for="game-24">Previous game recording</label>
+      <audio id="game-24" class="game-audio" controls preload="none" src="assets/voices/days/days-mira-ch05-q2-reply.mp3"></audio>
+      <div class="clip-actions"><button data-opening="24">Replay opening</button><label class="flag"><input type="checkbox" data-flag="24"> Needs a fix</label></div>
+      <details><summary>Compare original recording</summary><p class="hint">The source before volume balancing and the game’s short lead-in.</p><audio class="source-audio" controls preload="none" src="assets/voices/days/review-source/days-mira-ch05-q2-reply.mp3"></audio></details>
+      <label class="note-label" for="note-24">Your note</label><textarea id="note-24" data-note="24" rows="2" placeholder="For example: I cannot hear the first ‘I’, or the second sentence starts too softly."></textarea>
+    </article>
+<p class="footnote">Original files are preserved. A transcription can find a word that still sounds too quiet; your listening notes determine which clips need correction.</p>
+</main><script type="application/json" id="review-data">[{"text": "I keep telling myself this bag is big enough for one more book."}, {"text": "A bent corner. I think it will survive."}, {"text": "Years ago. I wanted to remember that a place can feel like home."}, {"text": "I came for coffee, but a chapter sounds nice."}, {"text": "That makes staying feel much easier."}, {"text": "I came back for the books. Seeing you again is a lovely bonus."}, {"text": "The shelf numbers look like the answer."}, {"text": "Exactly. The little things are easier together."}, {"text": "I signed up before I knew you might be there."}, {"text": "I do not. That is why I can say yes."}, {"text": "The rain changed my route. I would still like to make the cleanup."}, {"text": "The canal path is closed. The poster points to Market Street."}, {"text": "The bakery clock says two fifteen. We do."}, {"text": "That is kind, but I brought one."}, {"text": "Yes. That I would like."}, {"text": "I know that melody. We used to play it at the community center."}, {"text": "The opening notes: C, E, G, E."}, {"text": "Only if we can laugh when I miss a note."}, {"text": "Yes. I did not notice we were both in the same community group."}, {"text": "Almost. I like that we met when we could actually talk."}, {"text": "I have time next Saturday. I want to decide what that means together."}, {"text": "An honest invitation, and room to answer honestly."}, {"text": "That sounds like something I can choose."}, {"text": "Of course. That is a real choice too."}, {"text": "No. We already have books and the garden."}]</script><script>
+'use strict';
+const cards=[...document.querySelectorAll('.clip')],players=[...document.querySelectorAll('audio')],status=document.getElementById('status');
+const scripts=JSON.parse(document.getElementById('review-data').textContent);
+const KEY='metrivastories_mira_voice_review_v1';let notes={},queue=[],queuedPlayer=null,openingPlayer=null,openingEnd=0;
+try{notes=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(notes))}catch{status.textContent='Notes remain on this page. Export them before closing.'}}
+function stop(){queue=[];queuedPlayer=null;openingPlayer=null;for(const p of players)p.pause();cards.forEach(c=>c.classList.remove('playing'))}
+function pauseOthers(active){players.forEach(p=>{if(p!==active)p.pause()});cards.forEach(c=>c.classList.toggle('playing',c.contains(active)))}
+async function start(player){pauseOthers(player);player.currentTime=0;try{await player.play()}catch{queue=[];queuedPlayer=null;status.textContent='Select the audio player’s Play button to listen.'}}
+async function next(){if(!queue.length){queuedPlayer=null;status.textContent='Review playback finished.';return}const card=queue.shift();queuedPlayer=card.querySelector('.game-audio');card.scrollIntoView({behavior:'smooth',block:'center'});status.textContent='Playing chapter '+card.dataset.chapter+' · '+card.querySelector('h2').textContent;await start(queuedPlayer)}
+for(const p of players){p.addEventListener('play',()=>{pauseOthers(p);if(p!==queuedPlayer){queue=[];queuedPlayer=null}if(p!==openingPlayer)openingPlayer=null});p.addEventListener('ended',()=>{cards.forEach(c=>c.classList.remove('playing'));if(p===queuedPlayer)next()});p.addEventListener('timeupdate',()=>{if(p===openingPlayer&&p.currentTime>=openingEnd){p.pause();openingPlayer=null}});p.addEventListener('error',()=>{status.textContent='A recording could not load. Check that the review page is opened from the project folder.';queue=[];queuedPlayer=null})}
+for(const card of cards){const index=card.dataset.index,flag=card.querySelector('[data-flag]'),note=card.querySelector('[data-note]');flag.checked=!!notes[index]?.flag;note.value=notes[index]?.note||'';const changed=()=>{notes[index]={flag:flag.checked,note:note.value};save()};flag.addEventListener('change',changed);note.addEventListener('input',changed)}
+document.getElementById('chapter').addEventListener('change',event=>{stop();cards.forEach(c=>c.hidden=event.target.value!=='all'&&c.dataset.chapter!==event.target.value);status.textContent=cards.filter(c=>!c.hidden).length+' clips shown.'});
+document.getElementById('play-all').addEventListener('click',()=>{stop();queue=cards.filter(c=>!c.hidden);next()});document.getElementById('stop').addEventListener('click',()=>{stop();status.textContent='Playback stopped.'});
+document.addEventListener('click',event=>{const b=event.target.closest('[data-opening]');if(!b)return;stop();const card=cards[Number(b.dataset.opening)];openingPlayer=card.querySelector('.game-audio');openingEnd=Math.min(openingPlayer.duration||Infinity,3.2);status.textContent='Replaying the opening · chapter '+card.dataset.chapter;start(openingPlayer)});
+document.getElementById('export').addEventListener('click',()=>{const selected=cards.filter(c=>notes[c.dataset.index]?.flag||notes[c.dataset.index]?.note);let text='Mira voice review\n\n';for(const c of selected){const i=Number(c.dataset.index);text+='Chapter '+c.dataset.chapter+' · '+c.querySelector('h2').textContent+'\n'+scripts[i].text+'\n'+(notes[i]?.flag?'Needs a fix\n':'')+(notes[i]?.note||'')+'\n\n'}if(!selected.length){status.textContent='Mark a clip or add a note before exporting.';return}const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='mira-voice-review-notes.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+window.addEventListener('pagehide',stop);
+</script></body></html>

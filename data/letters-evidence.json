@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "storyId": "letters-after-midnight",
+  "masters": [
+    "assets/cover-letters-after-midnight.png",
+    "assets/letters-master-ch2.png",
+    "assets/letters-master-ch3.png",
+    "assets/letters-master-ch4.png",
+    "assets/letters-master-ch5.png"
+  ],
+  "positions": [
+    {
+      "paper": [
+        25,
+        76
+      ],
+      "edges": [
+        58,
+        59
+      ],
+      "envelope": [
+        91,
+        53
+      ],
+      "photo": [
+        9,
+        56
+      ]
+    },
+    {
+      "ink": [
+        28,
+        78
+      ],
+      "studio": [
+        64,
+        78
+      ],
+      "box": [
+        94,
+        75
+      ],
+      "frame": [
+        23,
+        27
+      ],
+      "rowan": [
+        87,
+        32
+      ]
+    },
+    {
+      "iris87": [
+        8,
+        65
+      ],
+      "julian87": [
+        70,
+        87
+      ],
+      "postcard": [
+        67,
+        35
+      ],
+      "last": [
+        93,
+        45
+      ],
+      "calendar": [
+        25,
+        44
+      ]
+    },
+    {
+      "mosaic": [
+        44,
+        88
+      ],
+      "bench": [
+        39,
+        45
+      ],
+      "door": [
+        80,
+        56
+      ],
+      "box": [
+        94,
+        73
+      ]
+    },
+    {
+      "station": [
+        25,
+        85
+      ],
+      "change": [
+        72,
+        88
+      ],
+      "storm": [
+        94,
+        65
+      ],
+      "collections": [
+        91,
+        85
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "items": {
+        "paper": {
+          "title": "Torn letter pages",
+          "notebookTitle": "Torn pages · A B C D",
+          "caseNote": "Torn pages · A B C D",
+          "question": "What can the four fragments tell you when they are read together?",
+          "image": "assets/letters-c1-paper.png"
+        },
+        "edges": {
+          "title": "Matching paper edges",
+          "notebookTitle": "Letter joins · A C B D",
+          "caseNote": "Letter joins · A C B D",
+          "question": "Which torn edges and sentences continue onto the next page?",
+          "image": "assets/letters-c1-edges.png"
+        },
+        "envelope": {
+          "title": "Unsent envelope",
+          "notebookTitle": "Unsent envelope",
+          "caseNote": "Unsent envelope",
+          "question": "What does the address reveal about the intended recipient?",
+          "image": "assets/letters-c1-envelope-front.png"
+        },
+        "photo": {
+          "title": "Old photograph",
+          "notebookTitle": "1987 rooftop photograph",
+          "caseNote": "1987 rooftop photograph",
+          "question": "Who appears in the rooftop photograph?",
+          "image": "assets/letters-c1-photo.png"
+        }
+      }
+    },
+    {
+      "items": {
+        "ink": {
+          "title": "Ink testing sheet",
+          "notebookTitle": "Two handwriting styles",
+          "caseNote": "Two handwriting styles",
+          "question": "Which sample matches the violet handwriting?",
+          "image": "assets/letters-c2-ink.png"
+        },
+        "studio": {
+          "title": "Bookbinding desk",
+          "notebookTitle": "Julian’s unsent note",
+          "caseNote": "Julian’s unsent note",
+          "question": "How does the notebook connect to the unsent letters?",
+          "image": "assets/letters-c2-studio.png"
+        },
+        "box": {
+          "title": "Stationery tin",
+          "notebookTitle": "Two bundles of letters",
+          "caseNote": "Two bundles of letters",
+          "question": "What distinguishes the two bundles?",
+          "image": "assets/letters-c2-box.png"
+        },
+        "frame": {
+          "title": "Framed calligraphy",
+          "notebookTitle": "Julian’s handwriting sample",
+          "caseNote": "Julian’s handwriting sample",
+          "question": "Can the signature help identify the writer?",
+          "image": "assets/letters-c2-frame.png"
+        }
+      }
+    },
+    {
+      "items": {
+        "iris87": {
+          "title": "Iris’s first letter",
+          "notebookTitle": "Iris · June 12, 1987",
+          "caseNote": "Iris · June 12, 1987",
+          "question": "What do Iris’s date and words establish?",
+          "image": "assets/letters-c3-iris87.png"
+        },
+        "julian87": {
+          "title": "Julian’s reply",
+          "notebookTitle": "Julian · June 13, 1987",
+          "caseNote": "Julian · June 13, 1987",
+          "question": "How does Julian’s letter follow Iris’s?",
+          "image": "assets/letters-c3-julian87.png"
+        },
+        "postcard": {
+          "title": "Later postcard",
+          "notebookTitle": "Iris · September 1995",
+          "caseNote": "Iris · September 1995",
+          "question": "What does the later postcard reveal about the silence?",
+          "image": "assets/letters-c3-postcard.png"
+        },
+        "last": {
+          "title": "Last letter",
+          "notebookTitle": "Julian · April 2004",
+          "caseNote": "Julian · April 2004",
+          "question": "What remained unsaid in the last letter?",
+          "image": "assets/letters-c3-last.png"
+        },
+        "calendar": {
+          "title": "Calendar clipping",
+          "notebookTitle": "June 19 storm record",
+          "caseNote": "June 19 storm record",
+          "question": "How do the dated pages fit together?",
+          "image": "assets/letters-c3-calendar.png"
+        }
+      }
+    },
+    {
+      "items": {
+        "mosaic": {
+          "title": "Star mosaic",
+          "notebookTitle": "Mosaic order · Dawn Noon Dusk",
+          "caseNote": "Mosaic order · Dawn Noon Dusk",
+          "question": "What order do the three stars suggest?",
+          "image": "assets/letters-c4-mosaic.png"
+        },
+        "bench": {
+          "title": "Garden bench",
+          "notebookTitle": "Garden bench · I + J",
+          "caseNote": "Garden bench · I + J",
+          "question": "What connects the bench to Iris and Julian?",
+          "image": "assets/letters-c4-bench.png"
+        },
+        "door": {
+          "title": "Blocked stairwell",
+          "notebookTitle": "Closed stairwell notice",
+          "caseNote": "Closed stairwell notice",
+          "question": "When did the stairwell become inaccessible?",
+          "image": "assets/letters-c4-door.png"
+        },
+        "box": {
+          "title": "Brass keepsake box",
+          "notebookTitle": "Three-star keepsake lock",
+          "caseNote": "Three-star keepsake lock",
+          "question": "How might the mosaic help explain the brass box’s lock?",
+          "image": "assets/letters-c4-box.png"
+        }
+      }
+    },
+    {
+      "items": {
+        "station": {
+          "title": "Iris’s station note",
+          "notebookTitle": "Iris waited at station",
+          "caseNote": "Iris waited at station",
+          "question": "Where did Iris expect to meet Julian?",
+          "image": "assets/letters-c5-station.png"
+        },
+        "change": {
+          "title": "Julian’s changed plan",
+          "notebookTitle": "Undelivered rooftop message",
+          "caseNote": "Undelivered rooftop message",
+          "question": "How did Julian’s proposed meeting place change?",
+          "image": "assets/letters-c5-change.png"
+        },
+        "storm": {
+          "title": "Storm closure record",
+          "notebookTitle": "Storm closure evidence",
+          "caseNote": "Storm closure evidence",
+          "question": "How did the closure affect their access?",
+          "image": "assets/letters-c5-storm.png"
+        },
+        "collections": {
+          "title": "Two letter collections",
+          "notebookTitle": "Matching letter collections",
+          "caseNote": "Matching letter collections",
+          "question": "What do both collections reveal about their feelings?",
+          "image": "assets/letters-c5-collections.png"
+        }
+      }
+    }
+  ]
+}

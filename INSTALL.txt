@@ -1,0 +1,7 @@
+Metriva Story 02 — no phantom drawer
+
+Copy echoes-library.html, js/library-engine.js, css/library-storybook.css, and images/story02/ into your existing Metriva project, preserving folder paths. Keep all other assets and scripts. Export your save first. Hard-refresh after replacing.
+
+Four interactive slim books, no secret room or drawer, B–17 slip rises between books when correctly ordered. The existing book order, puzzle completion, and save key are unchanged.
+
+Note: visual browser testing is still required.

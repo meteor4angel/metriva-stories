@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://metriva.example/schemas/story-v1-spatial.schema.json",
+  "title": "Metriva story v1 with optional visual continuity manifest",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "chapters"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "characterPortraits": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+    "caseSubject": {"type": "object", "required": ["id", "name", "description"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "role": {"type": "string"}, "description": {"type": "string", "minLength": 1}, "recoveredDescription": {"type": "string"}}},
+    "chapters": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/chapter"}}
+  },
+  "$defs": {
+    "rect": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": {"type": "number", "minimum": 0, "maximum": 100},
+        "y": {"type": "number", "minimum": 0, "maximum": 100},
+        "width": {"type": "number", "exclusiveMinimum": 0, "maximum": 100},
+        "height": {"type": "number", "exclusiveMinimum": 0, "maximum": 100}
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["src", "width", "height"],
+      "properties": {
+        "src": {"type": "string", "minLength": 1},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    },
+    "state": {
+      "type": "object",
+      "required": ["visible"],
+      "properties": {
+        "visible": {"type": "boolean"},
+        "visualChange": {"type": "boolean"}
+      }
+    },
+    "object": {
+      "type": "object",
+      "required": ["id", "name", "footprint", "depth", "layer", "appearance", "material", "support", "states"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "footprint": {"$ref": "#/$defs/rect"},
+        "depth": {"type": "number", "minimum": 0, "maximum": 1},
+        "layer": {"type": "integer", "minimum": 0},
+        "appearance": {"type": "string", "minLength": 1},
+        "material": {"type": "string", "minLength": 1},
+        "support": {"type": "string", "minLength": 1},
+        "nearby": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "initialState": {"type": "string"},
+        "states": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/state"}}
+      }
+    },
+    "variant": {
+      "type": "object",
+      "required": ["when", "src"],
+      "properties": {
+        "when": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+        "src": {"type": "string", "minLength": 1},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    },
+    "view": {
+      "type": "object",
+      "required": ["id", "objectId", "frame", "visibleObjectIds"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "objectId": {"type": "string", "minLength": 1},
+        "frame": {"$ref": "#/$defs/rect"},
+        "visibleObjectIds": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "image": {"$ref": "#/$defs/image"},
+        "variants": {"type": "array", "items": {"$ref": "#/$defs/variant"}},
+        "continuityException": {"type": "string", "minLength": 1}
+      }
+    },
+    "spatial": {
+      "type": "object",
+      "required": ["version", "sceneId", "master", "environment", "objects", "views"],
+      "properties": {
+        "version": {"const": 1},
+        "sceneId": {"type": "string", "minLength": 1},
+        "master": {"$ref": "#/$defs/image"},
+        "environment": {
+          "type": "object",
+          "required": ["layout", "lighting", "landmarks"],
+          "properties": {
+            "layout": {"type": "string", "minLength": 1},
+            "lighting": {"type": "string", "minLength": 1},
+            "landmarks": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "objects": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/object"}},
+        "views": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/view"}},
+        "sceneVariants": {"type": "array", "items": {"$ref": "#/$defs/variant"}}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["id", "position"],
+      "properties": {
+        "id": {"type": "string"},
+        "position": {"type": "object", "required": ["x", "y"], "properties": {"x": {"type": "number", "minimum": 0, "maximum": 100}, "y": {"type": "number", "minimum": 0, "maximum": 100}}},
+        "markerPosition": {"type": "object", "required": ["x", "y"], "properties": {"x": {"type": "number", "minimum": 0, "maximum": 100}, "y": {"type": "number", "minimum": 0, "maximum": 100}}},
+        "objectId": {"type": "string"},
+        "viewId": {"type": "string"},
+        "inspectionRegion": {"$ref": "#/$defs/rect"},
+        "document": {"type": "object", "required": ["kind", "heading", "reference", "lines"], "properties": {"kind": {"enum": ["ledger", "map"]}, "heading": {"type": "string", "minLength": 1}, "reference": {"type": "string", "minLength": 1}, "lines": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "annotation": {"type": "string"}, "route": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}}}},
+        "onExamine": {"type": "array", "items": {"type": "object", "required": ["objectId", "toState"], "properties": {"objectId": {"type": "string"}, "toState": {"type": "string"}}}},
+        "continuityException": {"type": "string", "minLength": 1}
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "required": ["id", "scene", "evidence"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "scene": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+        "spatial": {"$ref": "#/$defs/spatial"}
+      }
+    }
+  }
+}

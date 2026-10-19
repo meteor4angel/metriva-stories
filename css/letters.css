@@ -44,3 +44,59 @@
 .sequence button{min-width:42px;min-height:44px;border:1px solid var(--line);border-radius:7px;background:#fffaf0}
 .feedback{min-height:22px;color:#845234}
 @media(max-width:600px){.scene-attic{aspect-ratio:3/2}.conversation{grid-template-columns:1fr}.conversation>img{width:170px;height:190px}.heading{align-items:start}.back-link{font-size:12px}.notebook .people-book{grid-template-columns:repeat(2,minmax(0,1fr))}.letter-fragments,.clue-zoom-panel>.letter-reading .letter-fragments{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Story 01 conversation and journal presentation; reuse Story 04 source artwork. */
+.letters-vn .vn-sprite{filter:none;height:500px;align-self:end}
+.letters-vn .letters-conversation-portrait{width:100%;height:100%;max-width:370px;object-fit:cover;object-position:center 18%;border-radius:18px;border:1px solid #e6d0aa66;box-shadow:0 14px 36px #231c2440}
+.letters-vn .dialogue-line{min-height:90px}
+.letters-vn .vn-card .speaker{min-width:0}
+.notebook .evidence-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+.notebook .evidence-card{display:flex;flex-direction:column;width:100%;padding:0;overflow:hidden;text-align:left;background:#fffbf4;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.notebook .evidence-card img{height:112px;object-fit:cover}
+.notebook .evidence-card:hover{border-color:var(--gold);background:#f7f0e4}
+.notebook .evidence-card:focus-visible{outline:3px solid #a78248;outline-offset:2px}
+@media(max-width:800px){.letters-vn .vn-sprite{height:300px;max-width:270px;margin-bottom:12px}.letters-vn .vn-card{align-self:stretch}.letters-vn .dialogue-line{min-height:60px}}
+
+/* Use the shared Story 01 journal and restart styling directly. */
+.dialog-journal .letter-reading{margin:10px 0;font-size:13px}
+.dialog-journal .letter-fragments>div{font-size:14px}
+.letters-vn .vn-sprite{height:560px;width:100%;filter:none;overflow:hidden}
+.letters-vn .letters-conversation-portrait{width:100%;height:100%;max-width:none;object-fit:contain;object-position:center bottom;border:0;border-radius:0;box-shadow:none;background:transparent}
+.story-cast .person-card img,.notebook-portrait{object-fit:contain;object-position:center bottom;background:transparent;border:0}
+@media(max-width:800px){.letters-vn .vn-sprite{height:330px;max-width:400px;margin-bottom:-8px}}
+
+/* Four aligned expressions: neutral, talking, listening, blink. */
+.letters-actor{display:block;flex:none;height:100%;aspect-ratio:var(--frame-ratio,.5);max-width:100%;background-image:var(--sprite);background-size:400% 100%;background-position:calc(var(--frame,0)*100%/3) center;background-repeat:no-repeat;mask-image:linear-gradient(#000 92%,transparent 100%)}
+.letters-portrait-thumb{display:block;width:82px;height:100px;background-image:var(--sprite);background-size:400% auto;background-position:left top;background-repeat:no-repeat}
+.letters-person-art{display:block;width:100%;height:180px;background-image:var(--sprite);background-size:400% auto;background-position:left top;background-repeat:no-repeat;border-radius:0}
+
+/* Warm silhouette lighting keeps dark hair and clothing distinct from the scene. */
+.letters-vn .vn-sprite{filter:drop-shadow(-2px -1px 2px #ffe0ae80) drop-shadow(2px 0 5px #ffd39a42) drop-shadow(0 0 13px #efb76426)}
+.letters-vn.player-turn .vn-sprite{opacity:.94}
+
+/* A fixed body prevents fabric flicker; only the face changes expression. */
+.letters-actor{position:relative;background-position:left center}
+.letters-face,.letters-eye-blink{position:absolute;inset:0;display:block;pointer-events:none;background-image:var(--sprite);background-size:400% 100%;background-repeat:no-repeat}
+.letters-face{background-position:calc(var(--face-frame,0)*100%/3) center;mask-image:linear-gradient(#000 0 29%,transparent 39%);transition:opacity 200ms ease-in-out}
+.letters-eye-blink{background-position:right center;mask-image:linear-gradient(transparent 13%,#000 16% 24%,transparent 27%);opacity:0;transition:opacity 55ms ease-out}
+.letters-eye-blink.is-blinking{opacity:1}
+.letters-vn .vn-sprite{animation:letters-gentle-breathe 5s ease-in-out infinite}
+.letters-vn.motion-paused .vn-sprite{animation:none}
+@keyframes letters-gentle-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px) scale(1.004)}}
+.story-cast .letters-portrait-thumb{border-radius:7px;background-color:#e7ddc9;background-image:var(--sprite),linear-gradient(145deg,#f2eadb,#d8ddcf);background-size:400% auto,100% 100%;background-position:left top,center;background-repeat:no-repeat}
+.story-cast [data-alex] .letters-portrait-thumb{background-color:#dce4dc;background-image:var(--sprite),linear-gradient(145deg,#eff0df,#cbdacf)}
+.story-cast [data-person] .letters-portrait-thumb{background-color:#e9ddce;background-image:var(--sprite),linear-gradient(145deg,#f5e8d7,#d9c9b9)}
+@media(prefers-reduced-motion:reduce){.letters-face,.letters-eye-blink{transition:none}.letters-vn .vn-sprite{animation:none}}
+
+.letters-face[data-letter-face-a]{animation:letters-face-arrive 240ms ease-out backwards}
+@keyframes letters-face-arrive{from{opacity:0}to{opacity:1}}
+.letters-vn.motion-paused .letters-face{animation:none}
+@media(prefers-reduced-motion:reduce){.letters-face{animation:none!important}}
+
+/* Preserve the full mouth expression while the neutral torso remains fixed. */
+.letters-face{mask-image:linear-gradient(#000 0 34%,transparent 42%)}
+
+.letters-actor{transform-origin:50% 90%;transition:transform 160ms ease-out}
+.letters-vn.motion-paused .letters-actor{transform:none!important}
+@media(prefers-reduced-motion:reduce){.letters-actor{transform:none!important;transition:none}}
+

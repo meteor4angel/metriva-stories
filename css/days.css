@@ -28,6 +28,10 @@
 .days-controls{display:flex;gap:8px;flex-wrap:wrap}
 .days-controls .quiet{font-size:12px;padding:8px 10px}
 .days-voice-status{min-height:1.4em;margin:8px 0 0;font:12px/1.4 Arial,sans-serif;color:var(--muted)}
+.days-listening-summary{font:12px/1.5 Arial,sans-serif;color:var(--forest);margin:8px 0}
+.days-dialogue .choices button{display:block;text-align:left}
+.days-dialogue .choices .is-heard{background:#fffdf6}
+.days-heard-badge{display:block;margin-top:5px;font:10px/1.4 Arial,sans-serif;color:#7b816b}
 .days-sequence{display:grid;gap:10px;margin:18px 0}.days-sequence>div{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fffdf7}
 @keyframes daysBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.004)}}
 @keyframes daysTheoSettle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.003)}}
@@ -36,3 +40,16 @@
 @media(max-width:600px){.person-entry{grid-template-columns:85px 1fr;gap:12px}.person-entry img{width:85px;height:100px}.days-line{font-size:18px}.days-vn{padding:9px}.days-actor{height:32dvh;min-height:230px}}
 @media(max-width:650px){.days-objects{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.days-actor{animation:none!important}}
+
+/* Shared conversations: keep the addressee beside the speaker, and topics grouped by person. */
+.days-speaker-row{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;padding:7px 14px;border-radius:999px;background:var(--forest);color:#fffaf0;white-space:nowrap}
+.days-address{font:12px/1.4 Arial,sans-serif;color:#727669;font-weight:normal}
+.days-person-tabs{display:flex;gap:8px;margin:12px 0 16px}
+.days-person-tabs .active{background:var(--forest);color:#fffaf0}
+.days-topic-cast{display:block;font:11px/1.4 Arial,sans-serif;color:#727669;margin-top:4px}
+.days-replay-opening{margin-top:14px;font-size:12px}
+.days-conversation-overlay>.dialog{overflow-y:auto}
+
+.days-dialogue .days-speaker-row .speaker{padding:0;border:0;background:transparent;color:inherit;line-height:1.4}
+.days-speaker-row .days-address{font:14px/1.4 Georgia,serif;color:inherit;opacity:.85}
+.days-speaker-row .days-address [aria-hidden]{margin-right:4px}

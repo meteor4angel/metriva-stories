@@ -1,0 +1,7 @@
+{
+  "asset": "assets/letters-celia-dialogue-expressions.png",
+  "source": "built-in image_gen edit",
+  "input": "assets/letters-celia-reactions.png",
+  "prompt": "Preserve Celia identity, transparent two-column sprite composition, pose, scale, clothing and lighting. Left: thoughtful wistful recollection, gaze slightly lowered, lips closed. Right: softened fond memory, gaze slightly raised, subtle closed-mouth smile. Keep head angle and body unchanged; no background or text.",
+  "use": "Celia intro and answers, expression beats after selected phrases"
+}
