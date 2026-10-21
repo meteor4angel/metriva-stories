@@ -45,12 +45,20 @@ function checkAssets(story,root) {
       if(expected&&(actual.width!==expected.width||actual.height!==expected.height))errors.push(`${where}: ${src} is ${actual.width}×${actual.height}, expected ${expected.width}×${expected.height}`);
     }catch(error){errors.push(`${where}: ${error.message}`);}
   }
+  if(story.pageAppearance?.backgroundImage)check(story.pageAppearance.backgroundImage,null,'page background');
+  for(const [state,src] of Object.entries(story.pageAppearance?.cursorTheme||{}))if(state!=='disabled')check(src,null,`${state} cursor`);
   for(const chapter of story.chapters){
     const spatial=chapter.spatial;
     check(chapter.scene,spatial?.master,`chapter ${chapter.id} master`);
+    if(chapter.puzzle?.presentation?.mode==='timeline'){
+      const sheet=chapter.puzzle.presentation.imageSheet;
+      if(sheet)check(sheet.src,{width:sheet.width,height:sheet.height},`puzzle ${chapter.puzzle.id} sequence artwork`);
+      for(const item of chapter.puzzle.items||[])if(item.image)check(item.image,null,`puzzle ${chapter.puzzle.id} item ${item.id}`);
+    }
     for(const evidence of chapter.evidence||[])if(evidence.detailImage)check(evidence.detailImage,evidence.detailImageWidth&&evidence.detailImageHeight?{width:evidence.detailImageWidth,height:evidence.detailImageHeight}:null,`evidence ${evidence.id} detail`);
     if(chapter.puzzle?.presentation?.mode==='bookshelf'){
       const p=chapter.puzzle.presentation;check(p.shelfImage,null,`puzzle ${chapter.puzzle.id} shelf`);
+      if(p.layout==='catalog-inspection')for(const [key,label] of [['solvedImage','solved shelf'],['parchmentImage','parchment'],['inspectionPanelImage','inspection panel'],['trayImage','book tray'],['openSheet','open-book sheet']])check(p[key],null,`puzzle ${chapter.puzzle.id} ${label}`);
       for(const item of p.candidates){check(item.spineImage,null,`book ${item.id} spine`);if(item.coverImage)check(item.coverImage,null,`book ${item.id} cover`);}
     }
     if(['interactive-route','garden-route'].includes(chapter.puzzle?.presentation?.mode))check(chapter.puzzle.presentation.image?.src,chapter.puzzle.presentation.image,`puzzle ${chapter.puzzle.id} artwork`);

@@ -5,6 +5,52 @@
   const clone = value => JSON.parse(JSON.stringify(value));
   const characterFrame = (characterSpeaking,voiceSpeaking,elapsed,speakFor) => characterSpeaking&&(voiceSpeaking||elapsed<speakFor)&&elapsed%480<230?'speaking':elapsed%4400>4000?'blink':'idle';
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const unquoteDialogue = value => {const text=String(value??'').trim(),pairs=[['“','”'],['"','"'],['‘','’'],["'","'"]];for(const [start,end]of pairs)if(text.startsWith(start)&&text.endsWith(end)&&text.length>=2)return text.slice(start.length,text.length-end.length);return text;};
+  const dialogueMarkup = value => {const text=String(value??'').trim();return text!==unquoteDialogue(text)?escapeHtml(text):`“${escapeHtml(text)}”`;};
+  const puzzleActionIcons={check:'→',submit:'→',reset:'⟳',hint:'♧',evidence:'▤',close:'×'};
+  const timelineIconMarkup=icon=>{const paths={
+    clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>',
+    flower:'<path d="M12 12c-4 0-6-2-6-5 3 0 5 2 6 5Zm0 0c0-4 2-6 5-6 0 3-2 5-5 6Zm0 0c4 0 6 2 6 5-3 0-5-2-6-5Zm0 0c0 4-2 6-5 6 0-3 2-5 5-6Z"/><circle cx="12" cy="12" r="2"/>',
+    door:'<path d="M5 21V4l14-2v19M5 21h15M15 11h.01"/>',
+    book:'<path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H20v18H7.5A3.5 3.5 0 0 0 4 23.5zM4 5.5v18M8 6h8M8 10h7"/>',
+    footsteps:'<ellipse cx="8" cy="7" rx="2.3" ry="3.7" transform="rotate(-18 8 7)"/><ellipse cx="16" cy="17" rx="2.3" ry="3.7" transform="rotate(-18 16 17)"/><path d="M5.7 11c-2 2-2 4 .2 5m8-1c-2 2-2 4 .2 5"/>',
+    speech:'<path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.5 8.5 0 0 1-3-.5L4 21l1.2-4A7.1 7.1 0 0 1 4 12c0-4 3.6-7 8-7s8 3 8 6.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',
+    music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+    key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9 2 2-3 3 2 2-3 3-2-2-3 3"/>',
+    leaf:'<path d="M20 4c-9 0-15 4-15 11a5 5 0 0 0 5 5c7 0 11-6 10-16Z"/><path d="M5 20c3-5 7-8 12-11"/>',
+    bell:'<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
+    event:'<circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/>'
+  };return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[icon]||paths.event}</g></svg>`;};
+  const chapterPickerIconMarkup=icon=>({
+    'map-pin':'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+    book:'<path d="M12 6C9 3 5 3 2.5 4v15c3-.8 6-.5 9.5 2 3.5-2.5 6.5-2.8 9.5-2V4c-2.5-1-6.5-1-9.5 2Z"/><path d="M12 6v15"/>',
+    flower:'<path d="M12 12c-4 0-6-2-6-5 3 0 5 2 6 5Zm0 0c0-4 2-6 5-6 0 3-2 5-5 6Zm0 0c4 0 6 2 6 5-3 0-5-2-6-5Zm0 0c0 4-2 6-5 6 0-3 2-5 5-6Z"/><circle cx="12" cy="12" r="2"/><path d="M12 14v8m0-4c-2 0-3-1-4-3"/>',
+    compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/>',
+    sprout:'<path d="M12 21v-9m0 4C7 16 5 13 5 9c4 0 7 2 7 6m0-2c0-5 3-8 8-8 0 5-3 8-8 8M7 21h10"/>'
+  }[icon]||'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>');
+  const chapterPickerIcon=(icon='map-pin')=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${chapterPickerIconMarkup(icon)}</g></svg>`;
+  function sequenceArtMarkup(item,presentation) {
+    if(item?.image)return `<img class="s6-sequence-art" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.imageAlt||item.label||'')}"/>`;
+    const frame=item?.imageCrop,sheet=presentation?.imageSheet;
+    if(!frame||!sheet)return '';
+    const width=sheet.width/frame.width*100,height=sheet.height/frame.height*100,left=frame.x/frame.width*100,top=frame.y/frame.height*100;
+    return `<span class="s6-sequence-art s6-sequence-sprite" role="img" aria-label="${escapeHtml(item.imageAlt||item.label||'')}" style="aspect-ratio:${frame.width}/${frame.height}"><img src="${escapeHtml(sheet.src)}" alt="" aria-hidden="true" style="width:${width}%;height:${height}%;left:-${left}%;top:-${top}%"/></span>`;
+  }
+  const puzzleIconMarkup = option => {
+    const hint=`${option.icon||''} ${option.id||''} ${option.label||''}`.toLowerCase();
+    const requested=String(option.icon||'').toLowerCase();
+    const kind=['sprout','door','book','clock','compass','inspect'].includes(requested)?requested:/greenhouse|garden|flower|lavender|plant|spring/.test(hint)?'sprout':/office|door|window|room|chamber|shelf|cabinet/.test(hint)?'door':/letter|book|author|manuscript|note|record|ledger/.test(hint)?'book':/time|clock|bell|signal|minute|hour/.test(hint)?'clock':/route|path|street|bridge|canal|journey/.test(hint)?'compass':'inspect';
+    const art={
+      sprout:'<path d="M12 20v-8m0 3C7 15 5 12 5 8c4 0 7 2 7 6m0-1c0-5 3-8 8-8 0 5-3 8-8 8M7 21h10"/>',
+      door:'<path d="M5 21V4l14-2v19M5 21h15M15 11h.01"/>',
+      book:'<path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H20v18H7.5A3.5 3.5 0 0 0 4 23.5zM4 5.5v18M8 6h8M8 10h7"/>',
+      clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/>' ,
+      inspect:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5M8 10.5h5M10.5 8v5"/>'
+    };
+    return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${art[kind]}</g></svg>`;
+  };
+  const safeEvidenceHref = value => {try{const url=new URL(value,document.baseURI);return ['http:','https:','mailto:','file:'].includes(url.protocol)?String(value):null;}catch{return null;}};
   const validRect = rect => rect && ['x','y','width','height'].every(key=>Number.isFinite(rect[key])) && rect.x>=0 && rect.y>=0 && rect.width>0 && rect.height>0 && rect.x+rect.width<=100 && rect.y+rect.height<=100;
   const intersects = (a,b) => a.x<b.x+b.width && a.x+a.width>b.x && a.y<b.y+b.height && a.y+a.height>b.y;
   const pointIn = (point,rect) => Number.isFinite(point?.x)&&Number.isFinite(point?.y)&&point.x>=rect.x && point.x<=rect.x+rect.width && point.y>=rect.y && point.y<=rect.y+rect.height;
@@ -258,6 +304,21 @@
     if (!story || story.schemaVersion !== 1) errors.push('schemaVersion must be 1');
     if (!/^[a-z0-9-]+$/.test(story?.id || '')) errors.push('id must be a lowercase slug');
     if (!story?.title || !Array.isArray(story?.chapters) || story.chapters.length < 1) errors.push('title and chapters are required');
+    const appearance=story?.pageAppearance;
+    if(appearance!==undefined){
+      const colors=new Set(['surface','ink','accent','accentSoft','border','muted','gold','headingInk','headingMuted']);
+      const layout=appearance?.layout;
+      if(!appearance||typeof appearance!=='object'||Array.isArray(appearance)||Object.keys(appearance).some(key=>!['backgroundImage','backgroundPosition','backdropTint','palette','layout','peopleMode','cursorTheme','chapterPickerIcon'].includes(key)))errors.push('pageAppearance has unsupported settings');
+      if(appearance?.chapterPickerIcon!==undefined&&!['map-pin','book','flower','compass','sprout'].includes(appearance.chapterPickerIcon))errors.push('pageAppearance.chapterPickerIcon must be map-pin, book, flower, compass, or sprout');
+      if(appearance?.peopleMode!==undefined&&!['current','all'].includes(appearance.peopleMode))errors.push('pageAppearance.peopleMode must be current or all');
+      if(appearance?.backgroundImage!==undefined&&(!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(appearance.backgroundImage)||appearance.backgroundImage.includes('..')))errors.push('pageAppearance.backgroundImage must be a local image in assets/');
+      if(appearance?.backgroundPosition!==undefined&&!/^(?:center|left|right|top|bottom|[0-9]{1,3}%)(?: (?:center|left|right|top|bottom|[0-9]{1,3}%))?$/.test(appearance.backgroundPosition))errors.push('pageAppearance.backgroundPosition is invalid');
+      if(appearance?.backdropTint!==undefined&&!/^#[0-9a-fA-F]{8}$/.test(appearance.backdropTint))errors.push('pageAppearance.backdropTint must be an eight-digit hex color');
+      if(appearance?.palette!==undefined&&(!appearance.palette||typeof appearance.palette!=='object'||Array.isArray(appearance.palette)||Object.entries(appearance.palette).some(([key,value])=>!colors.has(key)||typeof value!=='string'||!/^#[0-9a-fA-F]{6}$/.test(value))))errors.push('pageAppearance.palette has invalid colors');
+      const cursorTheme=appearance?.cursorTheme;
+      if(cursorTheme!==undefined&&(!cursorTheme||typeof cursorTheme!=='object'||Array.isArray(cursorTheme)||Object.keys(cursorTheme).some(key=>!['default','interactive','disabled'].includes(key))||['default','interactive'].some(key=>cursorTheme[key]!==undefined&&(!/^assets\/[a-zA-Z0-9/_-]+\.png$/.test(cursorTheme[key])||cursorTheme[key].includes('..')))||cursorTheme.disabled!==undefined&&cursorTheme.disabled!=='not-allowed'))errors.push('pageAppearance.cursorTheme is invalid');
+      if(layout!==undefined&&(!layout||typeof layout!=='object'||Array.isArray(layout)||Object.keys(layout).some(key=>!['contentWidth','sidebarPercent','surfaceOpacity'].includes(key))||layout.contentWidth!==undefined&&(!Number.isInteger(layout.contentWidth)||layout.contentWidth<960||layout.contentWidth>1800)||layout.sidebarPercent!==undefined&&(!Number.isInteger(layout.sidebarPercent)||layout.sidebarPercent<24||layout.sidebarPercent>42)||layout.surfaceOpacity!==undefined&&(!Number.isFinite(layout.surfaceOpacity)||layout.surfaceOpacity<0.75||layout.surfaceOpacity>1)))errors.push('pageAppearance.layout is invalid');
+    }
     const chapterIds = new Set();
     const evidenceIds = new Set();
     const dialogueIds = new Set();
@@ -275,6 +336,8 @@
         if(previewCrop&&(!evidence.detailImage||!['x','y','width','height'].every(key=>Number.isFinite(previewCrop[key]))||previewCrop.x<0||previewCrop.y<0||previewCrop.width<=0||previewCrop.height<=0||previewCrop.x+previewCrop.width>100||previewCrop.y+previewCrop.height>100))errors.push(`evidence ${evidence.id} has an invalid detail preview crop`);
         const document=evidence.document;
         if(document&&(!['ledger','map'].includes(document.kind)||!document.heading||!document.reference||!Array.isArray(document.lines)||!document.lines.length||!document.lines.every(line=>typeof line==='string'&&line.trim())||(document.route&&(!Array.isArray(document.route)||document.route.length<2||!document.route.every(point=>typeof point==='string'&&point.trim())))))errors.push(`evidence ${evidence.id} has an invalid readable document`);
+        const reading=evidence.reading;
+        if(reading&&(!reading.title||!reading.greeting||!Array.isArray(reading.paragraphs)||!reading.paragraphs.length||!reading.paragraphs.every(line=>typeof line==='string'&&line.trim())||typeof reading.signature!=='string'||reading.image!==undefined&&(!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(reading.image)||reading.image.includes('..'))))errors.push(`evidence ${evidence.id} has an invalid letter reveal`);
       }
       for (const person of chapter.characters || []) {
         if (!person.id || !Array.isArray(person.questions)) errors.push(`character in ${chapter.id} has invalid questions`);
@@ -288,17 +351,60 @@
       }
       if (!chapter.puzzle.id || puzzleIds.has(chapter.puzzle.id)) errors.push(`puzzle id ${chapter.puzzle.id || '(missing)'} is missing or duplicated`);
       puzzleIds.add(chapter.puzzle.id);
-      if (!['choice','sequence'].includes(chapter.puzzle.type)) errors.push(`puzzle ${chapter.puzzle.id} uses an unsupported type`);
+      if (!['choice','sequence','input'].includes(chapter.puzzle.type)) errors.push(`puzzle ${chapter.puzzle.id} uses an unsupported type`);
       if (chapter.puzzle.type === 'choice' && (!(chapter.puzzle.options || []).some(option => option.id === chapter.puzzle.answer) || new Set((chapter.puzzle.options||[]).map(option=>option.id)).size!==(chapter.puzzle.options||[]).length)) errors.push(`puzzle ${chapter.puzzle.id} has an invalid choice set or answer`);
-      if (chapter.puzzle.type === 'sequence' && (!Array.isArray(chapter.puzzle.items) || !Array.isArray(chapter.puzzle.answer) || chapter.puzzle.items.length !== chapter.puzzle.answer.length || new Set(chapter.puzzle.items.map(item=>item.id)).size!==chapter.puzzle.items.length || new Set(chapter.puzzle.answer).size!==chapter.puzzle.answer.length || !chapter.puzzle.answer.every(id => chapter.puzzle.items.some(item => item.id === id)))) errors.push(`puzzle ${chapter.puzzle.id} has an invalid sequence`);
+      if(chapter.puzzle.type==='choice'&&(chapter.puzzle.options||[]).some(option=>option.icon!==undefined&&!['sprout','door','book','clock','compass','inspect','flower','leaf'].includes(option.icon)))errors.push(`puzzle ${chapter.puzzle.id} uses an unsupported choice icon`);
+      if(chapter.puzzle.type==='input'&&(typeof chapter.puzzle.answer!=='string'||!chapter.puzzle.answer.trim()||chapter.puzzle.input!==undefined&&(!chapter.puzzle.input||!['text','numeric'].includes(chapter.puzzle.input.mode||'text')||chapter.puzzle.input.maxLength!==undefined&&(!Number.isInteger(chapter.puzzle.input.maxLength)||chapter.puzzle.input.maxLength<1||chapter.puzzle.input.maxLength>40||chapter.puzzle.input.maxLength<chapter.puzzle.answer.length))))errors.push(`puzzle ${chapter.puzzle.id} needs a valid text answer and input configuration`);
+      if(chapter.puzzle.type==='input'&&chapter.puzzle.input?.evidenceRef!==undefined&&!chapter.evidence.some(item=>item.id===chapter.puzzle.input.evidenceRef))errors.push(`puzzle ${chapter.puzzle.id} has an invalid input evidence link`);
+      if(chapter.puzzle.type==='choice'&&['single-question','single-question-clues'].includes(chapter.puzzle.presentation?.mode)){
+        const presentation=chapter.puzzle.presentation,theme=presentation.theme;
+        const allowed=new Set(['accent','surface','border','selected','ink']);
+        if(chapter.puzzle.options.length<2||chapter.puzzle.options.some(option=>!option.label||typeof option.label!=='string'))errors.push(`puzzle ${chapter.puzzle.id} needs at least two labeled answers`);
+        if(theme!==undefined&&(!theme||typeof theme!=='object'||Array.isArray(theme)||Object.entries(theme).some(([key,value])=>!allowed.has(key)||typeof value!=='string'||!/^#[0-9a-fA-F]{6}$/.test(value))))errors.push(`puzzle ${chapter.puzzle.id} has invalid single-question theme colors`);
+        if(presentation.actions!==undefined&&(!Array.isArray(presentation.actions)||presentation.actions.some(action=>!action||!['submit','hint','evidence','close'].includes(action.action)||typeof action.label!=='string'||!action.label.trim()||action.label.length>50||action.icon!==undefined&&!Object.hasOwn(puzzleActionIcons,action.icon)||action.action==='evidence'&&!chapter.evidence.some(item=>item.id===action.target)||action.action!=='evidence'&&action.target!==undefined)||new Set((presentation.actions||[]).map(action=>action.action==='evidence'?`evidence:${action.target}`:action.action)).size!==(presentation.actions||[]).length))errors.push(`puzzle ${chapter.puzzle.id} has invalid single-question actions or evidence links`);
+        if(['sectionLabel','answerLabel'].some(key=>presentation[key]!==undefined&&(typeof presentation[key]!=='string'||presentation[key].length>80)))errors.push(`puzzle ${chapter.puzzle.id} has invalid single-question labels`);
+        if(presentation.optionStyle!==undefined&&!['radio','numbered','icon','numbered-icon'].includes(presentation.optionStyle))errors.push(`puzzle ${chapter.puzzle.id} has invalid single-question option style`);
+        if(presentation.mode==='single-question-clues'&&(!Array.isArray(presentation.evidenceRefs)||!presentation.evidenceRefs.length||new Set(presentation.evidenceRefs).size!==presentation.evidenceRefs.length||presentation.evidenceRefs.some(id=>!chapter.evidence.some(item=>item.id===id))))errors.push(`puzzle ${chapter.puzzle.id} needs valid linked clues`);
+      }
+      if(chapter.puzzle.type==='choice'&&chapter.puzzle.presentation?.mode==='token-insert'){
+        const presentation=chapter.puzzle.presentation,ids=new Set(chapter.puzzle.options.map(option=>option.id));
+        const validArt=value=>typeof value==='string'&&/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(value)&&!value.includes('..');
+        if(presentation.sideImage&&!validArt(presentation.sideImage))errors.push(`puzzle ${chapter.puzzle.id} has invalid token puzzle artwork`);
+        if(presentation.sideImageFit!==undefined&&!['cover','contain'].includes(presentation.sideImageFit))errors.push(`puzzle ${chapter.puzzle.id} has invalid token artwork fit`);
+        if(chapter.puzzle.options.some(option=>option.icon!==undefined&&!['flower','leaf','clock','door','book','footsteps','speech','music','key','bell','event'].includes(option.icon)))errors.push(`puzzle ${chapter.puzzle.id} uses an unsupported token icon`);
+        if(!presentation.tokenImage||!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(presentation.tokenImage)||presentation.tokenImage.includes('..'))errors.push(`puzzle ${chapter.puzzle.id} needs a local token image`);
+        if(presentation.tokenEvidenceRef&&!story.chapters.some(item=>item.evidence.some(evidence=>evidence.id===presentation.tokenEvidenceRef)))errors.push(`puzzle ${chapter.puzzle.id} has an invalid token evidence link`);
+        if(!presentation.tokenLabel||!presentation.sectionTitle||!presentation.sectionDescription||!presentation.insertLabel||!presentation.mismatchFeedback||!presentation.missingTokenFeedback||!presentation.successTitle||!presentation.successText||!presentation.compartmentTitle||!presentation.compartmentText||!presentation.openCompartmentLabel||!presentation.openMemoryBoxLabel||!presentation.compartmentImage||!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(presentation.compartmentImage)||presentation.compartmentImage.includes('..'))errors.push(`puzzle ${chapter.puzzle.id} needs complete token-insert labels, feedback, and reveal art`);
+        const letter=presentation.letter;if(letter&&(!letter.title||!letter.greeting||!Array.isArray(letter.paragraphs)||!letter.paragraphs.length||!letter.paragraphs.every(line=>typeof line==='string'&&line.trim())||typeof letter.signature!=='string'||letter.image&&!validArt(letter.image)))errors.push(`puzzle ${chapter.puzzle.id} has an invalid inserted-token letter reveal`);
+        if(chapter.puzzle.options.length<2||chapter.puzzle.options.some(option=>!option.label||typeof option.label!=='string'||option.symbol!==undefined&&(typeof option.symbol!=='string'||option.symbol.length>4)))errors.push(`puzzle ${chapter.puzzle.id} needs at least two labeled token targets`);
+        if(!ids.has(chapter.puzzle.answer))errors.push(`puzzle ${chapter.puzzle.id} has an invalid token target answer`);
+      }
+      if (chapter.puzzle.type === 'sequence' && (!Array.isArray(chapter.puzzle.items) || chapter.puzzle.items.length<2 || !Array.isArray(chapter.puzzle.answer) || chapter.puzzle.items.length !== chapter.puzzle.answer.length || new Set(chapter.puzzle.items.map(item=>item.id)).size!==chapter.puzzle.items.length || new Set(chapter.puzzle.answer).size!==chapter.puzzle.answer.length || !chapter.puzzle.items.every(item=>item.id&&item.label) || !chapter.puzzle.answer.every(id => chapter.puzzle.items.some(item => item.id === id)))) errors.push(`puzzle ${chapter.puzzle.id} has an invalid sequence`);
       if(chapter.puzzle.presentation&&chapter.puzzle.type==='sequence'){
         const presentation=chapter.puzzle.presentation;
-        if(!['route','timeline','interactive-route','garden-route','machinery-sequence','bookshelf'].includes(presentation.mode)||['topLabel','bottomLabel'].some(key=>presentation[key]!==undefined&&(typeof presentation[key]!=='string'||presentation[key].length>60)))errors.push(`puzzle ${chapter.puzzle.id} has invalid presentation settings`);
+        if(!['route','timeline','timeline-clean','interactive-route','garden-route','machinery-sequence','bookshelf'].includes(presentation.mode)||['topLabel','bottomLabel'].some(key=>presentation[key]!==undefined&&(typeof presentation[key]!=='string'||presentation[key].length>60)))errors.push(`puzzle ${chapter.puzzle.id} has invalid presentation settings`);
+        if(['timeline','timeline-clean'].includes(presentation.mode)){
+          const sheet=presentation.imageSheet,theme=presentation.theme,actions=presentation.actions;
+          const ids=chapter.puzzle.items.map(item=>item.id),initialOrder=presentation.initialOrder;
+          if(initialOrder!==undefined&&(!Array.isArray(initialOrder)||initialOrder.length!==ids.length||new Set(initialOrder).size!==ids.length||initialOrder.some(id=>!ids.includes(id))))errors.push(`puzzle ${chapter.puzzle.id} has an invalid initial sequence`);
+          if(sheet&&(!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(sheet.src||'')||sheet.src.includes('..')||!Number.isInteger(sheet.width)||sheet.width<1||!Number.isInteger(sheet.height)||sheet.height<1))errors.push(`puzzle ${chapter.puzzle.id} has an invalid sequence image sheet`);
+          if(chapter.puzzle.items.some(item=>item.image!==undefined&&(!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(item.image)||item.image.includes('..'))||item.imageCrop!==undefined&&(!sheet||!item.imageCrop||!['x','y','width','height'].every(key=>Number.isInteger(item.imageCrop[key]))||item.imageCrop.x<0||item.imageCrop.y<0||item.imageCrop.width<1||item.imageCrop.height<1||item.imageCrop.x+item.imageCrop.width>sheet.width||item.imageCrop.y+item.imageCrop.height>sheet.height)))errors.push(`puzzle ${chapter.puzzle.id} has invalid sequence item artwork`);
+          if(chapter.puzzle.items.some(item=>item.icon!==undefined&&!['clock','flower','door','book','footsteps','speech','music','key','leaf','bell','event'].includes(item.icon)))errors.push(`puzzle ${chapter.puzzle.id} has an unsupported timeline item icon`);
+          if(presentation.mode==='timeline-clean'&&presentation.sideImage!==undefined&&(!/^assets\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/.test(presentation.sideImage)||presentation.sideImage.includes('..')))errors.push(`puzzle ${chapter.puzzle.id} has invalid timeline side artwork`);
+          if(presentation.mode==='timeline-clean'&&presentation.sideImageFit!==undefined&&!['cover','contain'].includes(presentation.sideImageFit))errors.push(`puzzle ${chapter.puzzle.id} has invalid timeline artwork fit`);
+          if(theme!==undefined&&(!theme||typeof theme!=='object'||Array.isArray(theme)||Object.entries(theme).some(([key,value])=>!['green','gold','cream','panel','line','ink'].includes(key)||typeof value!=='string'||!/^#[0-9a-fA-F]{6}$/.test(value))))errors.push(`puzzle ${chapter.puzzle.id} has invalid sequence theme colors`);
+          if(actions!==undefined&&(!Array.isArray(actions)||actions.some(action=>!action||!['check','reset','hint','evidence','close'].includes(action.action)||typeof action.label!=='string'||!action.label.trim()||action.label.length>50||action.icon!==undefined&&!Object.hasOwn(puzzleActionIcons,action.icon)||action.action==='evidence'&&!chapter.evidence.some(item=>item.id===action.target)||action.action!=='evidence'&&action.target!==undefined)||new Set((actions||[]).map(action=>action.action==='evidence'?`evidence:${action.target}`:action.action)).size!==(actions||[]).length))errors.push(`puzzle ${chapter.puzzle.id} has invalid sequence actions or evidence links`);
+          if(['sectionTitle','sectionDescription'].some(key=>presentation[key]!==undefined&&(typeof presentation[key]!=='string'||presentation[key].length>100)))errors.push(`puzzle ${chapter.puzzle.id} has invalid sequence headings`);
+        }
         if(presentation.mode==='bookshelf'){
           const candidates=presentation.candidates||[],ids=candidates.map(item=>item.id);
           if(!presentation.shelfImage||!presentation.slipText||!presentation.note||candidates.length<chapter.puzzle.items.length||new Set(ids).size!==ids.length||chapter.puzzle.answer.some(id=>!ids.includes(id))||candidates.some(item=>!item.label||!item.spineImage)||!Array.isArray(presentation.handles)||presentation.handles.length!==4||new Set(presentation.handles.map(item=>item.id)).size!==4)errors.push(`puzzle ${chapter.puzzle.id} needs a valid bookshelf, candidates, note, and four handles`);
           const sheet=presentation.spineSheetSize;
           if(sheet&&(!Number.isFinite(sheet.width)||!Number.isFinite(sheet.height)||sheet.width<=0||sheet.height<=0||candidates.some(item=>{const f=item.spineFrame;return !f||!['x','y','width','height'].every(key=>Number.isFinite(f[key]))||f.x<0||f.y<0||f.width<=0||f.height<=0||f.x+f.width>sheet.width||f.y+f.height>sheet.height})))errors.push(`puzzle ${chapter.puzzle.id} has invalid book artwork frames`);
+          if(presentation.layout==='catalog-inspection'){
+            if(!presentation.solvedImage||!presentation.parchmentImage||!presentation.inspectionPanelImage||!presentation.trayImage||!presentation.openSheet||candidates.length!==7||candidates.some(item=>!item.openFrame))errors.push(`puzzle ${chapter.puzzle.id} needs all catalog-inspection assets and seven books`);
+            if(candidates.some(item=>{const f=item.openFrame;return !f||!['x','y','width','height'].every(key=>Number.isFinite(f[key]))||f.x<0||f.y<0||f.width<=0||f.height<=0||f.x+f.width>1536||f.y+f.height>1024}))errors.push(`puzzle ${chapter.puzzle.id} has invalid open-book frames`);
+          }
         }
         if(presentation.mode==='machinery-sequence'){
           const ids=chapter.puzzle.items.map(item=>item.id),order=presentation.choiceOrder,positions=presentation.controlPositions,frames=presentation.controlFrames;
@@ -369,6 +475,28 @@
       if(!portraits||typeof portraits!=='object'||Array.isArray(portraits))errors.push('characterPortraits must be a map of character IDs to image paths');
       else for(const [id,src] of Object.entries(portraits))if(!characterIds.has(id)||typeof src!=='string'||!src.trim())errors.push(`character portrait ${id} has an unknown character or invalid image path`);
     }
+    const sprites=story?.characterSprites;
+    if(sprites!==undefined){
+      if(!sprites||typeof sprites!=='object'||Array.isArray(sprites))errors.push('characterSprites must be a map of character IDs to sprite definitions');
+      else for(const [id,sprite] of Object.entries(sprites)){
+        if(!characterIds.has(id))errors.push(`character sprite ${id} has an unknown character`);
+        if(typeof sprite==='string')continue;
+        if(!sprite||typeof sprite!=='object'||typeof sprite.src!=='string'||!sprite.src.trim()){errors.push(`character sprite ${id} needs an image source`);continue;}
+        if(sprite.frames!==undefined){
+          const columns=Number(sprite.columns)||2,rows=Number(sprite.rows)||2;
+          if(!sprite.frames||typeof sprite.frames!=='object'||Array.isArray(sprite.frames)||!Object.keys(sprite.frames).length)errors.push(`character sprite ${id} frames must be a non-empty map`);
+          else for(const [name,frame] of Object.entries(sprite.frames))if(typeof frame==='string'?!frame.trim():!Number.isInteger(frame)||frame<0||frame>=columns*rows)errors.push(`character sprite ${id} frame ${name} is invalid`);
+        }
+      }
+    }
+    if(story?.voiceMap!==undefined){
+      if(!story.voiceMap||typeof story.voiceMap!=='object'||Array.isArray(story.voiceMap))errors.push('voiceMap must map dialogue lines to audio paths');
+      else for(const [line,src] of Object.entries(story.voiceMap)){
+        let key;try{key=JSON.parse(line);}catch{}
+        if(!Array.isArray(key)||![2,5,6].includes(key.length)||!key.every(value=>typeof value==='string')||typeof src!=='string'||!/^assets\/voices\/[a-zA-Z0-9_./-]+\.mp3$/.test(src)||src.includes('..'))errors.push(`voiceMap entry ${line} must map a [speaker, text], [speaker, text, characterId, questionId, lineIndex], or chapter-aware dialogue key to a local MP3`);
+      }
+    }
+    if(story?.autoVoice!==undefined&&typeof story.autoVoice!=='boolean')errors.push('autoVoice must be a boolean');
     errors.push(...validateSpatial(story));
     if (errors.length) throw new Error(`Invalid story JSON:\n• ${[...new Set(errors)].join('\n• ')}`);
     return story;
@@ -390,7 +518,7 @@
     return Object.keys(rule).length>0;
   }
 
-  const freshState = () => ({schemaVersion:1,chapter:0,found:[],solved:[],completedDialogues:[],transcript:[],dialogue:null,puzzleDrafts:{},puzzleRouteSelections:{},objectStates:{},openingSeen:false,rescueLine:0,rescueDone:false,resolutionLine:0,resolutionDone:false,booksSeen:[],bookshelfSlots:[null,null,null,null],bookSlipReady:false,ending:null});
+  const freshState = () => ({schemaVersion:1,chapter:0,found:[],solved:[],completedDialogues:[],characterIntrosSeen:[],transcript:[],dialogue:null,puzzleDrafts:{},puzzleRouteSelections:{},objectStates:{},openingSeen:false,rescueLine:0,rescueDone:false,resolutionLine:0,resolutionDone:false,booksSeen:[],bookshelfSlots:[null,null,null,null],bookInspectionId:null,bookSlipReady:false,ending:null});
 
   class StoryRuntime {
     constructor({story,repository,mount,modal}) {
@@ -400,9 +528,11 @@
       if (!this.root || !this.overlay) throw new Error('Story mount or modal container is missing.');
       this.allowedEvidence = new Set(story.chapters.flatMap(ch=>ch.evidence.map(e=>e.id)));
       this.allowedDialogue = new Set(story.chapters.flatMap(ch=>ch.characters.flatMap(p=>p.questions.map(q=>`${ch.id}:${p.id}:${q.id}`))));
+      this.allowedCharacterIntros = new Set(story.chapters.flatMap(ch=>ch.characters.map(p=>`${ch.id}:${p.id}:intro`)));
       this.bindEvents();
     }
     async start() {
+      this.applyPageAppearance();
       let saved = await this.repository.load(this.story.id);
       if(!saved&&this.story.legacySaveKey){const legacy=this.readLegacySave();if(legacy)saved=await this.repository.save(this.story.id,legacy,0).then(meta=>({state:legacy,...meta}));}
       this.state = this.normalize(saved?.state);
@@ -413,18 +543,43 @@
       if (!this.storageAvailable) this.toast('Progress could not be loaded from this browser.');
       return this;
     }
+    applyPageAppearance() {
+      const appearance=this.story.pageAppearance||{},body=document.body;
+      body.classList.toggle('has-page-appearance',Boolean(this.story.pageAppearance));
+      if(!this.story.pageAppearance)return;
+      const colorVars={surface:'--s6-surface',ink:'--s6-ink',accent:'--s6-green',accentSoft:'--s6-green-soft',border:'--s6-line',muted:'--s6-muted',gold:'--s6-gold',headingInk:'--s6-heading-ink',headingMuted:'--s6-heading-muted'};
+      for(const [name,value] of Object.entries(appearance.palette||{}))body.style.setProperty(colorVars[name],value);
+      if(appearance.backgroundImage)body.style.setProperty('--s6-page-image',`url("${new URL(appearance.backgroundImage,document.baseURI).href}")`);
+      if(appearance.backgroundPosition)body.style.setProperty('--s6-page-position',appearance.backgroundPosition);
+      if(appearance.backdropTint)body.style.setProperty('--s6-page-tint',appearance.backdropTint);
+      if(appearance.cursorTheme?.default)body.style.setProperty('--s6-cursor-default',`url("${new URL(appearance.cursorTheme.default,document.baseURI).href}") 10 34, auto`);
+      if(appearance.cursorTheme?.interactive)body.style.setProperty('--s6-cursor-interactive',`url("${new URL(appearance.cursorTheme.interactive,document.baseURI).href}") 1 1, pointer`);
+      if(appearance.cursorTheme?.disabled)body.style.setProperty('--s6-cursor-disabled',appearance.cursorTheme.disabled);
+      if(appearance.layout?.contentWidth)body.style.setProperty('--s6-content-width',`${appearance.layout.contentWidth}px`);
+      if(appearance.layout?.sidebarPercent)body.style.setProperty('--s6-sidebar-width',`${appearance.layout.sidebarPercent}%`);
+      if(appearance.layout?.surfaceOpacity!==undefined)body.style.setProperty('--s6-surface-strength',`${appearance.layout.surfaceOpacity*100}%`);
+    }
     readLegacySave() {
-      try {
-        for(const key of [this.story.legacySaveKey,...(this.story.legacySaveKeys||[])]){
+      for(const key of [this.story.legacySaveKey,...(this.story.legacySaveKeys||[])]){
+        try {
           const old=JSON.parse(global.localStorage.getItem(key)||'null');
           if(old)return this.convertLegacySave(old);
-        }
-        return null;
-      }catch{return null;}
+        }catch{}
+      }
+      return null;
     }
     convertLegacySave(old) {
         const state=freshState();state.chapter=old.chapter||0;state.found=old.found||[];
         state.solved=(old.solved||[]).map(index=>this.story.chapters[index]?.puzzle.id).filter(Boolean);
+        if(this.story.id==='vanishing-letter'){
+          const completed=new Set(Array.from({length:Math.max(0,Math.min(this.story.chapters.length-1,Number(old.chapter)||0))},(_,index)=>index));
+          const progress=[old.timelineSolved,old.drawer,old.token,old.finished];
+          progress.forEach((done,index)=>{if(done)completed.add(index+1);});
+          state.solved=[...completed].sort((a,b)=>a-b).map(index=>this.story.chapters[index]?.puzzle.id).filter(Boolean);
+          if(old.timelineSolved&&this.story.chapters[1]?.puzzle.type==='sequence')state.puzzleDrafts[this.story.chapters[1].puzzle.id]=old.timeline||this.story.chapters[1].puzzle.answer;
+          state.ending=old.resolution==='deliver'?'send':old.resolution==='keep'?'keep':null;
+          state.resolutionDone=Boolean(state.ending);
+        }
         state.completedDialogues=(old.heard||[]).map(key=>{const [chapter,person,question]=key.split(':').map(Number);return `${this.story.chapters[chapter]?.id}:${this.story.chapters[chapter]?.characters[person]?.id}:q${question+1}`;});
         state.transcript=(old.transcript||[]).map(line=>({...line,chapter:Math.min(state.chapter,this.story.chapters.length-1)}));
         if(Array.isArray(old.bookOrder)){
@@ -432,12 +587,13 @@
           state.bookshelfSlots=old.bookOrder;
         }
         state.booksSeen=old.bookSeen||[];state.bookSlipReady=Boolean(old.bookSlipReady);
-        state.ending=old.ending||null;state.resolutionDone=Boolean(old.ending);
+        state.ending=old.ending||state.ending||null;state.resolutionDone=Boolean(state.ending);
         return state;
     }
     normalize(raw) {
       const state = freshState();
       if (!raw || typeof raw !== 'object') return state;
+      this.allowedCharacterIntros ||= new Set(this.story.chapters.flatMap(ch=>ch.characters.map(person=>`${ch.id}:${person.id}:intro`)));
       state.openingSeen=raw.openingSeen!==false;
       state.rescueDone=Boolean(raw.rescueDone||raw.ending);
       state.resolutionDone=Boolean(raw.resolutionDone||raw.ending);
@@ -447,12 +603,16 @@
       state.booksSeen=Array.isArray(raw.booksSeen)?[...new Set(raw.booksSeen.filter(id=>candidateIds.includes(id)))]:[];
       const slots=raw.bookshelfSlots;
       state.bookshelfSlots=Array.isArray(slots)&&slots.length===4&&new Set(slots.filter(Boolean)).size===slots.filter(Boolean).length&&slots.every(id=>id===null||candidateIds.includes(id))?[...slots]:[null,null,null,null];
+      state.bookInspectionId=candidateIds.includes(raw.bookInspectionId)?raw.bookInspectionId:null;
       state.rescueLine=Number.isInteger(raw.rescueLine)?Math.max(0,Math.min(this.story.chapters.at(-1).rescueDialogue?.lines.length-1||0,raw.rescueLine)):0;
       state.found = [...new Set((Array.isArray(raw.found)?raw.found:[]).filter(id=>this.allowedEvidence.has(id)))];
       state.objectStates=normalizeObjectStates(this.story,raw.objectStates);
       const savedSolved=new Set((Array.isArray(raw.solved)?raw.solved:[]).filter(id=>this.story.chapters.some(ch=>ch.puzzle.id===id)));
       for(const chapter of this.story.chapters){if(!savedSolved.has(chapter.puzzle.id))break;state.solved.push(chapter.puzzle.id);}
       state.completedDialogues = [...new Set((Array.isArray(raw.completedDialogues)?raw.completedDialogues:[]).filter(id=>this.allowedDialogue.has(id)))];
+      state.characterIntrosSeen = [...new Set((Array.isArray(raw.characterIntrosSeen)?raw.characterIntrosSeen:[]).filter(id=>this.allowedCharacterIntros.has(id)))];
+      for(const id of state.completedDialogues){const [chapterId,personId]=id.split(':');const introKey=`${chapterId}:${personId}:intro`;if(this.allowedCharacterIntros.has(introKey))state.characterIntrosSeen.push(introKey);}
+      state.characterIntrosSeen=[...new Set(state.characterIntrosSeen)];
       state.transcript = (Array.isArray(raw.transcript)?raw.transcript:[]).filter(line=>line&&typeof line.speaker==='string'&&typeof line.text==='string'&&Number.isInteger(line.chapter)).map(line=>({chapter:Math.max(0,Math.min(this.story.chapters.length-1,line.chapter)),speaker:line.speaker.slice(0,80),text:line.text.slice(0,2000)})).slice(-300);
       state.chapter = Number.isInteger(raw.chapter)?Math.max(0,Math.min(this.story.chapters.length-1,raw.chapter)):0;
       state.ending = state.solved.length===this.story.chapters.length&&this.story.chapters.at(-1).endings?.some(ending=>ending.id===raw.ending)?raw.ending:null;
@@ -460,9 +620,15 @@
       state.puzzleRouteSelections = {};
       for(const chapter of this.story.chapters){
         const puzzle=chapter.puzzle;
+        if(puzzle.type==='input'){const draft=raw.puzzleDrafts?.[puzzle.id];state.puzzleDrafts[puzzle.id]=typeof draft==='string'?draft.slice(0,40):'';continue;}
         if(puzzle.type!=='sequence')continue;
         const validIds=new Set(puzzle.items.map(item=>item.id));
         const draft=raw.puzzleDrafts?.[puzzle.id];
+        if(puzzle.presentation?.mode==='timeline-clean'){
+          const orderedList=puzzle.presentation.layout==='ordered-list',valid=Array.isArray(draft)&&draft.length===puzzle.items.length&&(orderedList?new Set(draft).size===draft.length&&draft.every(id=>validIds.has(id)):new Set(draft.filter(Boolean)).size===draft.filter(Boolean).length&&draft.every(id=>id===null||validIds.has(id)));
+          state.puzzleDrafts[puzzle.id]=valid?[...draft]:orderedList?(puzzle.presentation.initialOrder||puzzle.items.map(item=>item.id)):Array(puzzle.items.length).fill(null);
+          continue;
+        }
         state.puzzleDrafts[puzzle.id]=Array.isArray(draft)&&draft.length===validIds.size&&new Set(draft).size===validIds.size&&draft.every(id=>validIds.has(id))?[...draft]:puzzle.items.map(item=>item.id);
         if(isVisualRoute(puzzle)||isMachinery(puzzle)){
           state.puzzleRouteSelections[puzzle.id]=normalizeRouteSelection(raw.puzzleRouteSelections?.[puzzle.id],routeChoices(puzzle).map(item=>item.id),puzzle.items.length);
@@ -479,7 +645,9 @@
           const lines=question?[{speaker:'You',text:question.ask},{speaker:replySpeaker,text:question.reply},{speaker:'You',text:question.followUp},{speaker:replySpeaker,text:question.followReply}]:[];
           const last=state.transcript.at(-1);
           const recorded=d.recordedLine===line&&last?.chapter===d.chapter&&last?.speaker===lines[line]?.speaker&&last?.text===lines[line]?.text?line:null;
-          state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:d.questionId||null,phase:d.phase,line,recordedLine:recorded};
+          const introKey=`${this.story.chapters[d.chapter].id}:${person.id}:intro`;
+          const showIntro=typeof d.showIntro==='boolean'?d.showIntro:!state.characterIntrosSeen.includes(introKey);
+          state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:d.questionId||null,phase:d.phase,line,recordedLine:recorded,...(d.phase==='menu'?{showIntro}: {})};
         }
       }
       return state;
@@ -489,6 +657,8 @@
     isSolved(chapter) { return this.state.solved.includes(this.story.chapters[chapter].puzzle.id); }
     completed(id) { return this.state.completedDialogues.includes(id); }
     dialogueKey(personId,questionId,chapterIndex=this.state.chapter) { return `${this.story.chapters[chapterIndex].id}:${personId}:${questionId}`; }
+    characterIntroKey(personId,chapterIndex=this.state.chapter) { return `${this.story.chapters[chapterIndex].id}:${personId}:intro`; }
+    hasCharacterConversation(personId,chapterIndex=this.state.chapter) { const prefix=`${this.story.chapters[chapterIndex].id}:${personId}:`;return Boolean(this.state.characterIntrosSeen?.includes(this.characterIntroKey(personId,chapterIndex))||this.state.completedDialogues?.some(id=>id.startsWith(prefix))); }
     condition(rule, depth=0) {
       return evaluateCondition(rule,{hasEvidence:id=>this.has(id),hasDialogue:id=>this.completed(id),hasPuzzle:id=>this.state.solved.includes(id),hasChapter:index=>this.isSolved(index)},depth);
     }
@@ -518,8 +688,13 @@
     toast(message) { this.lastError=message; this.render(); }
     bindEvents() {
       this.root.addEventListener('click',event=>this.onClick(event));
-      this.root.addEventListener('change',event=>{if(event.target.id==='s6-import-file'&&event.target.files?.[0]){this.importSave(event.target.files[0]);event.target.value='';}});
+      this.root.addEventListener('change',event=>{
+        if(event.target.id==='s6-import-file'&&event.target.files?.[0]){this.importSave(event.target.files[0]);event.target.value='';}
+        if(event.target.dataset?.s6==='chapter-jump')this.goToChapter(Number(event.target.value));
+      });
       this.overlay.addEventListener('click',event=>this.onClick(event));
+      this.overlay.addEventListener('click',event=>this.selectCodeCharacter(event.target.closest?.('.s6-code-box')));
+      this.overlay.addEventListener('input',event=>{const input=event.target.closest?.('[data-s6="puzzle-input"]');if(!input)return;this.state.puzzleDrafts[this.current().puzzle.id]=input.value.slice(0,40);const boxes=input.closest('.s6-code-entry')?.querySelectorAll('.s6-code-box');boxes?.forEach((box,index)=>{const character=input.value[index],placeholder=box.dataset.placeholder||'';box.textContent=character||placeholder;box.classList.toggle('is-placeholder',!character);});});
       const previewMachine=(event,active)=>{
         const control=event.target.closest?.('.s6-machine-control,.s6-machine-hotspot');
         const board=control?.closest('.s6-machine-puzzle');
@@ -532,10 +707,10 @@
       this.overlay.addEventListener('focusin',event=>previewMachine(event,true));
       this.overlay.addEventListener('focusout',event=>previewMachine(event,false));
       this.overlay.addEventListener('wheel',event=>{if(event.target.closest('.s6-garden-svg')){event.preventDefault();this.changeGardenZoom(event.deltaY<0?.2:-.2)}else if(event.target.closest('.s6-zoom-view')){event.preventDefault();this.changeZoom(event.deltaY<0?.15:-.15)}},{passive:false});
-      this.overlay.addEventListener('pointerdown',event=>{this.gardenPanStart(event);this.zoomStart(event)});
-      this.overlay.addEventListener('pointermove',event=>{this.gardenPanMove(event);this.zoomMove(event)});
-      this.overlay.addEventListener('pointerup',event=>{this.gardenPanEnd(event);this.zoomEnd(event)});
-      this.overlay.addEventListener('pointercancel',event=>{this.gardenPanEnd(event);this.zoomEnd(event)});
+      this.overlay.addEventListener('pointerdown',event=>{this.bookPointerStart(event);this.gardenPanStart(event);this.zoomStart(event)});
+      this.overlay.addEventListener('pointermove',event=>{this.bookPointerMove(event);this.gardenPanMove(event);this.zoomMove(event)});
+      this.overlay.addEventListener('pointerup',event=>{this.bookPointerEnd(event);this.gardenPanEnd(event);this.zoomEnd(event)});
+      this.overlay.addEventListener('pointercancel',event=>{this.bookPointerEnd(event,true);this.gardenPanEnd(event);this.zoomEnd(event)});
       this.overlay.addEventListener('dragstart',event=>this.sequenceDragStart(event));
       this.overlay.addEventListener('dragover',event=>this.sequenceDragOver(event));
       this.overlay.addEventListener('drop',event=>this.sequenceDrop(event));
@@ -577,18 +752,120 @@
       const subject=this.story.caseSubject,recovered=this.isSolved(this.story.chapters.length-1);
       const caseSubjectCard=subject?(recovered?`<button type="button" class="s6-case-subject is-rescued" data-s6="edda-conversation" aria-label="Speak with ${escapeHtml(subject.name)} after her rescue"><span class="s6-person-mark">${this.portrait(subject)}</span><span><strong>${escapeHtml(subject.name)}</strong><small>${escapeHtml(subject.recoveredDescription||'Found safe.')} · Speak with her</small></span><span class="s6-person-state">Speak →</span></button>`:`<div class="s6-case-subject"><span class="s6-person-mark">${this.portrait(subject)}</span><span><strong>${escapeHtml(subject.name)}</strong><small>${escapeHtml(subject.description)}</small></span><span class="s6-person-state">Missing</span></div>`):'';
       const status=solved?'Chapter solved. Your progress is saved.':gate?'Evidence and conversations complete. Solve the chapter puzzle to continue.':`${foundInChapter} of ${ch.evidence.length} clues examined; talk to the people here to complete the lead.`;
-      this.root.innerHTML=`<header class="s6-heading"><div><span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · ${escapeHtml(this.story.genre)} · ${this.story.duration}</span><h1>${escapeHtml(this.story.title)}</h1><p>${escapeHtml(this.story.tagline)}</p></div><div class="s6-progress"><div class="s6-progress-label"><span>Case progress</span><span>${this.progress()}%</span></div><div class="s6-progress-track" role="progressbar" aria-valuenow="${this.progress()}" aria-valuemin="0" aria-valuemax="100"><span style="width:${this.progress()}%"></span></div></div></header>
+      this.root.innerHTML=`<header class="s6-heading"><div><span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · ${escapeHtml(this.story.genre)} · ${this.story.duration}</span><h1>${escapeHtml(this.story.title)}</h1><p>${escapeHtml(this.story.tagline)}</p></div><div class="s6-progress"><div class="s6-progress-label"><span>Story progress</span><span>${this.progress()}%</span></div><div class="s6-progress-track" role="progressbar" aria-valuenow="${this.progress()}" aria-valuemin="0" aria-valuemax="100"><span style="width:${this.progress()}%"></span></div></div></header>
       <nav class="s6-tabs" aria-label="Unlocked locations">${tabs}</nav>
       <div class="s6-game"><section class="s6-scene-card"><header class="s6-scene-head"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} of ${String(this.story.chapters.length).padStart(2,'0')}</span><h2>${escapeHtml(ch.title)}</h2><p>${escapeHtml(ch.subtitle)}</p></header><div class="s6-scene" style="aspect-ratio:${ch.spatial?.master.width||1672}/${ch.spatial?.master.height||941}"><img src="${escapeHtml(this.sceneSource(ch))}" alt="Scene: ${escapeHtml(ch.location)}">${regions}${this.debugMarkup(ch)}${hotspots}</div><div class="s6-scene-foot"><span>${foundInChapter} of ${ch.evidence.length} evidence collected</span><span class="s6-foot-help">Select a numbered marker or a clue below${this.visualDebug?' · Developer geometry preview':''}</span></div>${this.visualDebug?`<button class="s6-quiet s6-debug-toggle" data-s6="debug-toggle">${this.debugOverlay?'Hide':'Show'} scene geometry</button>`:''}<div class="s6-object-list">${ch.evidence.map((e,i)=>`<button class="${this.has(e.id)?'is-found':''}" data-s6="inspect" data-id="${e.id}">${i+1}. ${escapeHtml(e.title)} ${this.has(e.id)?'✓':''}</button>`).join('')}</div></section>
-      <aside class="s6-panel"><section class="s6-panel-main"><h2>Investigation</h2><p class="s6-objective">${escapeHtml(ch.intro)}</p><div class="s6-completion ${solved?'is-done':''}">${solved?'✓ Chapter complete':gate?'✓ Investigation gate open':escapeHtml(status)}</div><div class="s6-actions"><button class="s6-btn" data-s6="puzzle" ${!gate||solved?'disabled':''}>${escapeHtml(puzzle.title)} →</button>${solved&&this.state.chapter<this.story.chapters.length-1?'<button class="s6-btn" data-s6="continue">Continue to next chapter →</button>':''}${solved&&this.state.chapter===this.story.chapters.length-1&&!this.state.ending?(ch.rescueDialogue&&!this.state.rescueDone?'<button class="s6-btn" data-s6="rescue-dialogue">Continue Edda’s conversation →</button>':'<button class="s6-btn" data-s6="ending">Choose the next step →</button>'):''}${this.state.ending?'<button class="s6-quiet" data-s6="ending-review">Review the resolution →</button>':''}<button class="s6-quiet" data-s6="hint">💡 Progressive hint</button></div>${this.state.ending?`<div class="s6-note"><strong>Case resolved.</strong> ${escapeHtml(this.story.chapters.at(-1).endings.find(item=>item.id===this.state.ending)?.label||'')}</div>`:''}${this.lastError?`<p class="s6-feedback" role="status">${escapeHtml(this.lastError)}</p>`:''}</section><section><hr><h3>People in this case</h3><div class="s6-people">${people}${caseSubjectCard}</div><p class="s6-foot-help">Ask an available person about a clue, then follow up. Their answers are added to your conversation log.</p></section></aside></div>
-      <section class="s6-notebook"><div class="s6-notebook-head"><h2>Case notebook</h2><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${foundInChapter} of ${ch.evidence.length} evidence collected</span></div>${evidence.length?`<div class="s6-evidence-grid">${evidence.map(item=>`<button class="s6-evidence-card" data-s6="inspect" data-id="${item.id}"><span class="s6-evidence-thumb-frame">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-evidence-thumb')}</span><span class="s6-evidence-copy"><small class="s6-evidence-index">Evidence ${String(ch.evidence.findIndex(entry=>entry.id===item.id)+1).padStart(2,'0')}</small><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.note||'Evidence collected · Examine again')}</small></span></button>`).join('')}</div>`:'<p class="s6-foot-help">Your notebook is empty. Examine a marked object in the scene to begin.</p>'}<div class="s6-tools"><p>${this.storageAvailable?'Progress saved in this browser.':'Progress could not be saved. Export a copy before closing this page.'}${this.savedAt?` Last saved ${new Date(this.savedAt).toLocaleString()}.`:''}</p><button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="export">Export save</button><button class="s6-quiet" data-s6="import">Import save</button><button class="s6-quiet s6-restart" data-s6="restart">Restart this story</button><input type="file" id="s6-import-file" accept="application/json,.json" class="s6-hidden"></div></section>`;
+      <aside class="s6-panel"><section class="s6-panel-main"><h2>Investigation</h2><p class="s6-objective">${escapeHtml(ch.intro)}</p><div class="s6-completion ${solved?'is-done':''}">${solved?'✓ Chapter complete':gate?'✓ Investigation gate open':escapeHtml(status)}</div><div class="s6-actions"><button class="s6-btn" data-s6="puzzle" ${!gate||solved?'disabled':''}>${escapeHtml(puzzle.title)} →</button>${solved&&this.state.chapter<this.story.chapters.length-1?'<button class="s6-btn" data-s6="continue">Next chapter →</button>':''}${solved&&this.state.chapter===this.story.chapters.length-1&&!this.state.ending?(ch.rescueDialogue&&!this.state.rescueDone?'<button class="s6-btn" data-s6="rescue-dialogue">Continue Edda’s conversation →</button>':'<button class="s6-btn" data-s6="ending">Choose the next step →</button>'):''}${this.state.ending?'<button class="s6-quiet" data-s6="ending-review">Review the resolution →</button>':''}<button class="s6-quiet" data-s6="hint">💡 Progressive hint</button></div>${this.state.ending?`<div class="s6-note"><strong>Case resolved.</strong> ${escapeHtml(this.story.chapters.at(-1).endings.find(item=>item.id===this.state.ending)?.label||'')}</div>`:''}${this.lastError?`<p class="s6-feedback" role="status">${escapeHtml(this.lastError)}</p>`:''}</section><section><hr><h3>People in this case</h3><div class="s6-people">${people}${caseSubjectCard}</div><p class="s6-foot-help">Ask an available person about a clue, then follow up. Their answers are added to your conversation log.</p></section></aside></div>
+      <section class="s6-notebook"><div class="s6-notebook-head"><h2>Your Notebook</h2><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${foundInChapter} of ${ch.evidence.length} evidence collected</span></div>${evidence.length?`<div class="s6-evidence-grid">${evidence.map(item=>`<button class="s6-evidence-card" data-s6="inspect" data-id="${item.id}"><span class="s6-evidence-thumb-frame">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-evidence-thumb')}</span><span class="s6-evidence-copy"><small class="s6-evidence-index">Evidence ${String(ch.evidence.findIndex(entry=>entry.id===item.id)+1).padStart(2,'0')}</small><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.note||'Evidence collected · Examine again')}</small></span></button>`).join('')}</div>`:'<p class="s6-foot-help">Your notebook is empty. Examine a marked object in the scene to begin.</p>'}<div class="s6-tools"><p>${this.storageAvailable?'Progress saved in this browser.':'Progress could not be saved. Export a copy before closing this page.'}${this.savedAt?` Last saved ${new Date(this.savedAt).toLocaleString()}.`:''}</p><button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="export">Export save</button><button class="s6-quiet" data-s6="import">Import save</button><button class="s6-quiet s6-restart" data-s6="restart">Restart this story</button><input type="file" id="s6-import-file" accept="application/json,.json" class="s6-hidden"></div></section>`;
+      if(solved&&this.story.pageAppearance){
+        const completion=this.root.querySelector('.s6-completion');
+        if(completion)completion.innerHTML=`<span class="s6-completion-icon" aria-hidden="true">✓</span><span class="s6-completion-copy"><strong>Chapter complete</strong><small>${foundInChapter===ch.evidence.length?`You found all ${ch.evidence.length} pieces of evidence in this chapter.`:`You found ${foundInChapter} of ${ch.evidence.length} pieces of evidence in this chapter.`}</small></span>`;
+      }
+      if(this.story.pageAppearance)this.decorateInvestigationPage(ch,foundInChapter,solved);
       if(solved&&isVisualRoute(puzzle)){
         const review=this.root.querySelector('[data-s6="puzzle"]');
         if(review){review.disabled=false;review.textContent='Review the route →';}
       }
     }
+    decorateInvestigationPage(ch,foundInChapter,solved) {
+      const heading=this.root.querySelector('.s6-heading');
+      if(heading){
+        const intro=heading.firstElementChild,progress=heading.querySelector('.s6-progress');
+        const back=document.createElement('a');back.href='index.html#catalog';back.className='s6-back-stories';back.textContent='← Back to stories';intro.prepend(back);
+        const controls=document.createElement('div');controls.className='s6-heading-controls';
+        const locations=document.createElement('button');locations.type='button';locations.className='s6-quiet s6-locations-button';locations.dataset.s6='locations';locations.innerHTML='<span aria-hidden="true">⌖</span> Locations';
+        controls.append(locations);if(progress)controls.append(progress);heading.append(controls);
+      }
+      const foot=this.root.querySelector('.s6-scene-foot');
+      if(foot){
+        foot.firstElementChild.textContent=`${ch.evidence.length-foundInChapter} clues left to examine`;
+        foot.lastElementChild.textContent='Select a marker or an object below';
+      }
+      this.root.querySelectorAll('.s6-object-list button').forEach((button,index)=>{const item=ch.evidence[index];button.textContent=`${index+1}. ${item.title}${this.has(item.id)?' ✓':''}`;});
+      const actions=this.root.querySelector('.s6-actions');
+      if(actions){
+        const row=document.createElement('div');row.className='s6-chapter-shortcuts';
+        const label=document.createElement('details');label.className='s6-chapter-select';
+        const summary=document.createElement('summary');summary.innerHTML=`<span class="s6-chapter-picker-icon">${chapterPickerIcon(this.story.pageAppearance.chapterPickerIcon)}</span><span>${escapeHtml(ch.location)}</span><span aria-hidden="true" class="s6-chapter-chevron">⌄</span>`;label.setAttribute('aria-label','Jump to chapter');label.append(summary);
+        const options=document.createElement('div');options.className='s6-chapter-options';
+        this.story.chapters.forEach((chapter,index)=>{const option=document.createElement('button');option.type='button';option.className='s6-chapter-option';option.dataset.s6='chapter';option.dataset.index=String(index);option.disabled=!this.chapterUnlocked(index);option.setAttribute('aria-current',index===this.state.chapter?'step':'false');option.innerHTML=`<span>${String(index+1).padStart(2,'0')} · ${escapeHtml(chapter.location)}</span>${index===this.state.chapter?'<span aria-hidden="true">✓</span>':''}`;options.append(option);});
+        label.append(options);row.append(label);
+        const continueButton=actions.querySelector('[data-s6="continue"]');if(continueButton)row.append(continueButton);
+        actions.prepend(row);
+        if(solved){
+          const review=document.createElement('button');review.type='button';review.className='s6-quiet s6-review-action';review.dataset.s6='review-puzzle';review.textContent='⌕     Chapter recap  →';
+          actions.insertBefore(review,actions.querySelector('[data-s6="hint"]'));
+        }
+      }
+      if(this.story.pageAppearance.peopleMode==='all')this.showAllPeopleInPanel(ch);
+      const notebook=this.root.querySelector('.s6-notebook'),tools=this.root.querySelector('.s6-tools');
+      if(notebook&&tools)notebook.after(tools);
+      const track=notebook?.querySelector('.s6-evidence-grid');
+      this.notebookResizeObserver?.disconnect();
+      if(!track)return;
+      const carousel=document.createElement('div');carousel.className='s6-notebook-carousel';
+      const arrow=(direction,label,symbol)=>{const button=document.createElement('button');button.type='button';button.className=`s6-notebook-arrow is-${direction<0?'previous':'next'}`;button.dataset.s6='notebook-scroll';button.dataset.direction=String(direction);button.setAttribute('aria-label',label);button.textContent=symbol;button.hidden=true;return button;};
+      track.before(carousel);carousel.append(arrow(-1,'Previous notebook clues','‹'),track,arrow(1,'Next notebook clues','›'));
+      track.addEventListener('scroll',()=>this.updateNotebookNavigation(),{passive:true});
+      if(global.ResizeObserver){this.notebookResizeObserver=new global.ResizeObserver(()=>this.updateNotebookNavigation());this.notebookResizeObserver.observe(track);}
+      else if(!this.notebookWindowResizeHandler&&global.addEventListener){this.notebookWindowResizeHandler=()=>this.updateNotebookNavigation();global.addEventListener('resize',this.notebookWindowResizeHandler);}
+      this.updateNotebookNavigation();
+    }
+    showAllPeopleInPanel(ch) {
+      const list=this.root.querySelector('.s6-people');if(!list)return;
+      const roster=[],seen=new Set();
+      this.story.chapters.forEach(chapter=>chapter.characters.forEach(person=>{if(!seen.has(person.id)){seen.add(person.id);roster.push(person);}}));
+      list.innerHTML=roster.map(person=>{
+        const current=ch.characters.find(entry=>entry.id===person.id),available=current&&this.characterAvailable(current,ch);
+        const chapterIndex=this.story.chapters.findIndex((chapter,index)=>this.chapterUnlocked(index)&&chapter.characters.some(entry=>entry.id===person.id));
+        const destination=chapterIndex<0?null:this.story.chapters[chapterIndex];
+        const active=Boolean(current&&available),locked=!active&&!destination;
+        const subtitle=active?`${person.role} · Speak here`:destination?`${person.role} · ${destination.location}`:`${person.role} · Meet in a later chapter`;
+        return `<button type="button" class="s6-person${active?' is-here':''}" data-s6="${active?'character':'person-jump'}" ${active?`data-id="${escapeHtml(person.id)}"`:destination?`data-index="${chapterIndex}"`:'disabled'} aria-label="${active?'Speak with':locked?'Not yet met:':'Visit the chapter with'} ${escapeHtml(person.name)}"><span class="s6-person-mark">${this.portrait(person)}</span><span><strong>${escapeHtml(person.name)}</strong><small>${escapeHtml(subtitle)}</small></span><span class="s6-person-state">${active?'Speak →':locked?'Later':'Visit →'}</span></button>`;
+      }).join('');
+      const help=this.root.querySelector('.s6-panel .s6-foot-help');
+      if(help)help.textContent='Select someone here to talk, or revisit an unlocked location to meet them.';
+    }
+    showLocations() {
+      const cards=this.story.chapters.map((chapter,index)=>{
+        const unlocked=this.chapterUnlocked(index),current=index===this.state.chapter;
+        return `<button type="button" class="s6-location-card${current?' is-current':''}" data-s6="chapter" data-index="${index}" ${unlocked?'':'disabled'} ${current?'aria-current="location"':''}><img src="${escapeHtml(this.sceneSource(chapter))}" alt="" loading="lazy"><span><strong>${String(index+1).padStart(2,'0')} · ${escapeHtml(chapter.location)}</strong><small>${current?'You are here':unlocked?'Visit location →':'Not yet unlocked'}</small></span></button>`;
+      }).join('');
+      this.showModal('Locations',`<div class="s6-locations"><span class="s6-eyebrow">${escapeHtml(this.story.title)}</span><h2>Locations</h2><p>Return to any unlocked chapter.</p><div class="s6-location-list">${cards}</div></div>`,`<button class="s6-quiet" data-s6="close">Return to investigation</button>`);
+    }
+    updateNotebookNavigation() {
+      const track=this.root.querySelector('.s6-notebook-carousel .s6-evidence-grid'),carousel=track?.parentElement;
+      if(!carousel)return;
+      const overflow=track.scrollWidth>track.clientWidth+2;
+      carousel.classList.toggle('is-overflowing',overflow);
+      const previous=carousel.querySelector('.s6-notebook-arrow.is-previous'),next=carousel.querySelector('.s6-notebook-arrow.is-next');
+      previous.hidden=next.hidden=!overflow;
+      previous.disabled=!overflow||track.scrollLeft<=2;
+      next.disabled=!overflow||track.scrollLeft>=track.scrollWidth-track.clientWidth-2;
+    }
+    scrollNotebook(direction) {
+      const track=this.root.querySelector('.s6-notebook-carousel .s6-evidence-grid');if(!track)return;
+      const card=track.querySelector('.s6-evidence-card'),distance=(card?.getBoundingClientRect().width||track.clientWidth*.75)+10;
+      track.scrollBy({left:direction*distance,behavior:global.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    }
+    showPuzzleReview() {
+      if(!this.isSolved(this.state.chapter))return;
+      const ch=this.current(),p=ch.puzzle,art=p.presentation;
+      if(art?.layout==='catalog-inspection'){
+        this.showModal('Review the revelations',`<h2 class="s6-clue-title">${escapeHtml(p.title)}</h2><div class="s6-clue-image-wrap"><img class="s6-recap-image" src="${escapeHtml(art.solvedImage)}" alt="The correctly arranged books and opened compartment revealing the B-17 slip"></div><div class="s6-note s6-clue-description"><span class="s6-clue-description-icon" aria-hidden="true"><svg viewBox="0 0 32 30"><path d="M16 7C12 3 6 4 2 5v21c5-1 10-1 14 3 4-4 9-4 14-3V5c-5-1-10-2-14 2Z"/><path d="M16 7v22M5 9v13m22-13v13"/></svg></span><span>${escapeHtml(p.success||'A folded slip marked B-17 falls from the final book.')}</span></div>`,`<button type="button" class="s6-btn" data-s6="books-view-slip">⌕ Examine the B-17 note →</button><button class="s6-quiet" data-s6="close">← Return to investigation</button>`,{clueWindow:true,chapterNumber:this.state.chapter+1,clueHeader:`Chapter ${String(this.state.chapter+1).padStart(2,'0')} · Solved puzzle`,recap:true});
+        return;
+      }
+      const answer=p.type==='choice'?p.options.find(option=>option.id===p.answer)?.label||p.answer:(p.answer||[]).map(id=>p.items.find(item=>item.id===id)?.label||id).join(' → ');
+      this.showModal('Review the revelations',`<div class="s6-revelation-review"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · solved puzzle</span><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p><div class="s6-note"><strong>The solution</strong><br>${escapeHtml(answer)}</div><p>${escapeHtml(p.success||ch.clue||'')}</p></div>`,`<button class="s6-quiet" data-s6="close">Return to investigation</button>`);
+    }
+    modalHeaderMarkup(options,closeButton) {
+      const brandMarkup=`<svg class="s6-clue-book-icon" viewBox="0 0 48 42" aria-hidden="true"><path d="M24 9C18 3 9 4 3 6v29c8-2 15-1 21 4 6-5 13-6 21-4V6c-8-2-15-3-21 3Z"/><path d="M24 9v30M7 11v19m34-19v19"/></svg><div><strong>Metriva Stories</strong><span>${escapeHtml(this.story.title)}</span></div>`;
+      const position=options.clueWindow?`<span class="s6-clue-position">${escapeHtml(options.clueHeader||`Chapter ${String(options.chapterNumber||1).padStart(2,'0')} · Evidence ${String(options.evidenceNumber||1).padStart(2,'0')} of ${String(options.evidenceTotal||1).padStart(2,'0')}`)}</span>`:'';
+      return `<header class="s6-dialog-top s6-clue-brand s6-brand-header">${brandMarkup}${position}</header>`;
+    }
     showModal(title,content,actions='',options={}) {
       const pendingVoice=this.pendingVoice;this.pendingVoice=null;
+      this.scrollPageTopOnClose=Boolean(options.scrollPageTopOnClose);
       this.stopVoice();
       this.stopCharacterAnimation();
       if(this.overlay.classList.contains('is-hidden'))this.lastFocus=document.activeElement;
@@ -596,9 +873,10 @@
       this.root.inert=true;document.querySelector('.story6-top')?.setAttribute('inert','');document.querySelector('.story6-footer')?.setAttribute('inert','');
       const closeLabel=options.stack?'Close and return to the previous view':'Close this window';
       const closeButton=`<button type="button" class="s6-close" data-s6="close" aria-label="${closeLabel}" title="${closeLabel}"><span aria-hidden="true">×</span></button>`;
-      const header=`<header class="s6-dialog-top"><span>Metriva · ${escapeHtml(this.story.title)}</span>${options.clueScroll?'':closeButton}</header>`;
+      const header=this.modalHeaderMarkup(options,closeButton);
       const body=`${header}${content}${actions?`<footer class="s6-dialog-actions">${actions}</footer>`:''}`;
-      const markup=options.clueScroll?`<section class="s6-dialog s6-clue-dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><div class="s6-clue-scroll">${body}</div>${closeButton}</section>`:`<section class="s6-dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">${body}</section>`;
+      const windowClass=options.clueWindow?` s6-evidence-window${options.cluePortrait?' s6-evidence-window-portrait':''}${options.recap?' s6-evidence-window-recap':''}`:'';
+      const markup=options.clueScroll?`<section class="s6-dialog s6-clue-dialog${windowClass}" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><div class="s6-clue-scroll">${body}</div>${closeButton}</section>`:`<section class="s6-dialog${windowClass}" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><div class="s6-dialog-close-anchor">${closeButton}</div>${body}</section>`;
       const parent=options.stack?this.overlay.lastElementChild:null;
       if(parent){
         this.modalStack.push({dialog:parent,opener:document.activeElement});
@@ -620,7 +898,8 @@
         this.startCharacterAnimation();
         return;
       }
-      this.completionToken++;this.routeConfirming=null;this.overlay.classList.add('is-hidden');this.overlay.innerHTML='';this.root.inert=false;document.querySelector('.story6-top')?.removeAttribute('inert');document.querySelector('.story6-footer')?.removeAttribute('inert');if(this.lastFocus?.isConnected)this.lastFocus.focus();else this.root.querySelector('button:not(:disabled)')?.focus();
+      const scrollPageTop=this.scrollPageTopOnClose;this.scrollPageTopOnClose=false;
+      this.completionToken++;this.routeConfirming=null;this.overlay.classList.add('is-hidden');this.overlay.innerHTML='';this.root.inert=false;document.querySelector('.story6-top')?.removeAttribute('inert');document.querySelector('.story6-footer')?.removeAttribute('inert');if(this.lastFocus?.isConnected)this.lastFocus.focus();else this.root.querySelector('button:not(:disabled)')?.focus();if(scrollPageTop)global.scrollTo?.({top:0,behavior:'smooth'});
     }
     findEvidence(id) { return this.story.chapters.flatMap((chapter,index)=>chapter.evidence.map(item=>({...item,chapter:index}))).find(item=>item.id===id); }
     inspect(id,stack=false,fromScene=false) {
@@ -629,7 +908,9 @@
       if(fromScene&&item.conversationOnInspect){this.openCharacter(item.conversationOnInspect);return;}
       const chapter=this.story.chapters[item.chapter];
       const number=chapter.evidence.findIndex(entry=>entry.id===item.id)+1;
-      this.showModal(item.title,`<span class="s6-eyebrow">Chapter ${String(item.chapter+1).padStart(2,'0')} · Evidence ${String(number).padStart(2,'0')} of ${String(chapter.evidence.length).padStart(2,'0')}</span><h2>${escapeHtml(item.title)}</h2>${evidenceImageMarkup(chapter,item,this.state.objectStates,item.document?'s6-evidence-preview has-document':'s6-evidence-preview')}${readableDetailMarkup(item)}${item.document?`<details class="s6-readable-transcript"><summary>Read transcription</summary>${documentMarkup(item.document)}</details>`:''}<div class="s6-note">${escapeHtml(item.detail)}</div><p class="s6-foot-help">${escapeHtml(item.note||'Added to your notebook.')}</p>`,`<button class="s6-btn" data-s6="zoom" data-id="${item.id}">⊕ Zoom clue image →</button>${item.conversationOnInspect?`<button class="s6-quiet" data-s6="character" data-id="${escapeHtml(item.conversationOnInspect)}">Speak with ${escapeHtml(chapter.characters.find(person=>person.id===item.conversationOnInspect)?.name||'this person')} →</button>`:''}${item.document?`<button class="s6-quiet" data-s6="read-document" data-id="${item.id}">Enlarge written text →</button>`:''}<button class="s6-quiet" data-s6="close">${stack?'Back to puzzle':'Return to investigation'}</button>`,{stack,clueScroll:true});
+      const extraLinks=(Array.isArray(item.links)?item.links:[]).map(link=>({link,href:typeof link?.href==='string'?safeEvidenceHref(link.href):null})).filter(entry=>entry.href&&typeof entry.link.label==='string').map(({link,href})=>`<a class="s6-quiet s6-clue-link" href="${escapeHtml(href)}"${/^https?:\/\//i.test(href)?' target="_blank" rel="noopener noreferrer"':''}>${escapeHtml(link.label)} →</a>`).join('');
+      const imageRatio=evidenceImagePresentation(chapter,item,this.state.objectStates).ratio;
+      this.showModal(item.title,`<h2 class="s6-clue-title">${escapeHtml(item.title)}</h2><div class="s6-clue-image-wrap">${evidenceImageMarkup(chapter,item,this.state.objectStates,item.document?'s6-evidence-preview has-document s6-clue-image':'s6-evidence-preview s6-clue-image')}</div><div class="s6-note s6-clue-description"><span class="s6-clue-description-icon" aria-hidden="true"><svg viewBox="0 0 32 30"><path d="M16 7C12 3 6 4 2 5v21c5-1 10-1 14 3 4-4 9-4 14-3V5c-5-1-10-2-14 2Z"/><path d="M16 7v22M5 9v13m22-13v13"/></svg></span><span>${escapeHtml(item.detail)}</span></div>${readableDetailMarkup(item)}${item.document?`<details class="s6-readable-transcript"><summary>Read transcription</summary>${documentMarkup(item.document)}</details>`:''}<p class="s6-clue-note">${escapeHtml(item.note||'Added to your notebook.')}</p>`,`<button class="s6-btn" data-s6="zoom" data-id="${item.id}"><svg class="s6-examine-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>Examine Evidence</button>${item.reading?`<button class="s6-quiet" data-s6="read-letter" data-id="${item.id}">Open the recovered letter →</button>`:''}${item.conversationOnInspect?`<button class="s6-quiet" data-s6="character" data-id="${escapeHtml(item.conversationOnInspect)}">Speak with ${escapeHtml(chapter.characters.find(person=>person.id===item.conversationOnInspect)?.name||'this person')} →</button>`:''}${item.document?`<button class="s6-quiet" data-s6="read-document" data-id="${item.id}">Enlarge written text →</button>`:''}${extraLinks}<button class="s6-quiet" data-s6="close">${stack?'Return to puzzle':'← Return to investigation'}</button>`,{stack,clueScroll:true,clueWindow:true,chapterNumber:item.chapter+1,evidenceNumber:number,evidenceTotal:chapter.evidence.length,cluePortrait:imageRatio<1});
       this.zoom={scale:1,dx:0,dy:0,item,scene:this.sceneSource(chapter)};
     }
     readDocument(id) {
@@ -661,11 +942,14 @@
     zoomEnd(event) { if(this.zoom.pointer&&event.pointerId===this.zoom.pointer.id){this.zoom.pointer=null;this.overlay.querySelector('.s6-zoom-view')?.classList.remove('is-dragging');} }
     openCharacter(id) {
       const chapter=this.current(),person=chapter.characters.find(entry=>entry.id===id); if(!person||!this.characterAvailable(person))return;
-      this.state.dialogue={chapter:this.state.chapter,characterId:id,questionId:null,phase:'menu',line:0};this.save();this.renderDialogue();
+      const openingOwnsIntro=this.state.chapter===0&&this.story.openingIntroduction?.characterId===id;
+      const showIntro=!openingOwnsIntro&&!this.hasCharacterConversation(id,this.state.chapter),introKey=this.characterIntroKey(id,this.state.chapter);
+      this.state.characterIntrosSeen||=[];if(!this.state.characterIntrosSeen.includes(introKey))this.state.characterIntrosSeen.push(introKey);
+      this.state.dialogue={chapter:this.state.chapter,characterId:id,questionId:null,phase:'menu',line:0,showIntro};this.save();this.renderDialogue();
     }
     conversationMarkup(person,content,speaker=person.name,actions='') {
       const animated=Boolean(this.story.characterSprites?.[person.id]?.frames);
-      if([2,3,6].includes(this.story.number)){
+      if([1,2,3,6].includes(this.story.number)){
         const scene=this.sceneSource(this.current());
         const backdrop=this.current().conversationBackdrop||{};
         const motion=animated?`<button type="button" class="s6-quiet" data-s6="toggle-motion" aria-pressed="${!this.motionPaused}">${this.motionPaused?'Resume motion':'Pause motion'}</button>`:'';
@@ -675,11 +959,15 @@
       return `<div class="s6-conversation"><div class="s6-conversation-art" data-actor-speaking="${speaker!=='You'}">${this.portrait(person,'s6-conversation-portrait')}${animated?`<button type="button" class="s6-quiet s6-motion-toggle" data-s6="toggle-motion" aria-pressed="${!this.motionPaused}">${this.motionPaused?'Resume motion':'Pause motion'}</button>`:''}</div><div class="s6-conversation-body">${content}</div></div>`;
     }
     showCharacterConversation(title,person,content,actions,speaker=person.name) {
-      const staged=[2,3,6].includes(this.story.number);
-      this.showModal(title,this.conversationMarkup(person,content,speaker,staged?actions:''),staged?'':actions);
+      const staged=[1,2,3,6].includes(this.story.number);
+      this.showModal(title,this.conversationMarkup(person,content,speaker,staged?actions:''),staged?'':actions,{voiceDialogue:true});
     }
-    voiceControl(speaker,spokenText) {
-      const src=this.story.voiceMap?.[JSON.stringify([speaker,spokenText])];
+    voiceControl(speaker,spokenText,context=null) {
+      const map=this.story.voiceMap||{};
+      const contextualKey=context?JSON.stringify(context.chapter===undefined?[speaker,spokenText,context.characterId,context.questionId,String(context.line)]:[speaker,spokenText,context.characterId,context.questionId,String(context.line),String(context.chapter)]):null;
+      const plainText=unquoteDialogue(spokenText);
+      const normalizedContextKey=context?(context.chapter===undefined?[speaker,plainText,context.characterId,context.questionId,String(context.line)]:[speaker,plainText,context.characterId,context.questionId,String(context.line),String(context.chapter)]):null;
+      const src=(contextualKey&&map[contextualKey])||map[JSON.stringify([speaker,spokenText])]||(normalizedContextKey&&plainText!==spokenText&&map[JSON.stringify(normalizedContextKey)])||(plainText!==spokenText&&map[JSON.stringify([speaker,plainText])]);
       this.currentVoice=src||null;this.pendingVoice=src||null;
       if(!src)return '';
       return `<button type="button" class="s6-quiet" data-s6="play-voice">▶ Play voice</button><button type="button" class="s6-quiet" data-s6="toggle-voices" aria-pressed="${!this.voiceMuted}">${this.voiceMuted?'Enable voices':'Mute voices'}</button>`;
@@ -750,14 +1038,17 @@
         const line=lines[d.line];
         if(d.recordedLine!==d.line){this.state.transcript.push({chapter:d.chapter,speaker:line.speaker,text:line.text});this.state.transcript=this.state.transcript.slice(-300);d.recordedLine=d.line;this.save();}
         const controls=d.line<3?`<button class="s6-btn" data-s6="dialogue-next">${d.line===0?'Hear the reply →':'Continue →'}</button>`:`<button class="s6-btn" data-s6="dialogue-finish">Finish this conversation →</button>`;
-        this.showCharacterConversation(`${person.name} · conversation`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · conversation</span><p class="s6-stage-direction">${line.speaker==='You'?'You ask the question.':escapeHtml(line.direction||'')}</p><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${escapeHtml(line.text)}</p>`,`${controls}${this.voiceControl(line.speaker,line.text)}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,line.speaker);
+        this.showCharacterConversation(`${person.name} · conversation`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · conversation</span><p class="s6-stage-direction">${line.speaker==='You'?'You ask the question.':escapeHtml(line.direction||'')}</p><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${dialogueMarkup(line.text)}</p>`,`${controls}${this.voiceControl(line.speaker,line.text,{characterId:person.id,questionId:q.id,line:d.line,chapter:d.chapter})}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,line.speaker);
         return;
       }
       const questions=person.questions.map(q=>{const available=this.condition(q.availableWhen||{always:true});const done=this.completed(this.dialogueKey(person.id,q.id,d.chapter));return `<button class="s6-question" data-s6="ask" data-id="${q.id}" ${!available?'disabled title="Examine related evidence to unlock this question"':''}>${escapeHtml(q.ask)}${done?'<small>Discussed · ask again</small>':!available?'<small>Locked · investigate related evidence</small>':''}</button>`}).join('');
-      this.showCharacterConversation(`Speak with ${person.name}`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · ${escapeHtml(person.role)}</span><h2>${escapeHtml(person.name)}</h2><p class="s6-stage-direction">${escapeHtml(person.bio)}</p><p>${escapeHtml(person.intro||'Ask what you would like to know. Their answers may help connect the evidence.')}</p><div class="s6-choice-list">${questions}</div>`,`${this.voiceControl(person.historical?'Eleanor’s manuscript':person.name,person.intro)}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`);
+      const showIntro=d.showIntro??!this.hasCharacterConversation(person.id,d.chapter),introText=showIntro?(person.intro||'Ask what you would like to know. Their answers may help connect the evidence.'):'What would you like to ask?';
+      const introVoice=showIntro?this.voiceControl(person.historical?'Eleanor’s manuscript':person.name,person.intro):'';
+      const introCopy=person.intro===person.bio&&showIntro?'':`<p>${escapeHtml(introText)}</p>`;
+      this.showCharacterConversation(`Speak with ${person.name}`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · ${escapeHtml(person.role)}</span><h2>${escapeHtml(person.name)}</h2><p class="s6-stage-direction">${escapeHtml(person.bio)}</p>${introCopy}<div class="s6-choice-list">${questions}</div>`,`${introVoice}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,showIntro?person.name:'You');
     }
     nextDialogue() { const d=this.state.dialogue;if(!d||d.phase!=='exchange')return;d.line=Math.min(3,d.line+1);d.recordedLine=null;this.save();this.renderDialogue(); }
-    finishDialogue() { const d=this.state.dialogue;if(!d||d.phase!=='exchange')return;this.state.completedDialogues.push(this.dialogueKey(d.characterId,d.questionId,d.chapter));this.state.completedDialogues=[...new Set(this.state.completedDialogues)];this.state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:null,phase:'menu',line:0};this.save();this.render();this.renderDialogue(); }
+    finishDialogue() { const d=this.state.dialogue;if(!d||d.phase!=='exchange')return;this.state.completedDialogues.push(this.dialogueKey(d.characterId,d.questionId,d.chapter));this.state.completedDialogues=[...new Set(this.state.completedDialogues)];this.state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:null,phase:'menu',line:0,showIntro:false};this.save();this.render();this.renderDialogue(); }
     showHint(index=null) {
       const chapter=this.current(),hints=chapter.hints||[{text:'Examine the scene and talk with the people here.'}];
       let available=0;for(let i=1;i<hints.length;i++){const entry=hints[i];const rule=typeof entry==='string'?(i===1?{anyEvidence:chapter.evidence.map(item=>item.id)}:chapter.gate):entry.availableWhen;if(this.condition(rule))available=i;else break;}
@@ -765,32 +1056,163 @@
       const steps=hints.map((hint,i)=>`<button class="${i===this.hintIndex?'is-current':''}" data-s6="hint-step" data-index="${i}" ${i>available?'disabled title="Continue investigating to unlock this hint"':''} aria-label="Hint ${i+1}${i>available?' locked':''}">${i>available?'🔒':i+1}</button>`).join('');
       const next=this.hintIndex<available?'<button class="s6-btn" data-s6="hint-next">Clearer hint →</button>':'';
       const text=typeof hints[this.hintIndex]==='string'?hints[this.hintIndex]:hints[this.hintIndex].text;
-      const current=this.overlay.lastElementChild,refresh=Boolean(current?.querySelector('.s6-hint-steps')),fromPuzzle=Boolean(current?.querySelector('.s6-deduction,.s6-machine-puzzle,.s6-route-puzzle,.s6-garden-puzzle,.s6-library-puzzle,.s6-sequence'));
+      const current=this.overlay.lastElementChild,refresh=Boolean(current?.querySelector('.s6-hint-steps')),fromPuzzle=Boolean(current?.querySelector('.s6-deduction,.s6-single-question,.s6-machine-puzzle,.s6-route-puzzle,.s6-garden-puzzle,.s6-library-puzzle,.s6-sequence'));
       this.showModal('A gentle hint',`<span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · progressive hints</span><h2>A gentle nudge</h2><div class="s6-hint-steps">${steps}</div><p>${escapeHtml(text)}</p>${available<hints.length-1?'<p class="s6-foot-help">Clearer hints unlock as you examine evidence and speak with the characters.</p>':''}`,`<button class="s6-quiet" data-s6="hint-prev" ${this.hintIndex===0?'disabled':''}>← Previous</button>${next}<button class="s6-quiet" data-s6="close">${fromPuzzle||this.modalStack.length?'Return to puzzle':'Return to investigation'}</button>`,{stack:fromPuzzle,preserveStack:refresh});
     }
     showPuzzle() {
       const ch=this.current(),p=ch.puzzle;
-      if(!this.chapterGateMet(ch)||(this.isSolved(this.state.chapter)&&!isVisualRoute(p)&&!isMachinery(p)))return;
+      if(!this.chapterGateMet(ch)||(this.isSolved(this.state.chapter)&&!isVisualRoute(p)&&!isMachinery(p)&&p.presentation?.layout!=='catalog-inspection'))return;
       if(p.presentation?.mode==='bookshelf'){this.showBookshelfPuzzle(ch,p);return;}
       if(isInteractiveRoute(p)){this.showRoutePuzzle(ch,p);return;}
       if(isGardenRoute(p)){this.showGardenPuzzle(ch,p);return;}
       if(isMachinery(p)){this.showMachineryPuzzle(ch,p);return;}
+      if(p.type==='sequence'&&p.presentation?.mode==='timeline-clean'){this.showCleanTimelinePuzzle(ch,p);return;}
+      if(p.type==='input'){this.showInputPuzzle(ch,p);return;}
+      if(p.type==='choice'&&p.presentation?.mode==='token-insert'){this.showTokenInsertPuzzle(ch,p);return;}
+      if(p.type==='choice'&&['single-question','single-question-clues'].includes(p.presentation?.mode)){this.showSingleQuestionPuzzle(ch,p);return;}
       if(p.type==='choice'){
         const evidence=(p.presentation?.evidenceRefs||[]).map(id=>{const item=ch.evidence.find(entry=>entry.id===id);return item?`<button class="s6-deduction-evidence" data-s6="puzzle-evidence" data-id="${escapeHtml(id)}">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-deduction-image')}<strong>${escapeHtml(item.title)}</strong><small>Examine clue →</small></button>`:''}).join('');
         this.deductionChoice=this.deductionPuzzleId===p.id?this.deductionChoice:null;this.deductionPuzzleId=p.id;
-        this.showModal(p.title,`<div class="s6-deduction"><header class="s6-deduction-hero" style="background-image:linear-gradient(90deg,#11271fea,#11271f66),url(&quot;${escapeHtml(ch.scene)}&quot;)"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · deduction</span><h2>${escapeHtml(p.title)}</h2></header>${evidence?`<div class="s6-deduction-board" aria-label="Clues to review">${evidence}</div>`:''}<section class="s6-deduction-question-panel"><p class="s6-deduction-question">${escapeHtml(p.prompt)}</p><div class="s6-choice-list" role="radiogroup" aria-label="Choose one explanation">${p.options.map(option=>`<button type="button" class="s6-choice s6-deduction-option${this.deductionChoice===option.id?' is-selected':''}" role="radio" aria-checked="${this.deductionChoice===option.id}" data-s6="puzzle-choice" data-id="${option.id}"><span aria-hidden="true" class="s6-radio-dot"></span>${escapeHtml(option.label)}</button>`).join('')}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.deductionFeedback||'')}</p></section></div>`,`<button class="s6-btn" data-s6="deduction-submit" ${this.deductionChoice?'':'disabled'}>Submit answer →</button><button class="s6-quiet" data-s6="hint">Progressive hint</button><button class="s6-quiet" data-s6="close">Return to evidence</button>`);
+        this.showModal(p.title,`<div class="s6-deduction"><header class="s6-deduction-hero" style="background-image:linear-gradient(90deg,#11271fea,#11271f66),url(&quot;${escapeHtml(ch.scene)}&quot;)"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · deduction puzzle</span><h2>${escapeHtml(p.title)}</h2></header>${evidence?`<div class="s6-deduction-board" aria-label="Clues to review">${evidence}</div>`:''}<section class="s6-deduction-question-panel"><p class="s6-deduction-question">${escapeHtml(p.prompt)}</p><div class="s6-choice-list s6-deduction-options" role="radiogroup" aria-label="Choose one explanation">${p.options.map((option,index)=>`<button type="button" class="s6-choice s6-deduction-option${this.deductionChoice===option.id?' is-selected':''}" role="radio" aria-checked="${this.deductionChoice===option.id}" data-s6="puzzle-choice" data-id="${escapeHtml(option.id)}"><span class="s6-option-number" aria-hidden="true">${String(index+1).padStart(2,'0')}</span><span class="s6-option-icon">${puzzleIconMarkup(option)}</span><span class="s6-option-label">${escapeHtml(option.label)}</span><span class="s6-option-arrow" aria-hidden="true">→</span></button>`).join('')}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.deductionFeedback||'')}</p></section></div>`,`<button class="s6-btn" data-s6="deduction-submit" ${this.deductionChoice?'':'disabled'}>Submit answer →</button><button class="s6-quiet" data-s6="hint">Progressive hint</button><button class="s6-quiet" data-s6="close">Return to evidence</button>`);
       }else{
-        const draft=this.state.puzzleDrafts[p.id]||p.items.map(item=>item.id);this.state.puzzleDrafts[p.id]=draft;
+        const initialOrder=p.presentation?.initialOrder||p.items.map(item=>item.id),draft=this.state.puzzleDrafts[p.id]||initialOrder;this.state.puzzleDrafts[p.id]=draft;
         if(this.sequencePuzzleId!==p.id){this.sequencePuzzleId=p.id;this.sequenceSelected=null;this.sequenceFeedback='';}
-        const route=p.presentation?.mode==='route',topLabel=p.presentation?.topLabel||'First',bottomLabel=p.presentation?.bottomLabel||'Last';
+        const route=p.presentation?.mode==='route',timeline=p.presentation?.mode==='timeline',topLabel=p.presentation?.topLabel||'First',bottomLabel=p.presentation?.bottomLabel||'Last';
         const steps=draft.map((id,index)=>{
           const item=p.items.find(entry=>entry.id===id),selected=this.sequenceSelected===index;
-          return `<div class="s6-sequence-step${selected?' is-selected':''}" data-sequence-index="${index}" draggable="true"><span class="s6-sequence-pin" aria-hidden="true">${String(index+1).padStart(2,'0')}</span><button type="button" class="s6-sequence-main" data-s6="sequence-select" data-index="${index}" aria-pressed="${selected}" aria-label="${escapeHtml(item?.label||id)}, position ${index+1}. ${selected?'Selected; choose a destination.':'Select to move.'}"><span class="s6-sequence-label">${escapeHtml(item?.label||id)}</span>${item?.caption||selected?`<small>${selected?'Choose a destination':escapeHtml(item?.caption)}</small>`:''}</button><span class="s6-sequence-controls"><button type="button" data-s6="move" data-index="${index}" data-delta="-1" ${index===0?'disabled':''} aria-label="Move ${escapeHtml(item?.label||id)} earlier">↑</button><button type="button" data-s6="move" data-index="${index}" data-delta="1" ${index===draft.length-1?'disabled':''} aria-label="Move ${escapeHtml(item?.label||id)} later">↓</button></span></div>`;
+          const label=item?.label||id,caption=item?.time||item?.caption;
+          return `<div class="s6-sequence-step${timeline?' is-illustrated':''}${selected?' is-selected':''}" data-sequence-index="${index}" draggable="true">${timeline?'<span class="s6-sequence-grip" aria-hidden="true">⠿</span>':''}<span class="s6-sequence-pin" aria-hidden="true">${String(index+1).padStart(2,'0')}</span><button type="button" class="s6-sequence-main" data-s6="sequence-select" data-index="${index}" aria-pressed="${selected}" aria-label="${escapeHtml(label)}, position ${index+1}. ${selected?'Selected; choose a destination.':'Select to move.'}">${timeline?sequenceArtMarkup(item,p.presentation):''}<span class="s6-sequence-copy"><strong class="s6-sequence-label">${escapeHtml(label)}</strong>${caption||selected?`<small>${timeline?'<span aria-hidden="true">◷</span> ':''}${selected?'Choose a destination':escapeHtml(caption)}</small>`:''}</span></button><span class="s6-sequence-controls"><button type="button" data-s6="move" data-index="${index}" data-delta="-1" ${index===0?'disabled':''} aria-label="Move ${escapeHtml(label)} earlier">↑</button><button type="button" data-s6="move" data-index="${index}" data-delta="1" ${index===draft.length-1?'disabled':''} aria-label="Move ${escapeHtml(label)} later">↓</button></span></div>`;
         }).join('');
-        this.showModal(p.title,`<span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · sequence</span><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p><section class="s6-sequence ${route?'is-route':'is-timeline'}" aria-label="Arrange the sequence"><div class="s6-sequence-heading"><span class="s6-sequence-emblem" aria-hidden="true">${route?'⌖':'✦'}</span><div><strong>${route?'Reconstruct the route':'Put the events in order'}</strong><small>Drag a card, or tap one and then its destination. Arrow buttons also move each card.</small></div></div><div class="s6-sequence-board"><div class="s6-sequence-endpoint"><span class="s6-endpoint-dot" aria-hidden="true"></span>${escapeHtml(topLabel)}</div><div class="s6-sequence-steps">${steps}</div><div class="s6-sequence-endpoint is-last"><span class="s6-endpoint-dot" aria-hidden="true"></span>${escapeHtml(bottomLabel)}</div></div></section><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.sequenceFeedback)}</p>`,`<button class="s6-btn" data-s6="puzzle-check">Check the sequence →</button><button class="s6-quiet" data-s6="puzzle-reset">Reset arrangement</button><button class="s6-quiet" data-s6="hint">Need a gentle hint?</button><button class="s6-quiet" data-s6="close">Return to evidence</button>`);
+        const palette=p.presentation?.theme||{},themeVars=Object.entries(palette).map(([key,value])=>`--s6-timeline-${key}:${value}`).join(';');
+        const clock=p.presentation?.imageSheet?`<span class="s6-sequence-clock">${sequenceArtMarkup({imageCrop:{x:0,y:20,width:410,height:390},imageAlt:'Antique clock'},p.presentation)}</span>`:'';
+        const actions=p.presentation?.actions||[{action:'check',label:'Check the sequence'},{action:'reset',label:'Reset arrangement'},{action:'hint',label:'Need a gentle hint?'},{action:'close',label:'Return to evidence'}];
+        const actionMarkup=`<div class="s6-sequence-actions">${actions.map(action=>`<button type="button" class="${action.action==='check'?'s6-btn':'s6-quiet'} s6-sequence-action" data-s6="${({check:'puzzle-check',reset:'puzzle-reset',hint:'hint',evidence:'puzzle-evidence',close:'close'})[action.action]}"${action.action==='evidence'?` data-id="${escapeHtml(action.target)}"`:''}>${action.icon?`<span class="s6-sequence-action-icon" aria-hidden="true">${puzzleActionIcons[action.icon]}</span>`:''}${escapeHtml(action.label)}${action.action==='check'&&!action.icon?' →':''}</button>`).join('')}</div>`;
+        this.showModal(p.title,`<div class="s6-sequence-puzzle ${timeline?'is-illustrated':''}"${themeVars?` style="${themeVars}"`:''}><header class="s6-sequence-hero"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${timeline?'sequence puzzle':'sequence'}</span><div class="s6-sequence-hero-copy"><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p></div>${clock}</header><section class="s6-sequence ${route?'is-route':'is-timeline'}" aria-label="Arrange the sequence"><div class="s6-sequence-heading">${timeline?clock:`<span class="s6-sequence-emblem" aria-hidden="true">${route?'⌖':'✦'}</span>`}<div><strong>${escapeHtml(p.presentation?.sectionTitle||(route?'Reconstruct the route':'Put the events in order'))}</strong><small>${escapeHtml(p.presentation?.sectionDescription||'Drag a card to move it, or use the arrows.')}</small></div></div><div class="s6-sequence-board">${timeline?'':`<div class="s6-sequence-endpoint"><span class="s6-endpoint-dot" aria-hidden="true"></span>${escapeHtml(topLabel)}</div>`}<div class="s6-sequence-steps">${steps}</div>${timeline?'':`<div class="s6-sequence-endpoint is-last"><span class="s6-endpoint-dot" aria-hidden="true"></span>${escapeHtml(bottomLabel)}</div>`}</div></section><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.sequenceFeedback)}</p></div>`,actionMarkup);
       }
     }
+    showInputPuzzle(ch,p) {
+      const input=p.input||{},value=this.state.puzzleDrafts[p.id]||'',numeric=input.mode==='numeric',answerLength=String(p.answer||'').length,shortCode=answerLength>0&&answerLength<=5,label=input.label||'Your answer',placeholder=String(input.placeholder||'').slice(0,answerLength);
+      const field=shortCode?`<div class="s6-code-entry"><div class="s6-code-boxes" aria-hidden="true">${Array.from({length:answerLength},(_,index)=>{const character=value[index],hint=placeholder[index]||'';return `<span class="s6-code-box${character?'':' is-placeholder'}" data-placeholder="${escapeHtml(hint)}">${escapeHtml(character||hint)}</span>`}).join('')}</div><input id="s6-puzzle-input" class="s6-code-input s6-code-input-overlay" data-s6="puzzle-input" type="text" ${numeric?'inputmode="numeric" pattern="[0-9]*"':''} maxlength="${answerLength}" autocomplete="off" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)}"/></div>`:`<input id="s6-puzzle-input" class="s6-code-input" data-s6="puzzle-input" type="text" ${numeric?'inputmode="numeric" pattern="[0-9]*"':''} maxlength="${Number(input.maxLength)||40}" autocomplete="off" value="${escapeHtml(value)}" placeholder="${escapeHtml(input.placeholder||'Enter your answer')}"/>`;
+      const evidence=input.evidenceRef?ch.evidence.find(item=>item.id===input.evidenceRef):null;
+      const art=evidence?`<figure class="s6-input-puzzle-art"><img src="${escapeHtml(evidence.detailImage||ch.scene)}" alt="${escapeHtml(evidence.title)}"><button type="button" class="s6-input-puzzle-clue-button" data-s6="puzzle-evidence" data-id="${escapeHtml(evidence.id)}" aria-label="Examine evidence: ${escapeHtml(evidence.title)}"><svg class="s6-examine-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>${escapeHtml(evidence.title)} · evidence detail</button></figure>`:'';
+      this.showModal(p.title,`<section class="s6-input-puzzle${art?' has-art':''}"><div class="s6-input-puzzle-copy"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · combination lock</span><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p><label class="s6-input-label" for="s6-puzzle-input">${escapeHtml(label)}</label>${field}<p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.deductionFeedback||'')}</p></div>${art}</section>`,`<button class="s6-btn" data-s6="deduction-submit">${escapeHtml(input.submitLabel||'Check answer →')}</button><button class="s6-quiet" data-s6="input-reset">Reset entries</button><button class="s6-quiet" data-s6="hint">Progressive hint</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`);
+    }
+    showCleanTimelinePuzzle(ch,p) {
+      const presentation=p.presentation||{},orderedList=presentation.layout==='ordered-list',ids=new Set(p.items.map(item=>item.id)),saved=this.state.puzzleDrafts[p.id],initialOrder=presentation.initialOrder||p.items.map(item=>item.id),savedIsOrder=Array.isArray(saved)&&saved.length===p.items.length&&new Set(saved).size===p.items.length&&saved.every(id=>ids.has(id)),draft=orderedList?(savedIsOrder?saved:initialOrder):(Array.isArray(saved)&&saved.length===p.items.length?saved:Array(p.items.length).fill(null));
+      this.state.puzzleDrafts[p.id]=draft;
+      if(this.sequencePuzzleId!==p.id){this.sequencePuzzleId=p.id;this.sequenceSelected=null;this.sequenceFeedback='';}
+      if(orderedList){
+        const rows=draft.map((id,index)=>{const item=p.items.find(entry=>entry.id===id);return `<div class="s6-sequence-step is-illustrated"><span class="s6-sequence-grip" aria-hidden="true">⠿</span><span class="s6-sequence-pin" aria-hidden="true">${String(index+1).padStart(2,'0')}</span><div class="s6-clean-timeline-order-main"><span class="s6-clean-timeline-pick" aria-hidden="true">${timelineIconMarkup(item.icon)}</span><span><strong>${escapeHtml(item.label)}</strong>${item.time?`<small>${escapeHtml(item.time)}</small>`:''}</span></div><span class="s6-sequence-controls"><button type="button" data-s6="timeline-move" data-index="${index}" data-delta="-1" ${index===0?'disabled':''} aria-label="Move ${escapeHtml(item.label)} earlier">↑</button><button type="button" data-s6="timeline-move" data-index="${index}" data-delta="1" ${index===draft.length-1?'disabled':''} aria-label="Move ${escapeHtml(item.label)} later">↓</button></span></div>`;}).join('');
+        const actions=presentation.actions||[{action:'check',label:'Check sequence'},{action:'reset',label:'Reset arrangement'},{action:'hint',label:'Progressive hint'},{action:'close',label:'Return to investigation'}],actionMap={check:'timeline-check',reset:'timeline-reset',hint:'hint',evidence:'puzzle-evidence',close:'close'},actionMarkup=actions.map(action=>`<button type="button" class="${action.action==='check'?'s6-btn':'s6-quiet'} s6-clean-timeline-action" data-s6="${actionMap[action.action]}"${action.action==='evidence'?` data-id="${escapeHtml(action.target)}"`:''}>${escapeHtml(action.label)}${action.action==='check'?' →':''}</button>`).join('');
+        const theme=presentation.theme||{},vars={green:'--s6-clean-green',gold:'--s6-clean-gold',cream:'--s6-clean-cream',panel:'--s6-clean-panel',line:'--s6-clean-line',ink:'--s6-clean-ink'},themeVars=Object.entries(theme).map(([key,value])=>`${vars[key]}:${value}`).join(';'),sideImage=presentation.sideImage?`<figure class="s6-clean-timeline-art"><img src="${escapeHtml(presentation.sideImage)}" alt="${escapeHtml(presentation.sideImageAlt||'')}" style="object-fit:${presentation.sideImageFit==='contain'?'contain':'cover'};object-position:${escapeHtml(presentation.sideImagePosition||'center')}"></figure>`:'';
+        this.showModal(p.title,`<section class="s6-clean-timeline is-ordered-list"${themeVars?` style="${themeVars}"`:''}><header class="s6-clean-timeline-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${escapeHtml(ch.location)}</span><h2>${escapeHtml(presentation.displayTitle||p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><div class="s6-clean-timeline-layout"><section class="s6-sequence is-timeline" aria-label="Arrange the events in order"><div class="s6-sequence-heading"><div><strong>${escapeHtml(presentation.sectionTitle||'Put the events in order')}</strong><small>${escapeHtml(presentation.sectionDescription||'Use the arrows to arrange the events from earliest to latest.')}</small></div></div><div class="s6-sequence-board"><div class="s6-sequence-steps">${rows}</div></div></section>${sideImage}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.sequenceFeedback||'Use the arrows to place the events in chronological order.')}</p></section>`,`<div class="s6-clean-timeline-actions">${actionMarkup}</div>`);return;
+      }
+      const assigned=new Set(draft.filter(Boolean)),events=p.items.filter(item=>!assigned.has(item.id)).map(item=>{const selected=this.sequenceSelected===item.id;return `<button type="button" class="s6-clean-timeline-event${selected?' is-selected':''}" data-s6="timeline-pick" data-id="${escapeHtml(item.id)}" draggable="true" data-timeline-event="${escapeHtml(item.id)}" aria-pressed="${selected}"><span class="s6-clean-timeline-pick" aria-hidden="true">${timelineIconMarkup(item.icon)}</span><span>${escapeHtml([item.time,item.label].filter(Boolean).join(' · '))}</span></button>`;}).join('');
+      const slots=draft.map((id,index)=>{const item=p.items.find(entry=>entry.id===id);return `<div class="s6-clean-timeline-slot${item?' is-filled':''}" data-timeline-slot data-index="${index}"><span class="s6-clean-timeline-number">${String(index+1).padStart(2,'0')}</span>${item?`<button type="button" class="s6-clean-timeline-placed" data-s6="timeline-remove" data-index="${index}" aria-label="Remove ${escapeHtml(item.label)} from timeline">${escapeHtml([item.time,item.label].filter(Boolean).join(' · '))}<span aria-hidden="true">×</span></button>`:`<button type="button" class="s6-clean-timeline-empty" data-s6="timeline-place" data-index="${index}" ${this.sequenceSelected?'':'disabled'}>${this.sequenceSelected?'Place selected event here':'Place an event here'}</button>`}</div>`;}).join('');
+      const actions=presentation.actions||[{action:'check',label:'Check sequence'},{action:'reset',label:'Reset arrangement'},{action:'hint',label:'Progressive hint'},{action:'close',label:'Return to investigation'}];
+      const actionMap={check:'timeline-check',reset:'timeline-reset',hint:'hint',evidence:'puzzle-evidence',close:'close'},actionMarkup=actions.map(action=>`<button type="button" class="${action.action==='check'?'s6-btn':'s6-quiet'} s6-clean-timeline-action" data-s6="${actionMap[action.action]}"${action.action==='evidence'?` data-id="${escapeHtml(action.target)}"`:''}>${escapeHtml(action.label)}${action.action==='check'?' →':''}</button>`).join('');
+      const theme=presentation.theme||{},vars={green:'--s6-clean-green',gold:'--s6-clean-gold',cream:'--s6-clean-cream',panel:'--s6-clean-panel',line:'--s6-clean-line',ink:'--s6-clean-ink'},themeVars=Object.entries(theme).map(([key,value])=>`${vars[key]}:${value}`).join(';');
+      const status=this.sequenceFeedback||`${assigned.size} of ${p.items.length} events placed. Choose a card or drag it into a timeline position.`;
+      const sideImage=presentation.sideImage?`<figure class="s6-clean-timeline-art"><img src="${escapeHtml(presentation.sideImage)}" alt="${escapeHtml(presentation.sideImageAlt||'')}" style="object-fit:${presentation.sideImageFit==='contain'?'contain':'cover'};object-position:${escapeHtml(presentation.sideImagePosition||'center')}"></figure>`:'';
+      this.showModal(p.title,`<section class="s6-clean-timeline"${themeVars?` style="${themeVars}"`:''}><header class="s6-clean-timeline-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${escapeHtml(ch.location)}</span><h2>${escapeHtml(presentation.displayTitle||p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><div class="s6-clean-timeline-layout"><div><section class="s6-clean-timeline-source"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.sourceTitle||'The evidence')}</span><small>Select a card or drag it into place</small></div><div class="s6-clean-timeline-events" aria-label="Available events">${events||'<p class="s6-clean-timeline-empty-source">All events are in the timeline.</p>'}</div></section><section class="s6-clean-timeline-destination"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.timelineTitle||'Your timeline')}</span><small>${escapeHtml(presentation.timelineDescription||'Earliest to latest')}</small></div><div class="s6-clean-timeline-slots" aria-label="Timeline positions">${slots}</div></section></div>${sideImage}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(status)}</p></section>`,`<div class="s6-clean-timeline-actions">${actionMarkup}</div>`);
+    }
+    async placeCleanTimelineEvent(id,index) {
+      const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean'||!p.items.some(item=>item.id===id)||!Number.isInteger(index)||index<0||index>=p.items.length)return;
+      const draft=[...(this.state.puzzleDrafts[p.id]||Array(p.items.length).fill(null))],oldIndex=draft.indexOf(id),replaced=draft[index];
+      if(oldIndex>=0)draft[oldIndex]=replaced||null;
+      draft[index]=id;this.state.puzzleDrafts[p.id]=draft;this.sequenceSelected=null;const item=p.items.find(entry=>entry.id===id);this.sequenceFeedback=`${item?.time?`${item.time} · `:''}${item?.label||id} placed in position ${index+1}.`;
+      await this.save();this.showCleanTimelinePuzzle(this.current(),p);
+    }
+    async removeCleanTimelineEvent(index) {
+      const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean')return;
+      const draft=[...(this.state.puzzleDrafts[p.id]||Array(p.items.length).fill(null))];if(!Number.isInteger(index)||index<0||index>=draft.length)return;
+      const id=draft[index];draft[index]=null;this.state.puzzleDrafts[p.id]=draft;this.sequenceFeedback=`${p.items.find(item=>item.id===id)?.label||'Event'} returned to the evidence cards.`;await this.save();this.showCleanTimelinePuzzle(this.current(),p);
+    }
+    async moveCleanTimelineEvent(index,delta) {
+      const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean'||p.presentation?.layout!=='ordered-list')return;
+      const draft=[...(this.state.puzzleDrafts[p.id]||p.presentation.initialOrder||p.items.map(item=>item.id))],target=index+delta;if(!Number.isInteger(index)||target<0||target>=draft.length)return;
+      [draft[index],draft[target]]=[draft[target],draft[index]];this.state.puzzleDrafts[p.id]=draft;this.sequenceFeedback='Timeline order updated.';await this.save();this.showCleanTimelinePuzzle(this.current(),p);
+    }
+    async checkCleanTimeline() {
+      const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean')return;const draft=this.state.puzzleDrafts[p.id]||[];
+      if(draft.length!==p.items.length||draft.some(id=>!id)){this.sequenceFeedback=`Place all ${p.items.length} events before checking the sequence.`;this.showCleanTimelinePuzzle(this.current(),p);return;}
+      if(draft.join('|')!==p.answer.join('|')){this.sequenceFeedback=p.presentation.incorrectFeedback||'That order does not match the evidence yet. Adjust the timeline and try again.';this.showCleanTimelinePuzzle(this.current(),p);return;}
+      this.sequenceFeedback='';this.solvePuzzle();
+    }
+    async resetCleanTimeline() {
+      const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean')return;this.state.puzzleDrafts[p.id]=p.presentation?.layout==='ordered-list'?(p.presentation.initialOrder||p.items.map(item=>item.id)):Array(p.items.length).fill(null);this.sequenceSelected=null;this.sequenceFeedback=p.presentation?.layout==='ordered-list'?'The original order is restored.':'The timeline is cleared. Start again when you are ready.';await this.save();this.showCleanTimelinePuzzle(this.current(),p);
+    }
+    showTokenInsertPuzzle(ch,p) {
+      const phase=this.state.puzzleDrafts[p.id]?.phase;if(phase==='inserted')return this.showTokenSuccess(ch,p);if(phase==='opened')return this.openTokenCompartment();
+      this.deductionChoice=this.deductionPuzzleId===p.id?this.deductionChoice:null;this.deductionPuzzleId=p.id;
+      const view=p.presentation,selected=this.deductionChoice,tokenEvidence=view.tokenEvidenceRef?this.findEvidence(view.tokenEvidenceRef):null;
+      const tokenArt=view.tokenImage||tokenEvidence?.detailImage;
+      const targets=p.options.map((option,index)=>`<button type="button" class="s6-token-target${selected===option.id?' is-selected':''}" data-s6="puzzle-choice" data-token-target="${escapeHtml(option.id)}" data-id="${escapeHtml(option.id)}" aria-pressed="${selected===option.id}"><span class="s6-token-flower" aria-hidden="true">${option.icon?timelineIconMarkup(option.icon):escapeHtml(option.symbol||String(index+1).padStart(2,'0'))}</span><span class="s6-token-recess" aria-hidden="true">${selected===option.id?`<img class="s6-token-piece s6-token-piece-preview" data-token-piece src="${escapeHtml(tokenArt)}" alt="">`:''}</span><strong>${escapeHtml(option.label)}</strong><small>${selected===option.id?'Selected recess':'Choose this recess'}</small></button>`).join('');
+      const sideImage=view.sideImage?`<figure class="s6-token-art"><img src="${escapeHtml(view.sideImage)}" alt="${escapeHtml(view.sideImageAlt||'')}" style="object-fit:${view.sideImageFit==='contain'?'contain':'cover'};object-position:${escapeHtml(view.sideImagePosition||'center')}"></figure>`:'';
+      this.showModal(p.title,`<section class="s6-token-insert"><header class="s6-token-insert-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · token puzzle</span><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><div class="s6-token-layout"><div><div class="s6-token-insert-board"><strong class="s6-token-section-title">${escapeHtml(view.sectionTitle)}</strong><p class="s6-token-section-description">${escapeHtml(view.sectionDescription)}</p><div class="s6-token-targets" role="group" aria-label="${escapeHtml(view.sectionTitle)}">${targets}</div><div class="s6-token-source"><span class="s6-token-piece-wrap">${selected?'':`<img class="s6-token-piece" data-token-piece src="${escapeHtml(tokenArt)}" alt="${escapeHtml(view.tokenLabel)}">`}</span><span><strong>${escapeHtml(view.tokenLabel)}</strong><small>${escapeHtml(view.tokenOrigin||'The token you found')}</small></span></div></div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.deductionFeedback||'Select the matching recess, then place the token.')}</p></div>${sideImage}</div></section>`,`<button type="button" class="s6-btn" data-s6="deduction-submit" ${selected?'':'disabled'}>${escapeHtml(view.insertLabel)} →</button><button type="button" class="s6-quiet" data-s6="token-selection-reset" ${selected?'':'disabled'}>Reset selection</button><button type="button" class="s6-quiet" data-s6="hint">Progressive hint</button><button type="button" class="s6-quiet" data-s6="close">Return to investigation</button>`);
+    }
+    async placeToken() {
+      const ch=this.current(),p=ch.puzzle,view=p.presentation||{};
+      if(view.mode!=='token-insert'||!this.deductionChoice)return;
+      if(view.tokenEvidenceRef&&!this.has(view.tokenEvidenceRef)){this.deductionFeedback=view.missingTokenFeedback;const feedback=this.overlay.querySelector('#s6-puzzle-feedback');if(feedback)feedback.textContent=this.deductionFeedback;return;}
+      if(this.deductionChoice!==p.answer){this.deductionFeedback=view.mismatchFeedback;const feedback=this.overlay.querySelector('#s6-puzzle-feedback');if(feedback)feedback.textContent=this.deductionFeedback;const target=this.overlay.querySelector(`[data-token-target="${this.deductionChoice}"]`);target?.classList.remove('is-token-error');if(target){void target.offsetWidth;target.classList.add('is-token-error');}return;}
+      const token=this.overlay.querySelector('[data-token-piece]'),target=this.overlay.querySelector(`[data-token-target="${p.answer}"] .s6-token-recess`);
+      if(token&&target&&typeof token.animate==='function'&&!global.matchMedia?.('(prefers-reduced-motion: reduce)').matches){const animation=token.animate([{transform:'translateY(-13px) scale(1.22) rotate(-10deg)',filter:'brightness(1.3)'},{transform:'translateY(2px) scale(.82) rotate(3deg)',filter:'brightness(1.08)'},{transform:'translateY(0) scale(.92) rotate(0)',filter:'none'}],{duration:520,easing:'cubic-bezier(.2,.75,.25,1)',fill:'forwards'});try{await animation.finished;}catch{return;}if(!token.isConnected)return;target.closest?.('.s6-token-target')?.classList.add('is-token-inserted');}
+      this.deductionFeedback='';this.state.puzzleDrafts[p.id]={phase:'inserted',target:p.answer};await this.save();this.showTokenSuccess(ch,p);
+    }
+    showTokenSuccess(ch,p) {
+      const view=p.presentation;
+      const tokenImage=view.tokenImage||'';
+      this.showModal(view.successTitle,`<section class="s6-token-reveal"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · Memorial Garden</span><h2>${escapeHtml(view.successTitle)}</h2><p>${escapeHtml(view.successText)}</p><img class="s6-token-inserted-mark" src="${escapeHtml(tokenImage)}" alt="The brass garden token"></section>`,`<button class="s6-btn" data-s6="token-open-compartment">${escapeHtml(view.openCompartmentLabel)} →</button>`);
+    }
+    openTokenCompartment() {
+      const ch=this.current(),p=ch.puzzle,view=p.presentation||{},phase=this.state.puzzleDrafts[p.id]?.phase;if(view.mode!=='token-insert'||!['inserted','opened'].includes(phase))return;
+      if(phase==='inserted'){this.state.puzzleDrafts[p.id]={phase:'opened',target:p.answer};if(!this.state.solved.includes(p.id))this.state.solved.push(p.id);this.save();this.render();}
+      const hasLetter=Boolean(view.letter||ch.evidence.some(item=>item.reading));
+      this.showModal(view.compartmentTitle,`<section class="s6-token-reveal"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · the compartment opens</span><h2>${escapeHtml(view.compartmentTitle)}</h2><figure class="s6-token-compartment-art"><img src="${escapeHtml(view.compartmentImage)}" alt="${escapeHtml(view.compartmentImageAlt||'')}" /></figure><p>${escapeHtml(view.compartmentText)}</p></section>`,hasLetter?`<button class="s6-btn" data-s6="token-open-memory">${escapeHtml(view.openMemoryBoxLabel)} →</button>`:`<button class="s6-btn" data-s6="continue">Continue to the next chapter →</button>`);
+    }
+    showRecoveredLetter() {
+      const ch=this.current(),p=ch.puzzle,source=p.presentation?.letter||ch.evidence.find(entry=>entry.reading)?.reading,item=ch.evidence.find(entry=>entry.reading),reading=source;if(!reading)return;
+      const paragraphs=reading.paragraphs.map(line=>`<p>${escapeHtml(line)}</p>`).join(''),art=reading.image?`<figure class="s6-letter-art"><img src="${escapeHtml(reading.image)}" alt="${escapeHtml(reading.imageAlt||item?.title||'Recovered letter')}"></figure>`:'';
+      this.showModal(reading.title,`<article class="s6-recovered-letter"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · recovered letter</span><h2>${escapeHtml(reading.title)}</h2>${art}<p class="s6-letter-greeting">${escapeHtml(reading.greeting)}</p>${paragraphs}<p class="s6-letter-signature">${escapeHtml(reading.signature).replace(/\n/g,'<br>')}</p></article>`,`<button class="s6-btn" data-s6="continue">Continue to the next chapter →</button>`);
+    }
+    showEvidenceLetter(id) {const item=this.findEvidence(id);if(!item?.reading)return;const ch=this.story.chapters[item.chapter],reading=item.reading,paragraphs=reading.paragraphs.map(line=>`<p>${escapeHtml(line)}</p>`).join(''),art=reading.image?`<figure class="s6-letter-art"><img src="${escapeHtml(reading.image)}" alt="${escapeHtml(reading.imageAlt||item.title)}"></figure>`:'';this.showModal(reading.title,`<article class="s6-recovered-letter"><span class="s6-eyebrow">Chapter ${String(item.chapter+1).padStart(2,'0')} · recovered letter</span><h2>${escapeHtml(reading.title)}</h2>${art}<p class="s6-letter-greeting">${escapeHtml(reading.greeting)}</p>${paragraphs}<p class="s6-letter-signature">${escapeHtml(reading.signature).replace(/\n/g,'<br>')}</p></article>`,`<button class="s6-quiet" data-s6="close">Return to evidence</button>`,{stack:!this.overlay.classList.contains('is-hidden')});}
+    resetInputPuzzle() {
+      const puzzle=this.current().puzzle;if(puzzle.type!=='input')return;
+      this.state.puzzleDrafts[puzzle.id]='';this.deductionFeedback='';
+      const input=this.overlay.querySelector('[data-s6="puzzle-input"]');if(input){input.value='';input.focus();}
+      this.overlay.querySelectorAll('.s6-code-box').forEach(box=>{box.textContent=box.dataset.placeholder||'';box.classList.toggle('is-placeholder',Boolean(box.dataset.placeholder));});
+      const feedback=this.overlay.querySelector('#s6-puzzle-feedback');if(feedback)feedback.textContent='';
+      this.save();
+    }
+    resetTokenSelection() {const p=this.current().puzzle;if(p.presentation?.mode!=='token-insert')return;this.deductionChoice=null;this.deductionFeedback='';this.showTokenInsertPuzzle(this.current(),p);this.overlay.querySelector('[data-s6="token-selection-reset"]')?.focus();}
+    selectCodeCharacter(box) {
+      if(!box)return;
+      const input=box.closest('.s6-code-entry')?.querySelector('[data-s6="puzzle-input"]');if(!input)return;
+      const index=Array.prototype.indexOf.call(box.parentElement.children,box),start=Math.min(index,input.value.length);
+      input.focus();input.setSelectionRange(start,Math.min(index+1,input.value.length));
+    }
+    showSingleQuestionPuzzle(ch,p) {
+      this.deductionChoice=this.deductionPuzzleId===p.id?this.deductionChoice:null;
+      this.deductionPuzzleId=p.id;
+      const presentation=p.presentation||{},theme=presentation.theme||{};
+      const colorVars={accent:'--s6-quiz-accent',surface:'--s6-quiz-surface',border:'--s6-quiz-border',selected:'--s6-quiz-selected',ink:'--s6-quiz-ink'};
+      const colors=Object.entries(theme).map(([name,color])=>`${colorVars[name]}:${color}`).join(';');
+      const optionStyle=presentation.optionStyle||'radio';
+      const choices=p.options.map((option,index)=>{
+        const number=['numbered','numbered-icon'].includes(optionStyle)?`<span class="s6-option-number" aria-hidden="true">${String(index+1).padStart(2,'0')}</span>`:'';
+        const icon=['icon','numbered-icon'].includes(optionStyle)?`<span class="s6-option-icon">${puzzleIconMarkup(option)}</span>`:'';
+        const radio=optionStyle==='radio'?'<span class="s6-radio-dot" aria-hidden="true"></span>':'';
+        return `<button type="button" class="s6-choice s6-single-answer option-${optionStyle}${this.deductionChoice===option.id?' is-selected':''}" role="radio" aria-checked="${this.deductionChoice===option.id}" data-s6="puzzle-choice" data-id="${escapeHtml(option.id)}">${number}${icon}${radio}<span class="s6-option-label">${escapeHtml(option.label)}</span></button>`;
+      }).join('');
+      const withClues=presentation.mode==='single-question-clues';
+      const clues=withClues?`<div class="s6-single-clues" aria-label="Clues to review">${presentation.evidenceRefs.map(id=>{const item=ch.evidence.find(entry=>entry.id===id);return `<button type="button" class="s6-single-clue" data-s6="puzzle-evidence" data-id="${escapeHtml(id)}">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-single-clue-image')}<strong>${escapeHtml(item.title)}</strong><small>Examine clue →</small></button>`}).join('')}</div>`:'';
+      const actions=presentation.actions||[{action:'submit',label:'Check answer'},{action:'hint',label:'Progressive hint'},{action:'close',label:'Return to investigation'}];
+      const actionMarkup=actions.map(action=>`<button type="button" class="${action.action==='submit'?'s6-btn':'s6-quiet'} s6-question-action" data-s6="${({submit:'deduction-submit',hint:'hint',evidence:'puzzle-evidence',close:'close'})[action.action]}"${action.action==='submit'&&!this.deductionChoice?' disabled':''}${action.action==='evidence'?` data-id="${escapeHtml(action.target)}"`:''}>${action.icon?`<span class="s6-question-action-icon" aria-hidden="true">${puzzleActionIcons[action.icon]}</span>`:''}${escapeHtml(action.label)}${action.action==='submit'&&!action.icon?' →':''}</button>`).join('');
+      this.showModal(p.title,`<section class="s6-single-question${withClues?' has-clues':''}"${colors?` style="${colors}"`:''}><span class="s6-eyebrow">${escapeHtml(presentation.sectionLabel||`Chapter ${String(this.state.chapter+1).padStart(2,'0')} · question`)}</span><h2 class="s6-question-title">${escapeHtml(p.title)}</h2><p class="s6-question-prompt">${escapeHtml(p.prompt)}</p>${clues}<div class="s6-single-answers option-style-${optionStyle}" role="radiogroup" aria-label="${escapeHtml(presentation.answerLabel||'Choose one answer')}">${choices}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.deductionFeedback||'')}</p></section>`,`<div class="s6-question-actions">${actionMarkup}</div>`,{brandHeader:true});
+    }
     showBookshelfPuzzle(ch,p) {
+      if(p.presentation.layout==='catalog-inspection'){this.showCatalogBookshelfPuzzle(ch,p);return;}
       const art=p.presentation,slots=this.state.bookshelfSlots,candidate=id=>art.candidates.find(item=>item.id===id);
       const bookArt=item=>{
         const frame=item.spineFrame,sheet=art.spineSheetSize;
@@ -803,18 +1225,51 @@
       const available=art.candidates.map(item=>slots.includes(item.id)?'<div class="s6-library-candidate is-vacant" aria-hidden="true"><span class="s6-library-vacant"></span></div>':`<div class="s6-library-candidate"><button type="button" class="s6-library-candidate-pick${this.bookSelection?.kind==='candidate'&&this.bookSelection.id===item.id?' is-picked':''}" draggable="true" data-s6="books-pick" data-id="${escapeHtml(item.id)}" aria-pressed="${this.bookSelection?.kind==='candidate'&&this.bookSelection.id===item.id}" aria-label="Select catalog book ${escapeHtml(item.id)}">${bookArt(item)}</button></div>`).join('');
       const selected=slots.map((id,index)=>`<div class="s6-library-selected-slot" aria-label="Position ${index+1}${id?`, catalog ${escapeHtml(id)}`:', empty'}">${id?bookArt(candidate(id)):'<span class="s6-library-selected-empty" aria-hidden="true"></span>'}<span class="s6-library-selected-index">${index+1}</span></div>`).join('');
       const cartNumbers=(art.cartNumbers||[]).map(id=>`<span>${escapeHtml(id)}</span>`).join('');
-      this.showModal(p.title,`<div class="s6-library-puzzle"><nav class="s6-library-nav"><button type="button" class="s6-library-back" data-s6="close">← Back to investigation</button><span>Chapter 01 · library puzzle</span></nav><div class="s6-library-layout"><div class="s6-library-scene" style="background-image:url(&quot;${escapeHtml(art.shelfImage)}&quot;)"><div class="s6-library-slot-track">${shelfSlots}</div><div class="s6-library-handle-track">${handles}</div><div class="s6-library-drawer${this.state.bookSlipReady?' is-open':''}"><span class="s6-library-drawer-inset">${this.state.bookSlipReady?`<button type="button" data-s6="books-collect" class="s6-library-slip" aria-label="Collect concealed catalog slip ${escapeHtml(art.slipText)}">${escapeHtml(art.slipText)} →</button>`:''}</span></div></div><aside class="s6-library-board"><span class="s6-eyebrow">The library cabinet</span><h2>${escapeHtml(p.title)}</h2><p>${escapeHtml(p.prompt)}</p><div class="s6-library-note"><h3>Eleanor’s Note</h3><p>${escapeHtml(art.note)}</p></div><div class="s6-library-selected"><h3>Your selected books</h3><div class="s6-library-selected-books">${selected}</div></div><div class="s6-library-cart"><h3>From the Book Cart</h3><div class="s6-library-cart-numbers">${cartNumbers}</div></div><p class="s6-library-status" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.bookFeedback||'Select a book below, then a space on the shelf. Try the brass handles when ready.')}</p></aside></div><section class="s6-library-available"><h3>Available Books <small>· select a book, then a space on the shelf</small></h3><div class="s6-library-candidates">${available}</div></section></div>`,`<button class="s6-quiet" data-s6="books-clue">View Book Cart clue</button><button class="s6-quiet" data-s6="hint">Hint</button><button class="s6-quiet" data-s6="puzzle-reset">Reset arrangement</button>`);
+      this.showModal(p.title,`<div class="s6-library-puzzle"><nav class="s6-library-nav"><button type="button" class="s6-library-back" data-s6="close">← Back to investigation</button><span>Chapter 01 · library puzzle</span></nav><div class="s6-library-layout"><div class="s6-library-scene" style="background-image:url(&quot;${escapeHtml(art.shelfImage)}&quot;)"><div class="s6-library-slot-track">${shelfSlots}</div><div class="s6-library-handle-track">${handles}</div><div class="s6-library-drawer${this.state.bookSlipReady?' is-open':''}"><span class="s6-library-drawer-inset">${this.state.bookSlipReady?`<button type="button" data-s6="books-collect" class="s6-library-slip" aria-label="Collect concealed catalog slip ${escapeHtml(art.slipText)}">${escapeHtml(art.slipText)} →</button>`:''}</span></div></div><aside class="s6-library-board"><div class="s6-library-title"><span class="s6-eyebrow">Chapter 01 · Library puzzle</span><h2>${escapeHtml(p.title)}</h2></div><p>${escapeHtml(p.prompt)}</p><div class="s6-library-note"><h3>Eleanor’s Note</h3><p>${escapeHtml(art.note)}</p></div><div class="s6-library-selected"><h3>Your selected books</h3><div class="s6-library-selected-books">${selected}</div></div><div class="s6-library-cart"><h3>From the Book Cart</h3><div class="s6-library-cart-numbers">${cartNumbers}</div></div><p class="s6-library-status" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.bookFeedback||'Select a book below, then a space on the shelf. Try the brass handles when ready.')}</p></aside></div><section class="s6-library-available"><h3>Available Books <small>· select a book, then a space on the shelf</small></h3><div class="s6-library-candidates">${available}</div></section></div>`,`<button class="s6-quiet" data-s6="books-clue">View Book Cart clue</button><button class="s6-quiet" data-s6="hint">Hint</button><button class="s6-quiet" data-s6="puzzle-reset">Reset arrangement</button>`);
       this.overlay?.lastElementChild?.querySelector('.s6-library-back')?.focus();
+    }
+    showCatalogBookshelfPuzzle(ch,p) {
+      const art=p.presentation,slots=this.state.bookshelfSlots,candidate=id=>art.candidates.find(item=>item.id===id);
+      const sprite=(item,frame,image,size,kind)=>`<span class="s6-catalog-${kind}" aria-hidden="true" style="--s6-spine-ratio:${frame.width/frame.height};aspect-ratio:${frame.width}/${frame.height};background-image:url(&quot;${escapeHtml(image)}&quot;);background-size:${size.width/frame.width*100}% ${size.height/frame.height*100}%;background-position:${frame.x/(size.width-frame.width)*100}% ${frame.y/(size.height-frame.height)*100}%"></span>`;
+      const spine=item=>sprite(item,item.spineFrame,item.spineImage,art.spineSheetSize,'spine');
+      const slotsMarkup=slots.map((id,index)=>`<button type="button" class="s6-catalog-slot${id?' is-filled':''}${this.bookSelection?.kind==='slot'&&this.bookSelection.index===index?' is-picked':''}" data-s6="books-slot" data-index="${index}" aria-label="Shelf space ${index+1}${id?`, ${escapeHtml(candidate(id).color)} book`:', empty'}">${id?spine(candidate(id)):''}</button>`).join('');
+      const tray=art.candidates.map(item=>slots.includes(item.id)?`<span class="s6-catalog-tray-cell is-empty" aria-label="Empty book position"><span class="s6-catalog-vacant" aria-hidden="true"></span></span>`:`<span class="s6-catalog-tray-cell"><button type="button" class="s6-catalog-book${this.bookSelection?.kind==='candidate'&&this.bookSelection.id===item.id?' is-picked':''}" data-s6="books-pick" data-id="${escapeHtml(item.id)}" aria-label="Inspect and select the ${escapeHtml(item.color)} book" aria-pressed="${this.bookSelection?.kind==='candidate'&&this.bookSelection.id===item.id}">${spine(item)}</button></span>`).join('');
+      const item=candidate(this.state.bookInspectionId),revealed=this.state.bookSlipReady;
+      const open=item?`<div class="s6-catalog-open" role="img" aria-label="Open ${escapeHtml(item.color)} book showing its printed catalog page" style="aspect-ratio:${item.openFrame.width}/${item.openFrame.height};background-image:url(&quot;${escapeHtml(art.openSheet)}&quot;);background-size:${1536/item.openFrame.width*100}% ${1024/item.openFrame.height*100}%;background-position:${item.openFrame.x/(1536-item.openFrame.width)*100}% ${item.openFrame.y/(1024-item.openFrame.height)*100}%"></div>`:'';
+      const panel=revealed?`<div class="s6-catalog-panel-inner"><span class="s6-catalog-panel-label">Discovery</span><h3>The hidden reference</h3><p>The compartment has opened. Select the parchment inside to examine B-17.</p></div>`:item?`<div class="s6-catalog-panel-inner"><span class="s6-catalog-panel-label">Inspect book</span>${open}<p>A catalog number is inside the cover.</p><button type="button" class="s6-catalog-panel-button" data-s6="books-close">Close book</button></div>`:`<div class="s6-catalog-panel-inner"><span class="s6-catalog-panel-label">Inspect book</span><h3>Choose a volume</h3><p>Select a spine below to open its cover. Place the four books from the Book Cart in catalog order.</p></div>`;
+      const clueIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg>';
+      const resetIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11a8.5 8.5 0 1 1 1.8 6.4"/><path d="M3.5 4.5V11H10"/></svg>';
+      this.showModal(p.title,`<div class="s6-catalog-puzzle"><div class="s6-catalog-head"><button type="button" data-s6="close">← Back to investigation</button><div><small>Chapter 01 · Library Puzzle</small><h2>${escapeHtml(p.title)}</h2></div></div><div class="s6-catalog-main"><div class="s6-catalog-scene${revealed?' is-revealed':''}" aria-label="Original Victorian bookshelf"><img class="s6-catalog-base" src="${escapeHtml(art.shelfImage)}" alt="Victorian bookshelf with four numbered spaces and a concealed compartment"><img class="s6-catalog-solved" src="${escapeHtml(art.solvedImage)}" alt="Four arranged books and the open compartment containing B-17"><div class="s6-catalog-slot-track">${slotsMarkup}</div>${revealed?`<button type="button" class="s6-catalog-slip-target" data-s6="books-view-slip" aria-label="Examine the B-17 parchment"></button>`:''}</div><aside class="s6-catalog-panel">${panel}</aside></div><div class="s6-catalog-bottom"><div class="s6-catalog-tray"><strong>Available Books</strong><div class="s6-catalog-tray-shelf"><img class="s6-catalog-tray-art" src="${escapeHtml(art.trayImage)}" alt="" aria-hidden="true">${tray}</div></div><div class="s6-catalog-bottom-actions"><button type="button" data-s6="books-clue">${clueIcon}<span>View clue</span></button><button type="button" data-s6="puzzle-reset">${resetIcon}<span>Reset arrangement</span></button>${revealed?'':`<button type="button" data-s6="books-check" ${slots.every(Boolean)&&!this.bookUnlocking?'':'disabled'}>Check arrangement →</button>`}</div></div><p class="s6-catalog-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.bookFeedback||'Select a book to inspect it, then choose a shelf space.')}</p>${this.bookUnlocking?'<button type="button" class="s6-catalog-skip" data-s6="books-skip">Skip animation</button>':''}</div>`);
+      this.overlay?.lastElementChild?.querySelector('.s6-catalog-head button')?.focus();
     }
     openBook(id) {
       const p=this.current().puzzle,item=p.presentation?.candidates?.find(entry=>entry.id===id);if(!item)return;
       if(!this.state.booksSeen.includes(id)){this.state.booksSeen.push(id);this.save();}
       this.showModal('Inside the front cover',`<span class="s6-eyebrow">Inside the front cover</span><h2>${escapeHtml(item.label)}</h2>${item.coverImage?`<img class="s6-book-cover" src="${escapeHtml(item.coverImage)}" alt="Opened book showing catalog stamp ${escapeHtml(id)}">`:`<div class="s6-library-inside-cover"><span>Willowmere Library</span><strong>Catalog ${escapeHtml(id)}</strong><small>${escapeHtml(item.label)}</small></div>`}<p>Catalog ${escapeHtml(id)}</p>`,`<button class="s6-quiet" data-s6="close">Return to shelf</button>`,{stack:true});
     }
-    pickBook(id) {const p=this.current().puzzle;if(!p.presentation?.candidates?.some(item=>item.id===id)||this.state.bookshelfSlots.includes(id))return;this.bookSelection=this.bookSelection?.kind==='candidate'&&this.bookSelection.id===id?null:{kind:'candidate',id};this.bookFeedback=this.bookSelection?`Choose a space on the shelf for catalog ${id}.`:'Selection cleared.';this.showPuzzle();}
+    bookPointerStart(event) {
+      if(event.button!==0)return;
+      const source=event.target.closest?.('.s6-catalog-book,.s6-catalog-slot.is-filled');if(!source)return;
+      this.bookPointer={pointerId:event.pointerId,x:event.clientX,y:event.clientY,source,selection:source.dataset.s6==='books-pick'?{kind:'candidate',id:source.dataset.id}:{kind:'slot',index:Number(source.dataset.index)},moved:false};
+    }
+    bookPointerMove(event) {
+      const drag=this.bookPointer;if(!drag||drag.pointerId!==event.pointerId)return;
+      if(!drag.moved&&Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<8)return;
+      if(!drag.moved){drag.moved=true;const spine=drag.source.querySelector('.s6-catalog-spine');drag.ghost=spine?.cloneNode(true);if(drag.ghost){const rect=spine.getBoundingClientRect();drag.ghost.className='s6-catalog-drag-ghost';drag.ghost.style.width=`${rect.width}px`;drag.ghost.style.height=`${rect.height}px`;this.overlay.append(drag.ghost);}}
+      event.preventDefault();if(drag.ghost){drag.ghost.style.left=`${event.clientX}px`;drag.ghost.style.top=`${event.clientY}px`;}
+    }
+    bookPointerEnd(event,cancel=false) {
+      const drag=this.bookPointer;if(!drag||drag.pointerId!==event.pointerId)return;
+      this.bookPointer=null;drag.ghost?.remove();if(cancel||!drag.moved)return;
+      this.bookSuppressClickUntil=Date.now()+350;
+      const target=document.elementFromPoint(event.clientX,event.clientY),slot=target?.closest?.('.s6-catalog-slot'),tray=target?.closest?.('.s6-catalog-tray-shelf');
+      if(slot){this.bookSelection=drag.selection;this.chooseBookSlot(Number(slot.dataset.index));}
+      else if(tray&&drag.selection.kind==='slot'){this.bookSelection=drag.selection;this.chooseBookSlot(drag.selection.index);}
+    }
+    pickBook(id) {const p=this.current().puzzle;if(!p.presentation?.candidates?.some(item=>item.id===id)||this.state.bookshelfSlots.includes(id))return;this.bookSelection=this.bookSelection?.kind==='candidate'&&this.bookSelection.id===id?null:{kind:'candidate',id};if(p.presentation.layout==='catalog-inspection'){this.state.bookInspectionId=id;if(!this.state.booksSeen.includes(id))this.state.booksSeen.push(id);this.save();}this.bookFeedback=this.bookSelection?'Choose a shelf space for this book. Open it on the right to read its catalog number.':'Selection cleared.';this.showPuzzle();}
     async chooseBookSlot(index) {const slots=[...this.state.bookshelfSlots];if(!Number.isInteger(index)||index<0||index>=slots.length)return;
-      if(!this.bookSelection){if(!slots[index]){this.bookFeedback='Select a book from the available shelf first.';}else{this.bookSelection={kind:'slot',index};this.bookFeedback='Choose another slot to move this book, or select it again to remove it.';}this.showPuzzle();return;}
-      if(this.bookSelection.kind==='candidate'){const id=this.bookSelection.id,old=slots.indexOf(id);if(old!==-1)slots[old]=null;slots[index]=id;this.bookFeedback=`Catalog ${id} placed in position ${index+1}.`;}else{const from=this.bookSelection.index;if(from===index){this.bookFeedback=`Catalog ${slots[index]} returned to the available books.`;slots[index]=null;}else{[slots[from],slots[index]]=[slots[index],slots[from]];this.bookFeedback='The books change places on the shelf.';}}
+      if(!this.bookSelection){if(!slots[index]){this.bookFeedback='Select a book from the available shelf first.';}else{this.bookSelection={kind:'slot',index};if(this.current().puzzle.presentation.layout==='catalog-inspection'){this.state.bookInspectionId=slots[index];if(!this.state.booksSeen.includes(slots[index]))this.state.booksSeen.push(slots[index]);this.save();}this.bookFeedback='Choose another slot to move this book, or select it again to return it to the tray.';}this.showPuzzle();return;}
+      if(this.bookSelection.kind==='candidate'){const id=this.bookSelection.id,old=slots.indexOf(id);if(old!==-1)slots[old]=null;slots[index]=id;this.bookFeedback=`Book placed in shelf space ${index+1}.`;}else{const from=this.bookSelection.index;if(from===index){this.bookFeedback='Book returned to its original tray position.';slots[index]=null;}else{[slots[from],slots[index]]=[slots[index],slots[from]];this.bookFeedback='The books change places on the shelf.';}}
       this.bookSelection=null;this.state.bookshelfSlots=slots;this.state.bookSlipReady=false;await this.save();this.showPuzzle();
     }
     async pullBookHandle(id) {const p=this.current().puzzle,handle=p.presentation?.handles?.find(item=>item.id===id);if(!handle)return;
@@ -823,6 +1278,27 @@
         else{this.state.bookSlipReady=true;this.bookFeedback=`A brass latch clicks. The narrow concealed drawer slides out with the ${p.presentation.slipText} slip.`;await this.save();}
       }else this.bookFeedback=handle.feedback;
       this.showPuzzle();
+    }
+    async checkCatalogBookshelf() {
+      const p=this.current().puzzle;if(p.presentation?.layout!=='catalog-inspection'||this.bookUnlocking||this.state.bookSlipReady)return;
+      if(this.state.bookshelfSlots.some(id=>!id)){this.bookFeedback='Place four books before checking the arrangement.';this.showPuzzle();return;}
+      if(this.state.bookshelfSlots.join('|')!==p.answer.join('|')){this.bookFeedback='The compartment remains closed. Recheck the books and their order.';const message=this.overlay.querySelector('#s6-puzzle-feedback');if(message)message.textContent=this.bookFeedback;const scene=this.overlay.querySelector('.s6-catalog-scene');scene?.classList.add('is-incorrect');global.setTimeout(()=>scene?.classList.remove('is-incorrect'),650);return;}
+      this.bookUnlocking=true;this.bookAnimationSkip=false;this.bookFeedback='A gentle click sounds inside the compartment.';
+      const scene=this.overlay.querySelector('.s6-catalog-scene'),dialog=this.overlay.lastElementChild,button=dialog?.querySelector('[data-s6="books-check"]');if(button)button.disabled=true;
+      const skip=document.createElement('button');skip.type='button';skip.className='s6-catalog-skip';skip.dataset.s6='books-skip';skip.textContent='Skip animation';dialog?.append(skip);
+      if(!this.voiceMuted&&global.AudioContext){try{const context=new global.AudioContext(),osc=context.createOscillator(),gain=context.createGain();osc.type='sine';osc.frequency.setValueAtTime(740,context.currentTime);osc.frequency.exponentialRampToValueAtTime(260,context.currentTime+.07);gain.gain.setValueAtTime(.018,context.currentTime);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+.1);osc.connect(gain).connect(context.destination);osc.start();osc.stop(context.currentTime+.11);osc.onended=()=>context.close();}catch{}}
+      const pause=ms=>new Promise(resolve=>{if(this.bookAnimationSkip||global.matchMedia?.('(prefers-reduced-motion: reduce)').matches){resolve();return;}const timer=global.setTimeout(()=>{this.bookAnimationResolve=null;resolve();},ms);this.bookAnimationResolve=()=>{global.clearTimeout(timer);this.bookAnimationResolve=null;resolve();};});
+      scene?.classList.add('is-glowing');await pause(600);if(!scene?.isConnected){this.bookUnlocking=false;return;}
+      scene.classList.remove('is-glowing');scene.classList.add('is-unlocking');await pause(900);if(!scene.isConnected){this.bookUnlocking=false;return;}
+      scene.classList.remove('is-unlocking');scene.classList.add('is-revealed');await pause(800);if(!scene.isConnected){this.bookUnlocking=false;return;}
+      scene.classList.add('is-focused');await pause(900);if(!scene.isConnected){this.bookUnlocking=false;return;}
+      this.state.bookSlipReady=true;this.bookUnlocking=false;this.bookFeedback='The concealed compartment holds an old archival reference. Examine the parchment.';await this.save();this.showPuzzle();
+    }
+    showCatalogParchment() {
+      const p=this.current().puzzle;if(!this.state.bookSlipReady&&!this.isSolved(this.state.chapter))return;
+      const alreadySolved=this.state.solved.includes(p.id);
+      if(!alreadySolved){this.state.solved.push(p.id);this.save();this.render();}
+      this.showModal('B-17 archival reference',`<div class="s6-catalog-parchment"><span class="s6-eyebrow">Discovered in the hidden compartment</span><h2>B-17</h2><img src="${escapeHtml(p.presentation.parchmentImage)}" alt="Aged parchment card marked B-17"><p>The concealed compartment held an old archival reference: B-17.</p></div>`,`${alreadySolved?'':`<button class="s6-btn" data-s6="books-finish">Keep the reference →</button>`}<button class="s6-quiet" data-s6="close">${alreadySolved?'Return to revelations':'Return to bookshelf'}</button>`,{stack:true});
     }
     showMachineryPuzzle(ch,p) {
       const previous=this.overlay?.lastElementChild;
@@ -970,6 +1446,8 @@
       this.overlay.querySelector(`[data-s6="sequence-select"][data-index="${to}"]`)?.focus();
     }
     sequenceDragStart(event) {
+      const timelineEvent=event.target.closest?.('.s6-clean-timeline-event');
+      if(timelineEvent){this.timelineDragId=timelineEvent.dataset.timelineEvent;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',this.timelineDragId);timelineEvent.classList.add('is-dragging');return;}
       const step=event.target.closest?.('.s6-sequence-step,.s6-book-spine');
       if(!step)return;
       if(event.target.closest('.s6-sequence-controls')){event.preventDefault();return;}
@@ -978,22 +1456,27 @@
       step.classList.add('is-dragging');
     }
     sequenceDragOver(event) {
+      const timelineSlot=event.target.closest?.('[data-timeline-slot]');
+      if(timelineSlot&&this.timelineDragId){event.preventDefault();event.dataTransfer.dropEffect='move';this.overlay.querySelectorAll('[data-timeline-slot].is-drop-target').forEach(node=>node.classList.remove('is-drop-target'));timelineSlot.classList.add('is-drop-target');return;}
       const step=event.target.closest?.('.s6-sequence-step,.s6-book-spine');if(!step||this.sequenceDrag===null)return;
       event.preventDefault();event.dataTransfer.dropEffect='move';
       this.overlay.querySelectorAll('.s6-sequence-step.is-drop-target,.s6-book-spine.is-drop-target').forEach(node=>node.classList.remove('is-drop-target'));
       if(Number(step.dataset.sequenceIndex)!==this.sequenceDrag)step.classList.add('is-drop-target');
     }
     async sequenceDrop(event) {
+      const timelineSlot=event.target.closest?.('[data-timeline-slot]');
+      if(timelineSlot&&this.timelineDragId){event.preventDefault();const id=event.dataTransfer.getData('text/plain')||this.timelineDragId,index=Number(timelineSlot.dataset.index);this.sequenceDragEnd();await this.placeCleanTimelineEvent(id,index);return;}
       const step=event.target.closest?.('.s6-sequence-step,.s6-book-spine');if(!step||this.sequenceDrag===null)return;
       event.preventDefault();const from=this.sequenceDrag,to=Number(step.dataset.sequenceIndex);
       this.sequenceDragEnd();await this.moveSequence(from,to);
     }
     sequenceDragEnd() {
       this.sequenceDrag=null;
-      this.overlay.querySelectorAll('.s6-sequence-step.is-dragging,.s6-sequence-step.is-drop-target,.s6-book-spine.is-dragging,.s6-book-spine.is-drop-target').forEach(node=>node.classList.remove('is-dragging','is-drop-target'));
+      this.timelineDragId=null;
+      this.overlay.querySelectorAll('.s6-sequence-step.is-dragging,.s6-sequence-step.is-drop-target,.s6-book-spine.is-dragging,.s6-book-spine.is-drop-target,.s6-clean-timeline-event.is-dragging,[data-timeline-slot].is-drop-target').forEach(node=>node.classList.remove('is-dragging','is-drop-target'));
     }
     puzzleChoice(id) { const p=this.current().puzzle;if(!p.options?.some(option=>option.id===id))return;this.deductionChoice=id;this.deductionFeedback='';this.showPuzzle();this.overlay.querySelector(`[data-s6="puzzle-choice"][data-id="${id}"]`)?.focus(); }
-    deductionSubmit() {const p=this.current().puzzle;if(!this.deductionChoice)return;if(this.deductionChoice!==p.answer){this.deductionFeedback='That answer does not fit all the clues. Review the evidence and try again.';this.overlay.querySelector('#s6-puzzle-feedback').textContent=this.deductionFeedback;return;}this.deductionFeedback='';this.solvePuzzle();}
+    deductionSubmit() {const p=this.current().puzzle;if(p.type==='input'){const value=this.overlay.querySelector('[data-s6="puzzle-input"]')?.value||'';this.state.puzzleDrafts[p.id]=value.slice(0,40);if(value.trim().toLocaleLowerCase()!==p.answer.trim().toLocaleLowerCase()){this.deductionFeedback='That combination does not fit the evidence yet. Try again.';this.overlay.querySelector('#s6-puzzle-feedback').textContent=this.deductionFeedback;this.save();return;}this.deductionFeedback='';this.solvePuzzle();return;}if(p.presentation?.mode==='token-insert'){this.placeToken();return;}if(!this.deductionChoice)return;if(this.deductionChoice!==p.answer){this.deductionFeedback=['single-question','single-question-clues'].includes(p.presentation?.mode)?'That answer does not match the evidence yet. Try another.':'That answer does not fit all the clues. Review the evidence and try again.';this.overlay.querySelector('#s6-puzzle-feedback').textContent=this.deductionFeedback;return;}this.deductionFeedback='';this.solvePuzzle();}
     async puzzleCheck() {
       if(this.machineryConfirming)return;
       const p=this.current().puzzle,draft=isVisualRoute(p)||isMachinery(p)?this.state.puzzleRouteSelections[p.id]||[]:this.state.puzzleDrafts[p.id]||[];
@@ -1028,34 +1511,47 @@
     solvePuzzle() {
       const ch=this.current();if(!this.state.solved.includes(ch.puzzle.id))this.state.solved.push(ch.puzzle.id);
       this.save();this.render();
-      const result=`<p>${escapeHtml(ch.puzzle.success)}</p><div class="s6-note">${escapeHtml(ch.clue)}</div>`;
+      const result=`<p>${escapeHtml(ch.puzzle.presentation?.mode==='token-insert'?ch.puzzle.presentation.successText:ch.puzzle.success||ch.success||'The evidence reveals a new lead.')}</p><div class="s6-note">${escapeHtml(ch.clue)}</div>`;
       const portrait=ch.rescueDialogue&&this.story.characterPortraits?.edda?`<div class="s6-rescue-success"><img src="${escapeHtml(this.story.characterPortraits.edda)}" alt="Edda Moss, rescued from the springworks"><div>${result}</div></div>`:result;
       this.showModal('Lead established',`<span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · new lead</span><h2>${escapeHtml(ch.puzzle.title)}</h2>${portrait}`,this.state.chapter<this.story.chapters.length-1?'<button class="s6-btn" data-s6="continue">Continue to the next chapter →</button>':ch.rescueDialogue?'<button class="s6-btn" data-s6="rescue-dialogue">Speak with Edda →</button>':this.story.resolution?.dialogue?'<button class="s6-btn" data-s6="resolution-dialogue">Discuss what the records show →</button>':'<button class="s6-btn" data-s6="ending">Choose how to resolve the case →</button>');
     }
-    showOpening() {const intro=this.story.openingIntroduction;if(!intro)return;const portrait=this.story.characterPortraits?.[this.story.caseSubject?.id];this.showModal(intro.title,`<div class="s6-opening-layout">${portrait?`<div class="s6-opening-portrait"><img src="${escapeHtml(portrait)}" alt="Portrait of Edda Moss, the missing bellkeeper"></div>`:''}<div class="s6-opening-copy"><span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · opening</span><h2>${escapeHtml(intro.title)}</h2><div class="s6-opening">${intro.text.map(line=>`<p>${escapeHtml(line)}</p>`).join('')}</div><button class="s6-btn" data-s6="opening-begin">${escapeHtml(intro.buttonText||'Begin the investigation')} →</button></div></div>`);}
+    showOpening() {
+      const intro=this.story.openingIntroduction;if(!intro)return;
+      const person=intro.characterId?this.story.chapters.flatMap(ch=>ch.characters).find(entry=>entry.id===intro.characterId):null;
+      const speaker=intro.speaker||person?.name,text=intro.text.join(' '),voice=speaker?this.voiceControl(speaker,text):'';
+      if(person){
+        const content=`<span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · opening</span><h2>${escapeHtml(intro.title)}</h2><span class="s6-speaker">${escapeHtml(speaker||person.name)}</span><p class="s6-dialogue-text">${dialogueMarkup(text)}</p>`;
+        const actions=`${voice}<button class="s6-btn" data-s6="opening-begin">${escapeHtml(intro.buttonText||'Begin the investigation')} →</button>`;
+        this.showModal(intro.title,this.conversationMarkup(person,content,speaker,actions),'',{voiceDialogue:true,scrollPageTopOnClose:true});
+        return;
+      }
+      const portraitId=this.story.caseSubject?.id,portrait=this.story.characterPortraits?.[portraitId];
+      this.showModal(intro.title,`<div class="s6-opening-layout">${portrait?`<div class="s6-opening-portrait"><img src="${escapeHtml(portrait)}" alt="Portrait of ${escapeHtml(this.story.caseSubject?.name||'the story character')}"></div>`:''}<div class="s6-opening-copy"><span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · opening</span><h2>${escapeHtml(intro.title)}</h2><div class="s6-opening">${intro.text.map(line=>`<p>${escapeHtml(line)}</p>`).join('')}</div><button class="s6-btn" data-s6="opening-begin">${escapeHtml(intro.buttonText||'Begin the investigation')} →</button></div></div>`,'',{scrollPageTopOnClose:true});
+    }
     showEddaConversation() {
       if(!this.isSolved(this.story.chapters.length-1))return;
       if(!this.state.rescueDone){this.showRescueDialogue();return;}
       const lines=this.story.chapters.at(-1).rescueDialogue?.lines||[];
       const questions=[];
       for(let index=0;index+1<lines.length;index+=2)questions.push(`<button type="button" class="s6-question" data-s6="edda-ask" data-index="${index}">${escapeHtml(lines[index].text)}<small>Discussed · ask again</small></button>`);
-      this.showModal('Speak with Edda Moss',this.conversationMarkup({id:'edda',name:'Edda Moss'},`<span class="s6-eyebrow">The Springworks · after the rescue</span><h2>Edda Moss</h2><div class="s6-choice-list">${questions.join('')}</div>`,'Edda Moss',`<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`));
+      this.showModal('Speak with Edda Moss',this.conversationMarkup({id:'edda',name:'Edda Moss'},`<span class="s6-eyebrow">The Springworks · after the rescue</span><h2>Edda Moss</h2><div class="s6-choice-list">${questions.join('')}</div>`,'Edda Moss',`<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`), undefined, {voiceDialogue:true});
     }
     showEddaExchange(index,line=0) {
       const lines=this.story.chapters.at(-1).rescueDialogue?.lines||[];
       if(!this.state.rescueDone||index<0||index%2||!lines[index+1])return;
       const entry=lines[index+line];
-      this.showModal('Edda Moss · conversation',this.conversationMarkup({id:'edda',name:'Edda Moss'},`<span class="s6-eyebrow">The Springworks · conversation</span><p class="s6-stage-direction">${line?'Edda replies.':'You ask the question.'}</p><span class="s6-speaker">${escapeHtml(entry.speaker)}</span><p class="s6-dialogue-text">${escapeHtml(entry.text)}</p>`,entry.speaker,`${line?`<button class="s6-btn" data-s6="edda-menu">Back to topics →</button><button class="s6-quiet" data-s6="edda-ask" data-index="${index}">Replay this exchange</button>`:`<button class="s6-btn" data-s6="edda-reply" data-index="${index}">Hear the reply →</button>`}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`));
+      this.showModal('Edda Moss · conversation',this.conversationMarkup({id:'edda',name:'Edda Moss'},`<span class="s6-eyebrow">The Springworks · conversation</span><p class="s6-stage-direction">${line?'Edda replies.':'You ask the question.'}</p><span class="s6-speaker">${escapeHtml(entry.speaker)}</span><p class="s6-dialogue-text">${dialogueMarkup(entry.text)}</p>`,entry.speaker,`${line?`<button class="s6-btn" data-s6="edda-menu">Back to topics →</button><button class="s6-quiet" data-s6="edda-ask" data-index="${index}">Replay this exchange</button>`:`<button class="s6-btn" data-s6="edda-reply" data-index="${index}">Hear the reply →</button>`}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`), undefined, {voiceDialogue:true});
     }
-    async beginOpening() {this.state.openingSeen=true;await this.save();this.closeModal();}
-    showRescueDialogue() {const dialogue=this.story.chapters.at(-1).rescueDialogue;if(!dialogue||this.state.rescueDone)return;const line=dialogue.lines[this.state.rescueLine]||dialogue.lines[0],person={id:'edda',name:'Edda Moss'};this.showModal(dialogue.title,this.conversationMarkup(person,`<span class="s6-eyebrow">The Springworks · rescue conversation · ${this.state.rescueLine+1} of ${dialogue.lines.length}</span><h2>${escapeHtml(dialogue.title)}</h2><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${escapeHtml(line.text)}</p>`,line.speaker,`<button class="s6-btn" data-s6="rescue-next">${this.state.rescueLine<dialogue.lines.length-1?'Continue conversation →':'Consider the next step →'}</button>`));}
+    async beginOpening() {this.state.openingSeen=true;const intro=this.story.openingIntroduction;if(intro?.characterId){const key=this.characterIntroKey(intro.characterId,0);if(this.allowedCharacterIntros.has(key)&&!this.state.characterIntrosSeen.includes(key))this.state.characterIntrosSeen.push(key);if(intro.speaker&&intro.text?.length&&!this.state.transcript.some(line=>line.chapter===0&&line.speaker===intro.speaker&&line.text===intro.text.join(' ')))this.state.transcript.push({chapter:0,speaker:intro.speaker,text:intro.text.join(' ')});}await this.save();this.closeModal();}
+    showRescueDialogue() {const dialogue=this.story.chapters.at(-1).rescueDialogue;if(!dialogue||this.state.rescueDone)return;const line=dialogue.lines[this.state.rescueLine]||dialogue.lines[0],person={id:'edda',name:'Edda Moss'};this.showModal(dialogue.title,this.conversationMarkup(person,`<span class="s6-eyebrow">The Springworks · rescue conversation · ${this.state.rescueLine+1} of ${dialogue.lines.length}</span><h2>${escapeHtml(dialogue.title)}</h2><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${dialogueMarkup(line.text)}</p>`,line.speaker,`<button class="s6-btn" data-s6="rescue-next">${this.state.rescueLine<dialogue.lines.length-1?'Continue conversation →':'Consider the next step →'}</button>`),'',{voiceDialogue:true});}
     async nextRescueLine() {const dialogue=this.story.chapters.at(-1).rescueDialogue,line=dialogue?.lines[this.state.rescueLine];if(!line)return;this.state.transcript.push({chapter:this.story.chapters.length-1,speaker:line.speaker,text:line.text});this.state.transcript=this.state.transcript.slice(-300);if(this.state.rescueLine<dialogue.lines.length-1){this.state.rescueLine++;await this.save();this.showRescueDialogue();}else{this.state.rescueDone=true;await this.save();this.render();this.showEnding();}}
     continueChapter() { if(this.state.chapter>=this.story.chapters.length-1||!this.isSolved(this.state.chapter))return;this.state.chapter++;this.state.dialogue=null;this.save();this.closeModal();this.render();global.scrollTo({top:0,behavior:'smooth'}); }
-    showResolutionDialogue() {const lines=this.story.resolution?.dialogue;if(!lines?.length)return this.showEnding();const line=lines[this.state.resolutionLine],ada={id:'ada',name:'Ada Vale'};this.showCharacterConversation(this.story.resolution.title,ada,`<span class="s6-eyebrow">${escapeHtml(this.story.chapters.at(-1).location)} · final conversation · ${this.state.resolutionLine+1} of ${lines.length}</span><h2>${escapeHtml(this.story.resolution.title)}</h2><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${escapeHtml(line.text)}</p>`,`<button class="s6-btn" data-s6="resolution-next">${this.state.resolutionLine<lines.length-1?'Continue conversation →':'Choose how to reveal the truth →'}</button>${this.voiceControl(line.speaker,line.text)}`,line.speaker);}
+    async goToChapter(index) {if(!this.chapterUnlocked(index))return;this.state.chapter=index;this.state.dialogue=null;await this.save();this.closeModal();this.render();global.scrollTo({top:0,behavior:'smooth'});}
+    showResolutionDialogue() {const lines=this.story.resolution?.dialogue;if(!lines?.length)return this.showEnding();const line=lines[this.state.resolutionLine],ada={id:'ada',name:'Ada Vale'};this.showCharacterConversation(this.story.resolution.title,ada,`<span class="s6-eyebrow">${escapeHtml(this.story.chapters.at(-1).location)} · final conversation · ${this.state.resolutionLine+1} of ${lines.length}</span><h2>${escapeHtml(this.story.resolution.title)}</h2><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${dialogueMarkup(line.text)}</p>`,`<button class="s6-btn" data-s6="resolution-next">${this.state.resolutionLine<lines.length-1?'Continue conversation →':'Choose how to reveal the truth →'}</button>${this.voiceControl(line.speaker,line.text)}`,line.speaker);}
     async nextResolutionLine() {const lines=this.story.resolution?.dialogue||[],line=lines[this.state.resolutionLine];if(!line)return;this.state.transcript.push({chapter:this.story.chapters.length-1,speaker:line.speaker,text:line.text});this.state.transcript=this.state.transcript.slice(-300);if(this.state.resolutionLine<lines.length-1){this.state.resolutionLine++;await this.save();this.showResolutionDialogue();}else{this.state.resolutionDone=true;await this.save();this.showEnding();}}
     showEnding() {if(this.story.resolution?.dialogue&&!this.state.resolutionDone)return this.showResolutionDialogue();const endings=this.story.chapters.at(-1).endings||[],title=this.story.resolution?.title||'Resolve the case',prompt=this.story.resolution?.prompt||"Edda is safe. The bell's cause is understood. The upper hamlet still needs water, and the way the diversion was handled must be addressed.";this.showModal(title,`<span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · final choice</span><h2>${escapeHtml(title)}</h2><p>${escapeHtml(prompt)}</p><div class="s6-ending">${endings.map(ending=>`<button class="s6-choice" data-s6="choose-ending" data-id="${ending.id}"><strong>${escapeHtml(ending.label)}</strong><br><small>${escapeHtml(ending.text)}</small></button>`).join('')}</div>`); }
     chooseEnding(id) { const ending=this.story.chapters.at(-1).endings?.find(item=>item.id===id);if(!ending)return;this.state.ending=id;this.save();this.render();this.showModal('The case is closed',`<span class="s6-eyebrow">${escapeHtml(ending.label)}</span><h2>${escapeHtml(ending.label)}</h2><p>${escapeHtml(ending.text)}</p><div class="s6-note">${escapeHtml(this.story.resolution?.finalNote||this.story.chapters.at(-1).clue)}</div>`,`<button class="s6-quiet" data-s6="close">Return to your case</button><button class="s6-quiet" data-s6="transcript">Conversation log</button>`); }
-    showTranscript() { const entries=this.state.transcript.map(line=>`<article class="s6-note"><span class="s6-eyebrow">${escapeHtml(this.story.chapters[line.chapter]?.location||'Conversation')}</span><br><strong>${escapeHtml(line.speaker)}</strong><br>${escapeHtml(line.text)}</article>`).join('');const stack=!this.overlay.classList.contains('is-hidden');this.showModal('Conversation log',`<div class="s6-log-heading"><span class="s6-eyebrow">Saved conversation history</span><h2>Conversation log</h2></div>${entries?`<div class="s6-transcript" tabindex="0" aria-label="Conversation entries">${entries}</div>`:'<p>No conversations have been recorded yet.</p>'}`,`<button class="s6-quiet" data-s6="close">${stack?'Return to previous view':'Return to investigation'}</button>`,{stack}); }
+    showTranscript() { const entries=this.state.transcript.map(line=>`<article class="s6-note"><span class="s6-eyebrow">${escapeHtml(this.story.chapters[line.chapter]?.location||'Conversation')}</span><br><strong>${escapeHtml(line.speaker)}</strong><br>${dialogueMarkup(line.text)}</article>`).join('');const stack=!this.overlay.classList.contains('is-hidden');this.showModal('Conversation log',`<div class="s6-log-heading"><span class="s6-eyebrow">Saved conversation history</span><h2>Conversation log</h2></div>${entries?`<div class="s6-transcript" tabindex="0" aria-label="Conversation entries">${entries}</div>`:'<p>No conversations have been recorded yet.</p>'}`,`<button class="s6-quiet" data-s6="close">${stack?'Return to previous view':'Return to investigation'}</button>`,{stack}); }
     restartPrompt() { this.showModal('Restart this story?',`<span class="s6-eyebrow">${escapeHtml(this.story.title)}</span><h2>Begin this case again?</h2><p>This clears this story's clues, conversations, chapter progress, and ending from this browser. Your other stories are not affected.</p>`,`<button class="s6-restart s6-quiet" data-s6="restart-confirm">Restart this story</button><button class="s6-btn" data-s6="close">Keep my progress</button>`); }
     async restart() { await this.repository.clear(this.story.id);for(const key of [this.story.legacySaveKey,...(this.story.legacySaveKeys||[])])if(key)global.localStorage.removeItem(key);this.state=freshState();this.revision=0;this.savedAt=null;this.lastError=null;this.closeModal();this.render();if(this.story.openingIntroduction)this.showOpening(); }
     async exportSave() { const envelope={format:'metriva-story-save',schemaVersion:1,storyId:this.story.id,exportedAt:new Date().toISOString(),state:this.state};const blob=new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`${this.story.id}-save.json`;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000); }
@@ -1064,9 +1560,14 @@
     async onClick(event) {
       const file=event.target.closest('#s6-import-file');if(file&&file.files?.[0]){await this.importSave(file.files[0]);file.value='';return;}
       const control=event.target.closest('[data-s6]');if(!control)return;const action=control.dataset.s6,id=control.dataset.id;
+      if(Date.now()<(this.bookSuppressClickUntil||0)&&action.startsWith('books-')){event.preventDefault();return;}
       if(this.routeConfirming===this.current().puzzle.id&&action!=='close')return;
       switch(action){
-        case 'chapter':{const index=Number(control.dataset.index);if(this.chapterUnlocked(index)){this.state.chapter=index;this.state.dialogue=null;await this.save();this.closeModal();this.render();global.scrollTo({top:0,behavior:'smooth'});}break;}
+        case 'chapter':await this.goToChapter(Number(control.dataset.index));break;
+        case 'locations':this.showLocations();break;
+        case 'person-jump':await this.goToChapter(Number(control.dataset.index));break;
+        case 'notebook-scroll':this.scrollNotebook(Number(control.dataset.direction));break;
+        case 'review-puzzle':this.showPuzzleReview();break;
         case 'inspect':this.inspect(id,false,Boolean(control.closest('.s6-hotspot,.s6-scene')));break;
         case 'inspect-region':{
           const scene=control.closest('.s6-scene'),box=scene?.getBoundingClientRect();
@@ -1118,11 +1619,21 @@
         case 'stop-voice':this.stopVoice();break;
         case 'books-pick':this.pickBook(id);break;
         case 'books-slot':await this.chooseBookSlot(Number(control.dataset.index));break;
+        case 'books-close':this.state.bookInspectionId=null;this.bookSelection=null;await this.save();this.showPuzzle();break;
+        case 'books-check':await this.checkCatalogBookshelf();break;
+        case 'books-skip':this.bookAnimationSkip=true;this.bookAnimationResolve?.();break;
+        case 'books-view-slip':this.showCatalogParchment();break;
+        case 'books-finish':this.solvePuzzle();break;
         case 'books-handle':await this.pullBookHandle(id);break;
         case 'books-collect':if(this.state.bookSlipReady)this.solvePuzzle();break;
         case 'books-clue':this.inspect('cart',true);break;
         case 'puzzle-choice':this.puzzleChoice(id);break;
         case 'deduction-submit':this.deductionSubmit();break;
+        case 'token-open-compartment':this.openTokenCompartment();break;
+        case 'token-open-memory':this.showRecoveredLetter();break;
+        case 'token-selection-reset':this.resetTokenSelection();break;
+        case 'read-letter':this.showEvidenceLetter(id);break;
+        case 'input-reset':this.resetInputPuzzle();break;
         case 'puzzle-evidence':this.inspect(id,true);break;
         case 'machine-select':await this.machineSelect(id);break;
         case 'machine-evidence':if(!this.machineryConfirming)this.inspect(id,true);break;
@@ -1141,8 +1652,14 @@
         case 'resolution-next':await this.nextResolutionLine();break;
         case 'sequence-select':{const index=Number(control.dataset.index);if(this.sequenceSelected===null){this.sequenceSelected=index;this.sequenceFeedback='Select the position where this card should go.';this.showPuzzle();this.overlay.querySelector(`[data-s6="sequence-select"][data-index="${index}"]`)?.focus();}else if(this.sequenceSelected===index){this.sequenceSelected=null;this.sequenceFeedback='Selection cleared.';this.showPuzzle();}else await this.moveSequence(this.sequenceSelected,index);break;}
         case 'move':{const index=Number(control.dataset.index);await this.moveSequence(index,index+Number(control.dataset.delta));break;}
+        case 'timeline-pick':this.sequenceSelected=id;this.sequenceFeedback='Choose a position in your timeline for this event.';this.showCleanTimelinePuzzle(this.current(),this.current().puzzle);this.overlay.querySelector(`[data-s6="timeline-pick"][data-id="${id}"]`)?.focus();break;
+        case 'timeline-move':await this.moveCleanTimelineEvent(Number(control.dataset.index),Number(control.dataset.delta));break;
+        case 'timeline-place':if(this.sequenceSelected)await this.placeCleanTimelineEvent(this.sequenceSelected,Number(control.dataset.index));break;
+        case 'timeline-remove':await this.removeCleanTimelineEvent(Number(control.dataset.index));break;
+        case 'timeline-check':await this.checkCleanTimeline();break;
+        case 'timeline-reset':await this.resetCleanTimeline();break;
         case 'puzzle-check':await this.puzzleCheck();break;
-        case 'puzzle-reset':{const p=this.current().puzzle;if(p.presentation?.mode==='bookshelf'){this.state.bookshelfSlots=[null,null,null,null];this.state.bookSlipReady=false;this.bookSelection=null;this.bookFeedback='The four shelf positions are empty again.';}else if(isVisualRoute(p)){this.state.puzzleRouteSelections[p.id]=[];if(isGardenRoute(p))this.gardenFeedback='Route cleared. Choose a landmark on the map.';else this.routeFeedback='Route cleared. Select the first valve on the chart.';}else{this.state.puzzleDrafts[p.id]=p.items.map(item=>item.id);this.sequenceSelected=null;this.sequenceFeedback='Arrangement reset.';}await this.save();this.showPuzzle();break;}
+        case 'puzzle-reset':{const p=this.current().puzzle;if(p.presentation?.mode==='bookshelf'){this.state.bookshelfSlots=[null,null,null,null];this.state.bookInspectionId=null;this.state.bookSlipReady=false;this.bookSelection=null;this.bookFeedback='The four shelf positions are empty again.';}else if(isVisualRoute(p)){this.state.puzzleRouteSelections[p.id]=[];if(isGardenRoute(p))this.gardenFeedback='Route cleared. Choose a landmark on the map.';else this.routeFeedback='Route cleared. Select the first valve on the chart.';}else{this.state.puzzleDrafts[p.id]=p.presentation?.initialOrder||p.items.map(item=>item.id);this.sequenceSelected=null;this.sequenceFeedback='Arrangement reset.';}await this.save();this.showPuzzle();break;}
         case 'continue':this.continueChapter();break;
         case 'ending':this.showEnding();break;
         case 'choose-ending':await this.chooseEnding(id);break;

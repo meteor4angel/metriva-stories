@@ -22,12 +22,61 @@
       "columns": 2,
       "rows": 2,
       "aspectRatio": "2 / 3",
-      "frames": {"idle": 0, "speaking": 1, "thoughtful": 2, "relieved": 3}
+      "frames": {
+        "idle": 0,
+        "speaking": 1,
+        "thoughtful": 2,
+        "relieved": 3
+      }
     },
-    "rian": {"src": "assets/story06-rian-expressions.png", "columns": 2, "rows": 2, "aspectRatio": "2 / 3", "frames": {"idle": 0, "speaking": 1, "thoughtful": 2, "relieved": 3}},
-    "jori": {"src": "assets/story06-jori-expressions.png", "columns": 2, "rows": 2, "aspectRatio": "2 / 3", "frames": {"idle": 0, "speaking": 1, "thoughtful": 2, "relieved": 3}},
-    "marit": {"src": "assets/story06-marit-expressions.png", "columns": 2, "rows": 2, "aspectRatio": "2 / 3", "frames": {"idle": 0, "speaking": 1, "thoughtful": 2, "relieved": 3}},
-    "sella": {"src": "assets/story06-sella-expressions.png", "columns": 2, "rows": 2, "aspectRatio": "2 / 3", "frames": {"idle": 0, "speaking": 1, "thoughtful": 2, "relieved": 3}}
+    "rian": {
+      "src": "assets/story06-rian-expressions.png",
+      "columns": 2,
+      "rows": 2,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": 0,
+        "speaking": 1,
+        "thoughtful": 2,
+        "relieved": 3
+      }
+    },
+    "jori": {
+      "src": "assets/story06-jori-expressions.png",
+      "columns": 2,
+      "rows": 2,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": 0,
+        "speaking": 1,
+        "thoughtful": 2,
+        "relieved": 3
+      }
+    },
+    "marit": {
+      "src": "assets/story06-marit-expressions.png",
+      "columns": 2,
+      "rows": 2,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": 0,
+        "speaking": 1,
+        "thoughtful": 2,
+        "relieved": 3
+      }
+    },
+    "sella": {
+      "src": "assets/story06-sella-expressions.png",
+      "columns": 2,
+      "rows": 2,
+      "aspectRatio": "2 / 3",
+      "frames": {
+        "idle": 0,
+        "speaking": 1,
+        "thoughtful": 2,
+        "relieved": 3
+      }
+    }
   },
   "caseSubject": {
     "id": "edda",
@@ -2033,7 +2082,13 @@
           "readableDetail": {
             "kind": "schematic",
             "heading": "Gate and bypass · readable drawing key",
-            "labels": ["Bypass wheel", "Drainage to east channel", "Chamber pressure · check safe line", "Counterweight", "Spring door"],
+            "labels": [
+              "Bypass wheel",
+              "Drainage to east channel",
+              "Chamber pressure · check safe line",
+              "Counterweight",
+              "Spring door"
+            ],
             "warning": "Never release weight under head pressure."
           },
           "note": "The bypass drains the chamber; the counterweight is safe only after the level falls.",
@@ -2108,7 +2163,11 @@
           "readableDetail": {
             "kind": "record",
             "heading": "Upper hamlet water tally · readable transcription",
-            "labels": ["Dry wells are recorded for the upper hamlet.", "The page tallies households relying on the spring.", "Rian's note: “Temporary line, until the council repairs their catchment.”"],
+            "labels": [
+              "Dry wells are recorded for the upper hamlet.",
+              "The page tallies households relying on the spring.",
+              "Rian's note: “Temporary line, until the council repairs their catchment.”"
+            ],
             "warning": "No household figures are clear enough here to transcribe reliably."
           },
           "note": "Rian's hidden diversion was meant to help the upper hamlet.",
@@ -2254,20 +2313,66 @@
             "tool-roll",
             "upper-hamlet"
           ],
-          "choiceOrder": ["weight", "bypass", "close-side", "verify", "listen"],
+          "choiceOrder": [
+            "weight",
+            "bypass",
+            "close-side",
+            "verify",
+            "listen"
+          ],
           "controlPositions": {
-            "bypass": {"x": 89, "y": 48},
-            "verify": {"x": 80, "y": 72},
-            "listen": {"x": 47, "y": 75},
-            "weight": {"x": 47, "y": 23},
-            "close-side": {"x": 93, "y": 70}
+            "bypass": {
+              "x": 89,
+              "y": 48
+            },
+            "verify": {
+              "x": 80,
+              "y": 72
+            },
+            "listen": {
+              "x": 47,
+              "y": 75
+            },
+            "weight": {
+              "x": 47,
+              "y": 23
+            },
+            "close-side": {
+              "x": 93,
+              "y": 70
+            }
           },
           "controlFrames": {
-            "bypass": {"x": 77, "y": 31, "width": 23, "height": 35},
-            "verify": {"x": 75, "y": 58, "width": 25, "height": 38},
-            "listen": {"x": 30, "y": 58, "width": 35, "height": 28},
-            "weight": {"x": 39, "y": 0, "width": 20, "height": 45},
-            "close-side": {"x": 77, "y": 40, "width": 23, "height": 50}
+            "bypass": {
+              "x": 77,
+              "y": 31,
+              "width": 23,
+              "height": 35
+            },
+            "verify": {
+              "x": 75,
+              "y": 58,
+              "width": 25,
+              "height": 38
+            },
+            "listen": {
+              "x": 30,
+              "y": 58,
+              "width": 35,
+              "height": 28
+            },
+            "weight": {
+              "x": 39,
+              "y": 0,
+              "width": 20,
+              "height": 45
+            },
+            "close-side": {
+              "x": 77,
+              "y": 40,
+              "width": 23,
+              "height": 50
+            }
           }
         },
         "items": [
@@ -2456,7 +2561,12 @@
               "src": "assets/story06-chapter5-clue-sheet.png",
               "width": 1536,
               "height": 1024,
-              "crop": { "x": 0, "y": 0, "width": 49.6745, "height": 45.5078 }
+              "crop": {
+                "x": 0,
+                "y": 0,
+                "width": 49.6745,
+                "height": 45.5078
+              }
             }
           },
           {
@@ -2476,7 +2586,12 @@
               "src": "assets/story06-chapter5-clue-sheet.png",
               "width": 1536,
               "height": 1024,
-              "crop": { "x": 50.3255, "y": 50.1953, "width": 49.6745, "height": 46.0938 }
+              "crop": {
+                "x": 50.3255,
+                "y": 50.1953,
+                "width": 49.6745,
+                "height": 46.0938
+              }
             }
           },
           {
@@ -2497,7 +2612,12 @@
               "src": "assets/story06-chapter5-clue-sheet.png",
               "width": 1536,
               "height": 1024,
-              "crop": { "x": 0, "y": 50.1953, "width": 49.6745, "height": 46.0938 }
+              "crop": {
+                "x": 0,
+                "y": 50.1953,
+                "width": 49.6745,
+                "height": 46.0938
+              }
             }
           },
           {
@@ -2517,7 +2637,12 @@
               "src": "assets/story06-chapter5-clue-sheet.png",
               "width": 1536,
               "height": 1024,
-              "crop": { "x": 50.3255, "y": 0, "width": 49.6745, "height": 45.5078 }
+              "crop": {
+                "x": 50.3255,
+                "y": 0,
+                "width": 49.6745,
+                "height": 45.5078
+              }
             }
           }
         ]
@@ -2589,5 +2714,9 @@
       "Begin at the bell tower. Examine what she left behind."
     ],
     "buttonText": "Begin the investigation"
+  },
+  "pageAppearance": {
+    "backgroundImage": "assets/story06-page-background.png",
+    "backgroundPosition": "center center"
   }
 }

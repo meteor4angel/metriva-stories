@@ -13,6 +13,11 @@
 .days-conversation-overlay{padding:20px;background:#193127ad;overflow:auto}
 .days-conversation-overlay>.dialog{width:min(1180px,100%);max-height:94dvh;overflow:hidden;padding:0}
 .days-conversation-overlay .dialog-top{padding:12px 20px;background:#fffaf0;border-bottom:1px solid var(--line)}
+.days-conversation-overlay .dialog-top.voice-brand{min-height:82px;display:flex;align-items:center;gap:12px;padding:12px 24px}
+.days-conversation-overlay .voice-brand-icon{width:42px;height:42px;flex:none;fill:none;stroke:#b88951;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.days-conversation-overlay .voice-brand-copy{display:grid;gap:3px;margin-right:auto}
+.days-conversation-overlay .voice-brand-copy strong{font:24px/1.1 Georgia,"Times New Roman",serif;color:var(--forest)}
+.days-conversation-overlay .voice-brand-copy span{font:11px/1.4 Arial,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:#a87943}
 .days-vn{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(260px,44%) minmax(0,1fr);align-items:end;gap:20px;min-height:620px;padding:28px;overflow:hidden;background:#c9a578}
 .days-vn:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#352b1825,#3e30112b),var(--stage) center/cover no-repeat;filter:blur(2px);z-index:0}
 .days-vn:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#452a1c66,transparent 65%);z-index:1;pointer-events:none}
@@ -38,6 +43,7 @@
 @keyframes daysSpeak{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.15deg)}}
 @media(max-width:900px){.days-conversation-overlay{padding:12px}.days-vn{grid-template-columns:1fr;gap:0;min-height:0;padding:12px}.days-actor{height:35dvh;min-height:280px;max-width:420px;justify-self:center}.days-dialogue{margin:0;min-height:0}}
 @media(max-width:600px){.person-entry{grid-template-columns:85px 1fr;gap:12px}.person-entry img{width:85px;height:100px}.days-line{font-size:18px}.days-vn{padding:9px}.days-actor{height:32dvh;min-height:230px}}
+@media(max-width:600px){.days-conversation-overlay .dialog-top.voice-brand{min-height:70px;padding:7px 12px;gap:8px}.days-conversation-overlay .voice-brand-icon{width:36px;height:36px}.days-conversation-overlay .voice-brand-copy strong{font-size:20px}.days-conversation-overlay .voice-brand-copy span{font-size:9px}}
 @media(max-width:650px){.days-objects{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.days-actor{animation:none!important}}
 

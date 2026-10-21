@@ -1,23 +1,86 @@
 # Metriva Story Engine v1.7
 
-Stories 2 and 6 run on `js/story-engine.js`. Stories 1, 3, 4, and 5 retain their existing pages and engines. Story 2 imports existing browser progress from its former save key on first open; the shared engine then saves under `metriva:story:echoes-library:progress:v1`.
+All six stories run on `js/story-engine.js`. Stories 1, 2, and 3 import existing browser progress from their former save keys on first open, then save through the shared progress repository.
 
 ## Story authoring
 
-The sources of truth are `stories/story-02.json` and `stories/story-06.json`. They contain narrative, scene references, clue positions and evidence, character profiles, player questions and character replies, declarative unlock conditions, puzzle definitions, progressive hints, and endings. New stories can use the same schema and the existing JSON source/progress repository adapters.
+The sources of truth are `stories/story-01.json` through `stories/story-06.json`. They contain narrative, scene references, clue positions and evidence, character profiles, player questions and character replies, declarative unlock conditions, puzzle definitions, progressive hints, and endings. New stories can use the same schema and the existing JSON source/progress repository adapters.
 
 Static character portraits are defined once per story in the optional `characterPortraits` map, keyed by character ID. The same image appears in every chapter where that person is present, in the People here card and conversation window. The builder checks that the referenced image files exist. Story 6 has transparent portrait PNGs for its four speaking characters and for Edda Moss, the missing case subject.
+
+Optional `characterSprites` and `voiceMap` entries add existing character motion and recorded speech. Sprite frames may reference an expression sheet or individual images. Voice keys may use `[speaker, text]` for a unique line or `[speaker, text, characterId, questionId, lineIndex]` when the same text occurs in more than one turn. The page builder checks that every mapped MP3 exists. Without a sprite mapping, the engine uses the configured static portrait; without a voice mapping, it leaves the written dialogue in place and does not show audio controls. Motion and audio can be paused independently, and reduced-motion preferences are respected.
 
 Build a local-file-friendly page after editing JSON:
 
 ```sh
 node scripts/build-story-page.js brackenmere-bell
 node scripts/build-story-page.js echoes-library
+node scripts/build-story-page.js midnight-train
+node scripts/build-story-page.js vanishing-letter
+node scripts/build-story-page.js letters-after-midnight
+node scripts/build-story-page.js days-we-almost-met
 ```
 
-The builder validates the engine schema and referenced scene files, then injects the definition into a non-executable `application/json` block in the numbered story page. Story 2 also rebuilds the original `echoes-library.html` address from the same definition. This keeps the stories playable when opened as local files, where browsers commonly block JSON `fetch()` requests. The shared template is `templates/story-page.html`.
+The builder validates the engine schema and referenced scene files, then injects the definition into a non-executable `application/json` block in the numbered story page. Each story also rebuilds its configured legacy address from the same definition. This keeps the stories playable when opened as local files, where browsers commonly block JSON `fetch()` requests. The shared template is `templates/story-page.html`.
+
+### Reusable investigation-page appearance
+
+The shared investigation layout reads an optional top-level `pageAppearance` object. Story 2 uses it for the softly blurred library background, translucent parchment cards, green accents, and a wider page. The default engine appearance is unchanged for stories that omit the object. To give another story its own look, add its artwork path and palette to its JSON definition; no story-specific CSS or JavaScript is needed.
+
+```json
+"pageAppearance": {
+  "backgroundImage": "assets/story02-library-wide-sunlit.png",
+  "backgroundPosition": "center center",
+  "backdropTint": "#fff4dc70",
+  "palette": {
+    "surface": "#fff9ee", "ink": "#17241d", "accent": "#214e3c",
+    "accentSoft": "#e6eee6", "border": "#ddc9a7",
+    "muted": "#596057", "gold": "#c4a466",
+    "headingInk": "#214e3c", "headingMuted": "#35443a"
+  },
+  "layout": {"contentWidth": 1400, "sidebarPercent": 30, "surfaceOpacity": 0.9}
+}
+```
+
+The palette uses six-digit hex colors; `headingInk` and `headingMuted` set the story title and supporting header text, so they can be tuned for dark or light page backgrounds. `backdropTint` uses eight-digit hex (the last two digits set opacity). The background must be a local image under `assets/` and is checked during the build. `contentWidth` is 960–1800 pixels, `sidebarPercent` is 24–42, and `surfaceOpacity` is 0.75–1. `chapterPickerIcon` selects a built-in `map-pin`, `book`, `flower`, `compass`, or `sprout` icon for the chapter dropdown. Mobile screens always use one column. These settings style the investigation page; puzzle artwork and chapter scenes remain separate story content.
+
+Stories may optionally configure custom cursors with `pageAppearance.cursorTheme`: `default` is used over non-interactive page content, `interactive` over buttons and links, and `disabled` remains the standard `not-allowed` cursor for unavailable controls. The two artwork paths must point to local PNG files under `assets/`.
+
+With `pageAppearance`, the investigation page also uses compact clue pills, a separate case notebook and save-controls box, notebook arrows when evidence cards overflow, an unlocked-chapter shortcut, and a visual Locations menu. Solved chapters offer a read-only “Review the revelations” action; Story 2's bookshelf review reopens its B-17 reference without changing the saved solution. Set `peopleMode` to `"all"` to keep the full cast visible in the Investigation panel. People in the current location can be spoken to; people in earlier unlocked locations link back there, and later encounters remain visible but locked. The notebook contains evidence only.
+
+### Reusable single-question puzzle
+
+A `choice` puzzle has two reusable light presentations. Option 1, `single-question`, shows a branded Metriva header, a puzzle title, one prompt, and a compact list of answers. Option 2, `single-question-clues`, adds linked clue previews between the prompt and answers. The clue previews open the existing evidence detail and return to the puzzle when closed. Neither option uses a scene banner or dark clue board. Story 1 Chapter 1 and Story 3 use these templates.
+
+Set `puzzle.presentation.mode` to either option. `presentation.optionStyle` can be `radio` (default), `numbered`, `icon`, or `numbered-icon`; icon artwork comes from each answer's validated `icon` key. Option 2 also requires `presentation.evidenceRefs`, a nonempty list of evidence IDs from the same chapter. Optionally provide `presentation.theme` with any of `accent`, `surface`, `border`, `selected`, and `ink`, each a six-digit hex color. `presentation.actions` can reorder or replace the footer controls with `submit`, `hint`, `evidence`, and `close` actions; an evidence action names a clue `target` in the same chapter. Each action's label and optional built-in icon are story data. Buttons remain left aligned, size to their text, and use consistent spacing. Omit the theme or actions to use engine defaults. The chapter-dropdown icon is similarly configurable with `pageAppearance.chapterPickerIcon`, using the built-in `map-pin`, `book`, `flower`, `compass`, or `sprout` keys. This story JSON configuration is the source model for a future authoring dashboard: its image paths, visual theme, option art, picker icon, labels, and links can be edited as fields without changing engine code. For example:
+
+```json
+{
+  "type": "choice",
+  "prompt": "Which seat was removed from the chart?",
+  "options": [{"id":"4A","label":"Seat 4A"},{"id":"4C","label":"Seat 4C"}],
+  "answer": "4C",
+  "presentation": {"mode":"single-question-clues","evidenceRefs":["ticket","chart"],"theme":{"accent":"#436854","selected":"#edf3ec"}}
+}
+```
+
+The example shows the reusable puzzle fields; a chapter still needs its normal puzzle `id`, `title`, and `success`, and evidence entries matching the listed IDs. Theme colors and clue references are validated before the page builds. The answer, hints, save state, and completion behavior remain part of the generic engine. Other `choice` puzzles retain their existing presentation unless they opt in.
+
+### Reusable text-answer puzzle
+
+An `input` puzzle uses the standard Metriva modal header and left-aligned footer actions. Expected answers of one to five characters render as individual character boxes while a single accessible input handles typing, paste, and saved progress. Longer answers use a regular text field. Set `input.mode` to `numeric` for a number keypad, and optionally set `input.label`, `placeholder`, `maxLength`, `submitLabel`, and `evidenceRef`. The evidence reference must point to a clue in the same chapter; its existing detail image can appear beside the prompt. Story 1 Chapter 3 demonstrates a three-digit code linked to its existing locked-drawer clue.
+
+### Reusable illustrated ordering puzzle
+
+A `sequence` puzzle accepts any number of labeled items (at least two) and an `answer` array containing each item ID in its correct order. An optional `presentation.initialOrder` sets the starting arrangement as a permutation of those IDs; reset returns to that order. The same engine supports drag-and-drop, tap-to-place, and earlier/later arrow controls. For an illustrated `timeline`, items can include a `time`, an `image`, or an `imageCrop` in pixels from a shared `presentation.imageSheet` (`src`, `width`, and `height`). `presentation.theme` accepts six-digit hex values for `green`, `gold`, `cream`, `panel`, `line`, and `ink`. Optional `sectionTitle` and `sectionDescription` adjust the instruction panel.
+
+`presentation.actions` controls the number and order of footer buttons. Each entry uses an `action` (`check`, `reset`, `hint`, `evidence`, or `close`) and a `label`; an optional `icon` is one of `check`, `reset`, `hint`, `evidence`, or `close`. An `evidence` action also requires a `target` clue ID from the same chapter, which opens the existing clue viewer and returns to the puzzle. Story 1 Chapter 2 is the illustrated timeline example: its three event cards, order, palette, image crops, and four actions are all configured in `stories/story-01.json`.
 
 Story 2 uses the reusable `bookshelf` sequence presentation. Its JSON names the empty cabinet artwork, seven candidate books, four physical shelf spaces, four handles, Eleanor’s note, the Book Cart stamps, and the existing inside-cover artwork. A placed book leaves an empty space in the available tray and appears only on the physical shelf. The evidence panel shows the Book Cart numbers in their observed order, leaving the player to interpret Eleanor’s note. A wrong book or order keeps the hidden drawer shut; handle D reveals the B–17 slip only after the correct four-book arrangement. The engine saves the shelf slots, opened covers, and drawer state. The original five chapters, 22 evidence items, conversations, three hints per chapter, and two endings live in the JSON. `detailImage` keeps the original clue illustrations. `characterSprites` describes each existing four-frame transparent portrait sheet (idle, blink, speaking, thoughtful), while `voiceMap` points to the existing 76 spoken lines. Story 2 conversations stage the portrait over the current chapter scene. Character lines use the speaking frame; player lines keep idle and blink motion without mouth movement. Dialogue uses the recorded audio when available. The portrait and written dialogue remain visible when motion is paused, reduced motion is requested, a voice file cannot play, or a story has no animated/audio assets.
+
+The `timeline-clean` sequence presentation keeps available evidence and ordered slots in a left column, with an optional fixed-ratio illustration on the right. Set `presentation.sideImage`, optional `sideImageAlt`, `sideImagePosition` and `sideImageFit` (`cover` or `contain`), and an `icon` on each sequence item (`clock`, `flower`, `door`, `book`, `footsteps`, `speech`, `music`, `key`, `leaf`, `bell`, or `event`). Icon and artwork are presentation-only; the puzzle `answer` array remains the source of truth. At narrow widths, the art moves above the controls. The earlier `timeline` presentation remains supported.
+
+The reusable `token-insert` choice presentation accepts any number of labeled target options with optional symbols or icons. Its JSON configures token evidence and artwork, the right-side illustration, target labels, success and mismatch text, and the sequence of token-fit animation, compartment reveal, and optional letter reading. Selecting a recess moves the token artwork from its tray to that recess; Reset selection clears the choice and returns the token. Correct insertion animates the token settling into the selected recess, then presents the fitted-token moment before the player opens the hidden compartment. A configured `presentation.letter` can be read from that reveal and can reuse the story's existing letter text in its evidence record.
 
 ### Reusable sequence puzzle
 
@@ -75,4 +138,4 @@ To move a future story to the API, inject `new FetchJsonStorySource(url, options
 
 ## Current schema limits
 
-Engine v1 supports single-answer deduction and ordered-sequence puzzles, per-question conditions, evidence conditions, saved dialogue lines/transcripts, progressive hints, scene zoom, and two-choice endings. The sequence board has drag, tap-to-place, and arrow controls. New puzzle families should be added as engine capabilities with schema validation, not as inline code in a story definition. Audio playback and portrait animation are not part of this first engine version.
+Engine v1 supports single-answer deduction and ordered-sequence puzzles, per-question conditions, evidence conditions, saved dialogue lines/transcripts, progressive hints, scene zoom, and two-choice endings. The sequence board has drag, tap-to-place, and arrow controls. Recorded audio and portrait frames can be configured in JSON. New puzzle families should be added as engine capabilities with schema validation, not as inline code in a story definition.

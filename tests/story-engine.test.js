@@ -10,6 +10,13 @@ const story = require('../stories/story-06.json');
 const {checkAssets,report}=require('../scripts/story-visual-continuity.js');
 const root=path.join(__dirname,'..');
 
+test('every configured story voice path resolves to an available MP3 file',()=>{
+  for(const file of fs.readdirSync(path.join(root,'stories')).filter(name=>/^story-\d+\.json$/.test(name))){
+    const definition=JSON.parse(fs.readFileSync(path.join(root,'stories',file),'utf8'));
+    for(const src of Object.values(definition.voiceMap||{}))assert.ok(fs.existsSync(path.join(root,src)),`${file} points to missing voice audio: ${src}`);
+  }
+});
+
 test('Story 6 JSON validates and every progression dialogue reference resolves', () => {
   assert.equal(Engine.validateDefinition(story), story);
   const characterIds=new Set(story.chapters.flatMap(chapter=>chapter.characters.map(person=>person.id)));
@@ -26,6 +33,20 @@ test('invalid story definitions fail before render', () => {
   const invalid = structuredClone(story);
   invalid.chapters[0].puzzle.answer = 'unknown';
   assert.throws(() => Engine.validateDefinition(invalid), /invalid choice/i);
+});
+
+test('all modal variants share the Metriva Stories brand header',()=>{
+  const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story={title:'The <Quiet> Library'};
+  const close='<button class="s6-close" aria-label="Close"></button>';
+  for(const options of [{},{voiceDialogue:true},{brandHeader:true},{clueWindow:true,chapterNumber:2,evidenceNumber:2,evidenceTotal:3},{clueWindow:true,clueScroll:true}]){
+    const header=runtime.modalHeaderMarkup(options,close);
+    assert.match(header,/class="s6-dialog-top s6-clue-brand s6-brand-header"/);
+    assert.match(header,/class="s6-clue-book-icon"/);
+    assert.match(header,/<strong>Metriva Stories<\/strong>/);
+    assert.match(header,/The &lt;Quiet&gt; Library/);
+    assert.equal(header.includes('class="s6-close"'),false);
+  }
+  assert.match(runtime.modalHeaderMarkup({clueWindow:true,chapterNumber:2,evidenceNumber:2,evidenceTotal:3},close),/Chapter 02 · Evidence 02 of 03/);
 });
 
 test('new deductions use evidence-backed single answers without unsupported chronology', () => {
@@ -161,12 +182,13 @@ test('reopening a completed conversation returns to topics and Edda replay start
   const person=story.chapters[0].characters[0];
   const runtime=Object.create(Engine.StoryRuntime.prototype);
   runtime.story=story;
-  runtime.state={chapter:0,dialogue:{chapter:0,characterId:person.id,questionId:person.questions[0].id,phase:'exchange',line:3},completedDialogues:['already-discussed']};
+  runtime.state={chapter:0,dialogue:{chapter:0,characterId:person.id,questionId:person.questions[0].id,phase:'exchange',line:3},completedDialogues:['tower:rian:bell']};
   runtime.current=()=>story.chapters[0];runtime.characterAvailable=()=>true;
   runtime.save=()=>{};runtime.renderDialogue=()=>{};
   runtime.openCharacter(person.id);
-  assert.deepEqual(runtime.state.dialogue,{chapter:0,characterId:person.id,questionId:null,phase:'menu',line:0});
-  assert.deepEqual(runtime.state.completedDialogues,['already-discussed']);
+  assert.deepEqual(runtime.state.dialogue,{chapter:0,characterId:person.id,questionId:null,phase:'menu',line:0,showIntro:false});
+  assert.deepEqual(runtime.state.completedDialogues,['tower:rian:bell']);
+  assert.deepEqual(runtime.state.characterIntrosSeen,['tower:rian:intro']);
 
   runtime.state={chapter:4,rescueDone:true};runtime.current=()=>story.chapters[4];
   runtime.sceneSource=chapter=>chapter.scene;runtime.isSolved=()=>true;
@@ -570,6 +592,17 @@ test('generated modal uses the fixed overlay style from the page template', () =
   assert.match(css,/\.s6-overlay\.is-hidden\{display:none\}/);
 });
 
+test('all scene clue markers share a translucent green size and clue buttons stay content-sized',()=>{
+  const css=fs.readFileSync(path.join(root,'css','story-engine.css'),'utf8');
+  assert.match(css,/\.s6-scene \.s6-hotspot[^}]*width:48px;height:48px;min-width:48px;min-height:48px/);
+  assert.match(css,/\.s6-scene \.s6-hotspot[^}]*border:2px solid #668565/);
+  assert.match(css,/\.s6-scene \.s6-hotspot[^}]*0 0 0 7px rgba\(198,218,183,\.42\)/);
+  assert.match(css,/\.s6-scene \.s6-hotspot[^}]*background:rgba\(196,222,198,\.88\)/);
+  assert.match(css,/\.s6-scene \.s6-hotspot:not\(:disabled\)\{cursor:var\(--s6-cursor-interactive,pointer\)!important\}/);
+  assert.match(css,/\.s6-evidence-window \.s6-dialog-actions>\*\{flex:0 1 auto;min-width:0;width:auto;max-width:100%;min-height:42px/);
+  assert.match(css,/\.s6-evidence-window-recap \.s6-dialog-actions>\*\{flex:0 1 auto;width:auto;max-width:100%/);
+});
+
 test('evidence preview and notebook thumbnail use the same master-scene crop', () => {
   const chapter=story.chapters[0],item=chapter.evidence[0];
   const preview=Engine.evidenceImageMarkup(chapter,item,{});
@@ -602,7 +635,7 @@ test('each chapter shows its own evidence count and nearby markers leave clue po
   const runtime=Object.create(Engine.StoryRuntime.prototype);
   runtime.story=story;
   runtime.state={chapter:3,found:[...story.chapters[0].evidence.map(item=>item.id),'lantern-trail'],solved:story.chapters.slice(0,3).map(chapter=>chapter.puzzle.id),completedDialogues:[],objectStates:{},ending:null};
-  runtime.root={innerHTML:'',querySelector:()=>null};
+  runtime.root={innerHTML:'',querySelector:()=>null,querySelectorAll:()=>[]};
   runtime.storageAvailable=true;runtime.visualDebug=false;runtime.debugOverlay=false;
   runtime.render();
   assert.match(runtime.root.innerHTML,/Chapter 1, Bell Tower, 3 of 3 evidence collected/);

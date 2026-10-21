@@ -10,6 +10,94 @@ const story=require('../stories/story-02.json');
 const root=path.resolve(__dirname,'..');
 const {checkAssets}=require('../scripts/story-visual-continuity.js');
 
+test('Story 02 opens and restarts with Evelyn’s first dialogue',async()=>{
+  const chapter=story.chapters[0],evelyn=chapter.characters.find(person=>person.id==='evelyn'),intro=story.openingIntroduction;
+  assert.equal(intro.characterId,'evelyn');assert.equal(intro.speaker,'Evelyn Hart');assert.equal(intro.text[0],evelyn.intro);
+  assert.ok(story.voiceMap[JSON.stringify([intro.speaker,intro.text.join(' ')])]);
+  const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;runtime.repository={load:async()=>null,clear:async id=>assert.equal(id,story.id)};runtime.applyPageAppearance=()=>{};runtime.normalize=()=>({chapter:0});runtime.goToUnlockedChapter=()=>{};runtime.render=()=>{};runtime.storageAvailable=true;runtime.showRescueDialogue=()=>{};
+  let openings=0;runtime.showOpening=()=>{openings++;};await runtime.start();assert.equal(openings,1,'a first visit opens Evelyn’s dialogue');
+  runtime.closeModal=()=>{};runtime.render=()=>{};runtime.revision=0;runtime.savedAt=null;runtime.lastError=null;runtime.state={};const previousStorage=global.localStorage;global.localStorage={removeItem(){}};try{await runtime.restart();}finally{global.localStorage=previousStorage;}assert.equal(openings,2,'restarting opens Evelyn’s dialogue again');
+  let modal;delete runtime.showOpening;runtime.voiceControl=(speaker,text)=>`<button>${speaker}:${text}</button>`;runtime.conversationMarkup=(person,content,speaker,actions)=>`${person.name}|${speaker}|${content}|${actions}`;runtime.showModal=(title,body,actions,options)=>{modal={title,body,actions,options};};runtime.showOpening();
+  assert.equal(modal.title,intro.title);assert.match(modal.body,/Evelyn Hart\|Evelyn Hart/);assert.match(modal.body,/Welcome to Willowmere/);assert.match(modal.body,/Help Evelyn investigate/);assert.equal(modal.options.voiceDialogue,true);
+});
+
+test('Story 02 page appearance is reusable, validated, and applies without changing story data',()=>{
+  assert.equal(Engine.validateDefinition(story),story);
+  assert.equal(story.pageAppearance.chapterPickerIcon,'book');
+  assert.deepEqual(checkAssets(story,root),[]);
+  const applied=new Map(),classes=new Map(),previousDocument=global.document;
+  global.document={baseURI:'file:///C:/metriva-stories/story-02.html',body:{style:{setProperty:(key,value)=>applied.set(key,value)},classList:{toggle:(key,value)=>classes.set(key,value)}}};
+  try{
+    const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;runtime.applyPageAppearance();
+    assert.equal(classes.get('has-page-appearance'),true);
+    assert.equal(applied.get('--s6-page-image'),'url("file:///C:/metriva-stories/assets/story02-library-wide-sunlit.png")');
+    assert.equal(applied.get('--s6-green'),story.pageAppearance.palette.accent);
+    assert.equal(applied.get('--s6-heading-ink'),story.pageAppearance.palette.headingInk);
+    assert.equal(applied.get('--s6-heading-muted'),story.pageAppearance.palette.headingMuted);
+    assert.equal(applied.get('--s6-sidebar-width'),'30%');
+  }finally{global.document=previousDocument;}
+  const invalid=structuredClone(story);invalid.pageAppearance.backgroundImage='../outside.png';
+  assert.throws(()=>Engine.validateDefinition(invalid),/pageAppearance.backgroundImage/);
+  const invalidIcon=structuredClone(story);invalidIcon.pageAppearance.chapterPickerIcon='<svg>';
+  assert.throws(()=>Engine.validateDefinition(invalidIcon),/chapterPickerIcon/);
+  const missing=structuredClone(story);missing.pageAppearance.backgroundImage='assets/missing-library.png';
+  assert.match(checkAssets(missing,root).join(' '),/page background: missing image/);
+});
+
+test('solved chapters review their revelation and B-17 without changing progress',()=>{
+  const runtime=Object.create(Engine.StoryRuntime.prototype),puzzle=story.chapters[0].puzzle;
+  runtime.story=story;runtime.state={chapter:0,solved:[puzzle.id],bookSlipReady:false};
+  let modal;runtime.showModal=(title,body,actions,options)=>{modal={title,body,actions,options};};
+  runtime.save=()=>{throw new Error('Review must not save progress');};
+  runtime.showPuzzleReview();
+  assert.equal(modal.title,'Review the revelations');
+  assert.match(modal.body,/library-bookshelf-solved\.png/);
+  assert.match(modal.body,/The Misplaced Books/);
+  assert.match(modal.body,/folded slip falls from the final book: B-17/);
+  assert.equal(modal.options.clueWindow,true);
+  assert.match(modal.actions,/data-s6="books-view-slip"/);
+  runtime.showCatalogParchment();
+  assert.equal(modal.title,'B-17 archival reference');
+  assert.equal(modal.options.stack,true);
+  assert.doesNotMatch(modal.actions,/books-finish/);
+  runtime.state.chapter=1;runtime.state.solved.push(story.chapters[1].puzzle.id);
+  runtime.showPuzzleReview();
+  assert.match(modal.body,/The solution/);
+  assert.match(modal.body,/Clock chime/);
+});
+
+test('notebook arrows appear only when cards are clipped and disable at each end',()=>{
+  const runtime=Object.create(Engine.StoryRuntime.prototype);
+  const previous={hidden:true,disabled:false},next={hidden:true,disabled:false};
+  const carousel={classList:{toggle:(name,value)=>{assert.equal(name,'is-overflowing');carousel.overflow=value;}},querySelector:selector=>selector.includes('is-previous')?previous:next};
+  const track={parentElement:carousel,scrollWidth:600,clientWidth:300,scrollLeft:0};
+  runtime.root={querySelector:()=>track};runtime.updateNotebookNavigation();
+  assert.equal(carousel.overflow,true);assert.equal(previous.disabled,true);assert.equal(next.disabled,false);
+  track.scrollLeft=300;runtime.updateNotebookNavigation();
+  assert.equal(previous.disabled,false);assert.equal(next.disabled,true);
+  track.scrollWidth=300;runtime.updateNotebookNavigation();
+  assert.equal(previous.hidden,true);assert.equal(next.hidden,true);
+});
+
+test('Story 02 keeps the full cast in the panel and shows a visual location picker',()=>{
+  assert.equal(story.pageAppearance.peopleMode,'all');
+  const runtime=Object.create(Engine.StoryRuntime.prototype);
+  runtime.story=story;runtime.state={chapter:0,solved:[],found:[],completedDialogues:[],objectStates:{}};
+  const list={innerHTML:''},help={textContent:''};
+  runtime.root={querySelector:selector=>selector==='.s6-people'?list:selector==='.s6-panel .s6-foot-help'?help:null};
+  runtime.showAllPeopleInPanel(story.chapters[0]);
+  for(const name of ['Evelyn Hart','Theo Mercer','Ada Vale','Eleanor Vale'])assert.match(list.innerHTML,new RegExp(name));
+  assert.match(list.innerHTML,/data-s6="character" data-id="evelyn"/);
+  assert.match(list.innerHTML,/Theo Mercer[\s\S]*?Not yet met/);
+  assert.match(help.textContent,/unlocked location/);
+  let modal;runtime.showModal=(title,body)=>{modal={title,body};};
+  runtime.showLocations();
+  assert.equal(modal.title,'Locations');
+  assert.match(modal.body,/You are here/);
+  assert.match(modal.body,/Not yet unlocked/);
+  assert.equal((modal.body.match(/class="s6-location-card/g)||[]).length,5);
+});
+
 test('Story 02 uses the shared definition, existing art, and five original solutions',()=>{
   assert.equal(Engine.validateDefinition(story),story);
   assert.deepEqual(checkAssets(story,root),[]);
@@ -20,6 +108,20 @@ test('Story 02 uses the shared definition, existing art, and five original solut
   assert.equal(story.chapters[0].puzzle.presentation.candidates.length,7);
   assert.equal(story.chapters[0].puzzle.presentation.handles.length,4);
   assert.deepEqual(story.chapters.at(-1).endings.map(item=>item.id),['exhibit','trustees']);
+});
+
+test('Story 02 Chapter 2 uses the ordered-card timeline with fixed side art and configurable icons',async()=>{
+  const chapter=story.chapters[1],puzzle=chapter.puzzle,runtime=Object.create(Engine.StoryRuntime.prototype);
+  assert.equal(Engine.validateDefinition(story),story);assert.equal(puzzle.presentation.mode,'timeline-clean');assert.equal(puzzle.presentation.layout,'ordered-list');
+  assert.equal(puzzle.presentation.sideImage,'assets/library-listening-painted.png');assert.deepEqual(puzzle.items.map(item=>item.icon),['speech','clock','footsteps']);
+  runtime.story=story;runtime.state={chapter:1,puzzleDrafts:{}};runtime.sequencePuzzleId=puzzle.id;runtime.sequenceSelected=null;runtime.sequenceFeedback='';runtime.current=()=>chapter;
+  runtime.showModal=(title,body,actions)=>{runtime.modal={title,body,actions};};runtime.showCleanTimelinePuzzle(chapter,puzzle);
+  assert.match(runtime.modal.body,/s6-clean-timeline-layout/);assert.match(runtime.modal.body,/class="s6-clean-timeline-art"/);assert.match(runtime.modal.body,/library-listening-painted\.png/);
+  assert.match(runtime.modal.body,/s6-sequence-step is-illustrated/);assert.match(runtime.modal.body,/timeline-move/);assert.match(runtime.modal.actions,/timeline-check/);assert.match(runtime.modal.actions,/timeline-reset/);
+  assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],puzzle.items.map(item=>item.id));
+  runtime.save=async()=>{};runtime.showCleanTimelinePuzzle=()=>{};await runtime.moveCleanTimelineEvent(0,1);assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],['chime','whisper','steps']);
+  const broken=structuredClone(story);broken.chapters[1].puzzle.items[0].icon='bad-icon';assert.throws(()=>Engine.validateDefinition(broken),/unsupported timeline item icon/);
+  const badImage=structuredClone(story);badImage.chapters[1].puzzle.presentation.sideImage='../private.png';assert.throws(()=>Engine.validateDefinition(badImage),/invalid timeline side artwork/);
 });
 
 test('migration retains the original conversation and hint lines',()=>{
@@ -139,37 +241,43 @@ test('legacy browser progress converts to the shared save without losing books o
   assert.ok(migrated.completedDialogues.includes('chapter-1:evelyn:q1'));
 });
 
-test('all handles can be tried, and only the four correct books plus handle D reveal B–17',async()=>{
-  const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;runtime.state={bookshelfSlots:[null,null,null,null],bookSlipReady:false};
+test('only the exact four-book order opens the compartment',async()=>{
+  const scene={isConnected:true,classList:{add(){},remove(){}}},button={disabled:false};
+  const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;runtime.state={bookshelfSlots:['120','210','640','810'],bookSlipReady:false};
   runtime.current=()=>story.chapters[0];runtime.save=async()=>{};runtime.showPuzzle=()=>{};
-  for(const id of ['A','B','C']){await runtime.pullBookHandle(id);assert.ok(runtime.bookFeedback);assert.equal(runtime.state.bookSlipReady,false);}
-  runtime.state.bookshelfSlots=['120','210','640','810'];await runtime.pullBookHandle('D');assert.equal(runtime.state.bookSlipReady,false);
-  runtime.state.bookshelfSlots=['120','305','640','810'];await runtime.pullBookHandle('D');assert.equal(runtime.state.bookSlipReady,true);
+  runtime.overlay={querySelector:()=>scene,lastElementChild:{querySelector:()=>button,append(){}}};
+  const oldDocument=global.document,oldMatchMedia=global.matchMedia;
+  global.document={createElement:()=>({dataset:{}})};global.matchMedia=()=>({matches:true});
+  try{
+    await runtime.checkCatalogBookshelf();assert.equal(runtime.state.bookSlipReady,false);
+    runtime.state.bookshelfSlots=['120','305','640','810'];await runtime.checkCatalogBookshelf();assert.equal(runtime.state.bookSlipReady,true);
+  }finally{global.document=oldDocument;global.matchMedia=oldMatchMedia;}
 });
 
-test('the bookshelf keeps physical slots, a selected-books summary, and seven movable books',()=>{
+test('the supplied shelf, fixed tray, book inspection, and parchment replace the old handles and notes',()=>{
   const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;
-  runtime.state={bookshelfSlots:[null,'640',null,'810'],bookSlipReady:false};
+  runtime.state={bookshelfSlots:[null,'640',null,'810'],bookInspectionId:'640',bookSlipReady:false};
   runtime.overlay={lastElementChild:null};
   let markup='',actions='';runtime.showModal=(_title,content,footer)=>{markup=content;actions=footer;runtime.overlay.lastElementChild={scrollTop:0,querySelector:()=>null};};
   runtime.showBookshelfPuzzle(story.chapters[0],story.chapters[0].puzzle);
   assert.equal((markup.match(/data-s6="books-slot"/g)||[]).length,4);
-  assert.equal((markup.match(/data-s6="books-handle"/g)||[]).length,4);
   assert.equal((markup.match(/data-s6="books-pick"/g)||[]).length,5);
   assert.doesNotMatch(markup,/data-s6="books-pick"[^>]*data-id="(?:640|810)"/);
-  assert.doesNotMatch(markup,/s6-library-slot-number|s6-library-inspect|data-s6="book-open"/);
-  assert.match(markup,/Your selected books/);
-  assert.equal((markup.match(/class="s6-library-selected-slot"/g)||[]).length,4);
-  assert.match(markup,/class="s6-library-back" data-s6="close"/);
-  assert.match(markup,/book-covers-seven\.png/);
-  assert.match(markup,/s6-library-cart-numbers/);
-  assert.match(actions,/data-s6="books-clue"/);
-  assert.match(actions,/data-s6="hint"/);
-  assert.match(markup,/s6-library-drawer(?! is-open)/);
-  assert.equal(story.chapters[0].puzzle.presentation.cartNumbers.join(','),'640,120,810,305');
+  assert.match(markup,/library-bookshelf-original\.png/);
+  assert.match(markup,/library-bookshelf-solved\.png/);
+  assert.match(markup,/library-catalog-seven\.png/);
+  assert.match(markup,/data-s6="books-close"/);
+  assert.match(markup,/data-s6="books-clue"/);
+  assert.match(markup,/data-s6="puzzle-reset"/);
+  assert.doesNotMatch(markup,/data-s6="books-handle"|Your selected books|Eleanor’s Note|data-s6="hint"/);
+  assert.ok(!actions);
   runtime.state.bookshelfSlots=[null,null,null,null];
+  runtime.state.bookInspectionId=null;
   runtime.showBookshelfPuzzle(story.chapters[0],story.chapters[0].puzzle);
   assert.equal((markup.match(/data-s6="books-pick"/g)||[]).length,7,'all seven books remain available when the shelf is empty');
+  assert.equal((markup.match(/class="s6-catalog-tray-cell/g)||[]).length,7);
+  runtime.state.bookSlipReady=true;runtime.showBookshelfPuzzle(story.chapters[0],story.chapters[0].puzzle);
+  assert.match(markup,/data-s6="books-view-slip"/);
 });
 
 test('books can be placed, swapped, removed, and resumed from saved slots',async()=>{

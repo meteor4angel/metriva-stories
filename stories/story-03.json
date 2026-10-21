@@ -103,7 +103,9 @@
           },
           "detail": "A valid ticket for the 11:30 departure reads: NORA BELL · CARRIAGE 4 · SEAT 4C. The conductor’s copy has a punched crescent at the top.",
           "note": "Ticket · seat 4C",
-          "detailImage": "assets/train-clue-ticket.png"
+          "detailImage": "assets/train-clue-ticket.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "tag",
@@ -132,7 +134,9 @@
           },
           "detail": "The carriage chart lists 4A: June P., 4B: Vacant, 4C: Nora Bell, 4D: Reserved for staff. Someone has crossed out 4C in pencil.",
           "note": "Seat chart · 4C",
-          "detailImage": "assets/train-clue-chart.png"
+          "detailImage": "assets/train-clue-chart.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "coat",
@@ -144,7 +148,9 @@
           },
           "detail": "A damp coat hangs near seat 4C. In its pocket: a note, “Find the junction before 12:10. Do not trust the printed route.”",
           "note": "Junction warning",
-          "detailImage": "assets/train-clue-coat.png"
+          "detailImage": "assets/train-clue-coat.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "ward",
@@ -224,7 +230,15 @@
             "ticket",
             "tag",
             "chart"
-          ]
+          ],
+          "mode": "single-question-clues",
+          "theme": {
+            "accent": "#436854",
+            "surface": "#fffdf8",
+            "border": "#d9d3c7",
+            "selected": "#edf3ec",
+            "ink": "#26392f"
+          }
         }
       },
       "hints": [
@@ -261,7 +275,9 @@
           },
           "detail": "11:42 PM — Nora orders peppermint tea. June remembers the blue coat and a folded map.",
           "note": "Tea · 11:42",
-          "detailImage": "assets/train-clue-tea.webp"
+          "detailImage": "assets/train-clue-tea.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "watch",
@@ -273,7 +289,9 @@
           },
           "detail": "11:49 PM — Nora checks her gold pocket watch and leaves the dining car. June records the time beside Nora’s unfinished tea.",
           "note": "Nora leaves · 11:49",
-          "detailImage": "assets/train-clue-watch.webp"
+          "detailImage": "assets/train-clue-watch.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "water",
@@ -285,7 +303,9 @@
           },
           "detail": "11:54 PM — June delivers water to the engineer. She sees Nora walk toward carriage four afterward.",
           "note": "Water · 11:54",
-          "detailImage": "assets/train-clue-water.webp"
+          "detailImage": "assets/train-clue-water.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "journal",
@@ -297,7 +317,9 @@
           },
           "detail": "The dining log has three lines: tea 11:42, watch 11:49, water 11:54. The kitchen timer was reset at 11:55.",
           "note": "Dining service log",
-          "detailImage": "assets/train-clue-journal.webp"
+          "detailImage": "assets/train-clue-journal.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "june",
@@ -412,7 +434,9 @@
           },
           "detail": "The advertised route goes Northbridge → Ash Vale → Briarford. No intermediate stop is listed.",
           "note": "Published route",
-          "detailImage": "assets/train-clue-printed.png"
+          "detailImage": "assets/train-clue-printed.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "log",
@@ -424,7 +448,9 @@
           },
           "detail": "The engine log reads: Northbridge 23:30; Ash Vale 23:48; BLK JCT 00:02; Briarford 00:41.",
           "note": "Actual route log",
-          "detailImage": "assets/train-clue-log.png"
+          "detailImage": "assets/train-clue-log.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "mile",
@@ -436,7 +462,9 @@
           },
           "detail": "The route display names Northbridge, Ash Vale, and Briarford. Its mileage scale puts Ash Vale at 18, an unnamed point at 26, and Briarford at 44. The engine log’s BLK JCT falls at that missing point.",
           "note": "Junction mileposts",
-          "detailImage": "assets/train-clue-mile.png"
+          "detailImage": "assets/train-clue-mile.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "signal",
@@ -529,7 +557,15 @@
             "printed",
             "log",
             "mile"
-          ]
+          ],
+          "mode": "single-question-clues",
+          "theme": {
+            "accent": "#436854",
+            "surface": "#fffdf8",
+            "border": "#d9d3c7",
+            "selected": "#edf3ec",
+            "ink": "#26392f"
+          }
         }
       },
       "hints": [
@@ -566,7 +602,9 @@
           },
           "detail": "TRANSFER · BLACKTHORN JUNCTION · 00:07. Two sealed document cases were loaded onto a maintenance trolley.",
           "note": "Transfer · 00:07",
-          "detailImage": "assets/train-clue-freight.png"
+          "detailImage": "assets/train-clue-freight.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "pocket",
@@ -612,7 +650,9 @@
           },
           "detail": "The manifest was altered from “Inspection records” to “Tools.” The overwritten ink has not dried fully.",
           "note": "Altered cargo manifest",
-          "detailImage": "assets/train-clue-manifest.png"
+          "detailImage": "assets/train-clue-manifest.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "traveler",
@@ -688,7 +728,15 @@
             "freight",
             "pocket",
             "manifest"
-          ]
+          ],
+          "mode": "single-question-clues",
+          "theme": {
+            "accent": "#436854",
+            "surface": "#fffdf8",
+            "border": "#d9d3c7",
+            "selected": "#edf3ec",
+            "ink": "#26392f"
+          }
         }
       },
       "hints": [
@@ -725,7 +773,9 @@
           },
           "detail": "The tower diagram marks three levers: 1 = siding points, 2 = bridge warning, 3 = main-line stop. The emergency instruction reads: STOP MAIN LINE, WARN BRIDGE, THEN ALIGN SIDING.",
           "note": "Emergency signal instructions",
-          "detailImage": "assets/train-clue-diagram.webp"
+          "detailImage": "assets/train-clue-diagram.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "lever",
@@ -786,7 +836,9 @@
           },
           "detail": "A freight train is due to cross at 00:22. The emergency signals must be set before it reaches the bridge.",
           "note": "Freight due · 00:22",
-          "detailImage": "assets/train-clue-schedule.webp"
+          "detailImage": "assets/train-clue-schedule.webp",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         }
       ],
       "characters": [
@@ -959,5 +1011,26 @@
     "title": "The bridge is safe",
     "prompt": "The freight brakes before Blackthorn Bridge. Nora is freed with the original report in her hands. How will you secure the evidence?",
     "finalNote": "Case complete · Nora is safe · Blackthorn Bridge is closed for repairs."
+  },
+  "pageAppearance": {
+    "backgroundImage": "assets/story03-alpine-night-background.png",
+    "backgroundPosition": "center center",
+    "backdropTint": "#15243a22",
+    "palette": {
+      "surface": "#fff9ee",
+      "ink": "#17241d",
+      "accent": "#214e3c",
+      "accentSoft": "#e6eee6",
+      "border": "#ddc9a7",
+      "muted": "#596057",
+      "gold": "#c4a466",
+      "headingInk": "#fffaf1",
+      "headingMuted": "#f4ead8"
+    },
+    "layout": {
+      "contentWidth": 1400,
+      "sidebarPercent": 30,
+      "surfaceOpacity": 0.96
+    }
   }
 }

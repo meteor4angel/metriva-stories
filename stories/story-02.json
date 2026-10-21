@@ -8,14 +8,87 @@
   "duration": "20–30 min",
   "tagline": "A forgotten manuscript. A voice from the past.",
   "theme": "Willowmere Library holds a forgotten manuscript and the records of its first collection.",
+  "openingIntroduction": {
+    "id": "evelyn-music-box-request",
+    "title": "A Voice in the Music Box",
+    "characterId": "evelyn",
+    "speaker": "Evelyn Hart",
+    "text": [
+      "Welcome to Willowmere. I found this damaged music box in the returns cupboard. The voice inside asks us to look where the first stories were kept. Will you help me follow it?"
+    ],
+    "buttonText": "Help Evelyn investigate"
+  },
+  "pageAppearance": {
+    "chapterPickerIcon": "book",
+    "peopleMode": "all",
+    "backgroundImage": "assets/story02-library-wide-sunlit.png",
+    "backgroundPosition": "center center",
+    "backdropTint": "#bdb09045",
+    "palette": {
+      "surface": "#fff9ee",
+      "ink": "#17241d",
+      "accent": "#214e3c",
+      "accentSoft": "#e6eee6",
+      "border": "#ddc9a7",
+      "muted": "#596057",
+      "gold": "#c4a466",
+      "headingInk": "#214e3c",
+      "headingMuted": "#35443a"
+    },
+    "layout": {
+      "contentWidth": 1400,
+      "sidebarPercent": 30,
+      "surfaceOpacity": 0.96
+    }
+  },
   "saveVersion": 1,
   "legacySaveKey": "metrivastories_echoes_library_v01",
   "autoVoice": true,
   "characterSprites": {
-    "evelyn": { "src": "assets/library-evelyn-frames.png", "columns": 2, "rows": 2, "frames": { "idle": 0, "blink": 1, "speaking": 2, "thoughtful": 3 } },
-    "ada": { "src": "assets/library-ada-frames.png", "columns": 2, "rows": 2, "frames": { "idle": 0, "blink": 1, "speaking": 2, "thoughtful": 3 } },
-    "theo": { "src": "assets/library-theo-frames.png", "columns": 2, "rows": 2, "frames": { "idle": 0, "blink": 1, "speaking": 2, "thoughtful": 3 } },
-    "eleanor": { "src": "assets/library-eleanor-frames.png", "columns": 2, "rows": 2, "frames": { "idle": 0, "blink": 1, "speaking": 2, "thoughtful": 3 } }
+    "evelyn": {
+      "src": "assets/library-evelyn-frames.png",
+      "columns": 2,
+      "rows": 2,
+      "frames": {
+        "idle": 0,
+        "blink": 1,
+        "speaking": 2,
+        "thoughtful": 3
+      }
+    },
+    "ada": {
+      "src": "assets/library-ada-frames.png",
+      "columns": 2,
+      "rows": 2,
+      "frames": {
+        "idle": 0,
+        "blink": 1,
+        "speaking": 2,
+        "thoughtful": 3
+      }
+    },
+    "theo": {
+      "src": "assets/library-theo-frames.png",
+      "columns": 2,
+      "rows": 2,
+      "frames": {
+        "idle": 0,
+        "blink": 1,
+        "speaking": 2,
+        "thoughtful": 3
+      }
+    },
+    "eleanor": {
+      "src": "assets/library-eleanor-frames.png",
+      "columns": 2,
+      "rows": 2,
+      "frames": {
+        "idle": 0,
+        "blink": 1,
+        "speaking": 2,
+        "thoughtful": 3
+      }
+    }
   },
   "resolution": {
     "title": "Decide how to reveal the truth",
@@ -92,7 +165,7 @@
           "icon": "◷",
           "position": {
             "x": 85,
-            "y": 9
+            "y": 15
           },
           "note": "Clock discrepancy",
           "detailImage": "assets/story02-library-clock-closeup.png",
@@ -134,7 +207,7 @@
           "icon": "▧",
           "position": {
             "x": 94,
-            "y": 28
+            "y": 32
           },
           "note": "Eleanor’s portrait",
           "detailImage": "assets/story02-eleanor-portrait-detached.png",
@@ -185,7 +258,7 @@
         "id": "library-books",
         "title": "The Misplaced Books",
         "type": "sequence",
-        "prompt": "Choose the four books connected to the Book Cart, arrange them on the shelf, then try the brass handles.",
+        "prompt": "Inspect the books to discover their catalog numbers. Place the four from the Book Cart in ascending order.",
         "items": [
           {
             "id": "640",
@@ -212,64 +285,145 @@
         ],
         "presentation": {
           "mode": "bookshelf",
-          "shelfImage": "images/story02/library-bookshelf-seven-v1.png",
-          "spineSheetSize": {"width": 1536, "height": 1024},
-          "slipText": "B–17",
+          "shelfImage": "images/story02/library-bookshelf-original.png",
+          "spineSheetSize": {
+            "width": 2045,
+            "height": 769
+          },
+          "slipText": "B-17",
           "note": "Every volume has its proper place. Begin with the earliest entry, and let each number lead you forward. Only when the shelf is in order will it surrender what I have hidden. — Eleanor",
-          "cartNumbers": ["640", "120", "810", "305"],
+          "cartNumbers": [
+            "640",
+            "120",
+            "810",
+            "305"
+          ],
           "candidates": [
             {
               "id": "120",
               "label": "The Book of Questions",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 23, "y": 4, "width": 350, "height": 510},
-              "coverImage": "images/story02/approved-open-120.png",
-              "color": "red"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 51,
+                "y": 52,
+                "width": 282,
+                "height": 690
+              },
+              "color": "red",
+              "openFrame": {
+                "x": 0,
+                "y": 0,
+                "width": 384,
+                "height": 506
+              }
             },
             {
               "id": "305",
               "label": "Folklore of Willowmere",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 402, "y": 4, "width": 353, "height": 510},
-              "coverImage": "images/story02/approved-open-305.png",
-              "color": "brown"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 894,
+                "y": 52,
+                "width": 272,
+                "height": 690
+              },
+              "color": "brown",
+              "openFrame": {
+                "x": 1152,
+                "y": 0,
+                "width": 384,
+                "height": 506
+              }
             },
             {
               "id": "640",
               "label": "Botanical Atlas",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 781, "y": 4, "width": 360, "height": 510},
-              "coverImage": "images/story02/approved-open-640.png",
-              "color": "green"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 338,
+                "y": 52,
+                "width": 272,
+                "height": 690
+              },
+              "color": "green",
+              "openFrame": {
+                "x": 384,
+                "y": 0,
+                "width": 384,
+                "height": 506
+              }
             },
             {
               "id": "810",
               "label": "Collected Poetry",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 1161, "y": 4, "width": 365, "height": 510},
-              "coverImage": "images/story02/approved-open-810.png",
-              "color": "blue"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 619,
+                "y": 52,
+                "width": 271,
+                "height": 690
+              },
+              "color": "blue",
+              "openFrame": {
+                "x": 768,
+                "y": 0,
+                "width": 384,
+                "height": 506
+              }
             },
             {
               "id": "450",
               "label": "Volume 450",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 182, "y": 534, "width": 360, "height": 486},
-              "color": "purple"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 1170,
+                "y": 52,
+                "width": 275,
+                "height": 690
+              },
+              "color": "purple",
+              "openFrame": {
+                "x": 0,
+                "y": 512,
+                "width": 512,
+                "height": 512
+              }
             },
             {
               "id": "725",
               "label": "Volume 725",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 582, "y": 534, "width": 364, "height": 486},
-              "color": "black"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 1730,
+                "y": 52,
+                "width": 278,
+                "height": 690
+              },
+              "color": "black",
+              "openFrame": {
+                "x": 1024,
+                "y": 512,
+                "width": 512,
+                "height": 512
+              }
             },
             {
               "id": "210",
               "label": "Volume 210",
-              "spineImage": "images/story02/book-covers-seven.png",
-              "spineFrame": {"x": 989, "y": 534, "width": 357, "height": 486},
-              "color": "ivory"
+              "spineImage": "images/story02/library-spines-seven.png",
+              "spineFrame": {
+                "x": 1447,
+                "y": 52,
+                "width": 277,
+                "height": 690
+              },
+              "color": "ivory",
+              "openFrame": {
+                "x": 512,
+                "y": 512,
+                "width": 512,
+                "height": 512
+              }
             }
           ],
           "handles": [
@@ -293,7 +447,13 @@
               "label": "Brass bar",
               "feedback": "The concealed panel releases beneath the handles."
             }
-          ]
+          ],
+          "layout": "catalog-inspection",
+          "solvedImage": "images/story02/library-bookshelf-solved.png",
+          "parchmentImage": "images/story02/library-b17-parchment.png",
+          "inspectionPanelImage": "images/story02/library-inspection-panel.png",
+          "trayImage": "images/story02/library-book-tray.png",
+          "openSheet": "images/story02/library-catalog-seven.png"
         },
         "success": "A folded slip falls from the final book: B-17. Evelyn frowns. “There is no shelf seventeen on the current plan.”"
       },
@@ -320,7 +480,10 @@
       "location": "The Listening Room",
       "subtitle": "A voice from seventy years ago has one more thing to say.",
       "scene": "assets/library-listening-painted.png",
-      "conversationBackdrop": {"size": "230% auto", "position": "right center"},
+      "conversationBackdrop": {
+        "size": "230% auto",
+        "position": "right center"
+      },
       "intro": "Theo Mercer, the book conservator, helps you carry the recording into the old listening room. “It was found behind a wall panel,” he says. “I thought it was just music.”",
       "evidence": [
         {
@@ -357,13 +520,21 @@
             "x": 95,
             "y": 44
           },
-          "note": "West-wing latch"
+          "note": "West-wing latch",
+          "detailImage": "assets/story02-west-wing-latch.png",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
         },
         {
           "id": "theo",
           "title": "Theo’s Observation",
           "conversationOnInspect": "theo",
-          "detailFrame": {"x": 32, "y": 13, "width": 31, "height": 67},
+          "detailFrame": {
+            "x": 32,
+            "y": 13,
+            "width": 31,
+            "height": 67
+          },
           "detail": "“I noticed a door outline behind the shelving during the renovation. I thought it had been sealed decades ago.”",
           "icon": "☏",
           "position": {
@@ -414,15 +585,18 @@
         "items": [
           {
             "id": "whisper",
-            "label": "Whispered title"
+            "label": "Whispered title",
+            "icon": "speech"
           },
           {
             "id": "chime",
-            "label": "Clock chime"
+            "label": "Clock chime",
+            "icon": "clock"
           },
           {
             "id": "steps",
-            "label": "Footsteps"
+            "label": "Footsteps",
+            "icon": "footsteps"
           }
         ],
         "answer": [
@@ -431,7 +605,31 @@
           "whisper"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "ordered-list",
+          "displayTitle": "After closing",
+          "sideImage": "assets/library-listening-painted.png",
+          "sideImageAlt": "A warm listening room with the cylinder recording",
+          "sideImagePosition": "center",
+          "sourceTitle": "The evidence",
+          "timelineTitle": "Your timeline",
+          "timelineDescription": "Earliest to latest",
+          "sectionTitle": "Put the events in order",
+          "sectionDescription": "Use the arrows to place the events from earliest to latest.",
+          "theme": {
+            "green": "#315342",
+            "gold": "#ad854d",
+            "cream": "#f6f0e5",
+            "panel": "#fffaf2",
+            "line": "#e0c9a7",
+            "ink": "#2b3c32"
+          },
+          "actions": [
+            { "action": "check", "label": "Check sequence" },
+            { "action": "reset", "label": "Reset arrangement" },
+            { "action": "hint", "label": "Progressive hint" },
+            { "action": "close", "label": "Return to investigation" }
+          ]
         },
         "success": "The restored recording ends with a latch clicking open. Theo draws a rough map of the old west wing."
       },
@@ -456,7 +654,10 @@
       "location": "The Restricted Archive",
       "subtitle": "A shelf that should not exist.",
       "scene": "assets/library-archive-painted.png",
-      "conversationBackdrop": {"size": "230% auto", "position": "right center"},
+      "conversationBackdrop": {
+        "size": "230% auto",
+        "position": "right center"
+      },
       "intro": "Beyond a velvet rope, the archive smells of cedar and dust. Ada Vale, the senior archivist, meets you at the entrance. “My aunt Eleanor cataloged these shelves herself,” she says.",
       "evidence": [
         {
@@ -601,7 +802,10 @@
       "location": "The Restoration Workshop",
       "subtitle": "Two plans of the same building tell different stories.",
       "scene": "assets/library-workshop-painted.png",
-      "conversationBackdrop": {"size": "230% auto", "position": "left center"},
+      "conversationBackdrop": {
+        "size": "230% auto",
+        "position": "left center"
+      },
       "intro": "The workshop is crowded with rolled blueprints. Theo admits: “I hid the revised plans. They were going to seal that room before anyone could inspect it. I should have told Evelyn.”",
       "evidence": [
         {
@@ -650,7 +854,12 @@
           "id": "theo2",
           "title": "Theo’s Admission",
           "conversationOnInspect": "theo",
-          "detailFrame": {"x": 51, "y": 5, "width": 35, "height": 67},
+          "detailFrame": {
+            "x": 51,
+            "y": 5,
+            "width": 35,
+            "height": 67
+          },
           "detail": "“I wanted to stop the wall being sealed. Hiding the plans was wrong, but the room is real.”",
           "icon": "☏",
           "position": {

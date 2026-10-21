@@ -21,6 +21,8 @@ require('../js/story-engine.js');
 global.MetrivaStoryEngine.validateDefinition(definition);
 const assetErrors=checkAssets(definition,root);
 if(assetErrors.length)throw new Error(`Visual asset validation failed:\n• ${assetErrors.join('\n• ')}`);
+const missingVoiceAssets=Object.values(definition.voiceMap||{}).filter(src=>!fs.existsSync(path.join(root,src)));
+if(missingVoiceAssets.length)throw new Error(`Voice asset validation failed; missing MP3 files:\n• ${[...new Set(missingVoiceAssets)].join('\n• ')}`);
 const escapedJson = JSON.stringify(definition)
   .replace(/</g, '\\u003c')
   .replace(/\u2028/g, '\\u2028')

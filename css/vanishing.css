@@ -508,3 +508,9 @@ button.garden-recess:hover{transform:translateY(-3px);border-color:#446650}
 .dialog-restart .restart-story-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
 .dialog-restart .restart-story-actions button{min-width:145px}
 @media(max-width:600px){.notebook .evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dialog-restart .restart-story-actions button{flex:1;min-width:120px}}
+.dialog-conversation .dialog-top.voice-brand{min-height:82px;display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid #dfc9a8;background:#fffaf1}
+.dialog-conversation .voice-brand-icon{width:42px;height:42px;flex:none;fill:none;stroke:#b88951;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dialog-conversation .voice-brand-copy{display:grid;gap:3px;margin-right:auto}
+.dialog-conversation .voice-brand-copy strong{font:24px/1.1 Georgia,"Times New Roman",serif;color:var(--forest)}
+.dialog-conversation .voice-brand-copy span{font:11px/1.4 Arial,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:#a87943}
+@media(max-width:600px){.dialog-conversation .dialog-top.voice-brand{min-height:70px;padding:7px 12px;gap:8px}.dialog-conversation .voice-brand-icon{width:36px;height:36px}.dialog-conversation .voice-brand-copy strong{font-size:20px}.dialog-conversation .voice-brand-copy span{font-size:9px}}

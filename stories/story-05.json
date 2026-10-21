@@ -1,0 +1,1012 @@
+{
+  "schemaVersion": 1,
+  "id": "days-we-almost-met",
+  "number": 5,
+  "title": "The Days We Almost Met",
+  "genre": "Contemporary romance",
+  "description": "Two neighbors keep almost meeting until they learn to make room for choice.",
+  "duration": "20–30 min",
+  "tagline": "Two neighbors, five almost-meetings, and a choice to begin.",
+  "theme": "Mira and Theo meet through books, music, rain, and a neighborhood garden.",
+  "legacyPage": "days-we-almost-met.html",
+  "legacySaveKey": "metrivastories_days_we_almost_met_v01",
+  "pageAppearance": {
+    "backgroundImage": "assets/story05-page-background.png",
+    "backgroundPosition": "center center"
+  },
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "A Chance Encounter",
+      "location": "A Chance Encounter",
+      "subtitle": "Some meetings feel like they were always meant to happen.",
+      "scene": "assets/days-scene-01.webp",
+      "intro": "At Fleur & Livre, a neighborhood café and bookshop, Mira accidentally drops her paperback. A stranger named Theo helps gather the pages. Neither tries to turn the moment into a grand romance; they simply share a laugh.",
+      "evidence": [
+        {
+          "id": "book",
+          "title": "Dropped paperback",
+          "detail": "Inside the cover is a note in blue ink: “The best places are the ones you return to.” Mira wrote it years ago in a community reading group.",
+          "icon": "▤",
+          "position": {
+            "x": 47,
+            "y": 83
+          },
+          "note": "Book inscription · blue ink",
+          "detailImage": "assets/days-clue-book.webp",
+          "notebookTitle": "Dropped paperback",
+          "detailImageWidth": 1672,
+          "detailImageHeight": 941
+        },
+        {
+          "id": "receipt",
+          "title": "Mira’s café receipt",
+          "detail": "Mira’s café receipt reads APR 12 · 10:42 AM. It fell beside her bag when she dropped her book.",
+          "icon": "▣",
+          "position": {
+            "x": 21,
+            "y": 86
+          },
+          "note": "Receipt · Apr 12 · 10:42",
+          "detailImage": "assets/days-clue-receipt.webp",
+          "notebookTitle": "Mira’s café receipt",
+          "detailImageWidth": 1448,
+          "detailImageHeight": 1086
+        },
+        {
+          "id": "lilac",
+          "title": "Pressed lilac",
+          "detail": "A pressed lilac slips from the book. Mira collected it from the riverside garden last spring; it is not a secret message.",
+          "icon": "✿",
+          "position": {
+            "x": 59,
+            "y": 90
+          },
+          "note": "Pressed lilac · riverside garden",
+          "detailImage": "assets/days-clue-lilac.webp",
+          "notebookTitle": "Pressed lilac",
+          "detailImageWidth": 356,
+          "detailImageHeight": 500
+        },
+        {
+          "id": "photo",
+          "title": "Neighborhood photograph",
+          "detail": "The postcard shows Fleur & Livre beside the riverside garden and the old public library. The route is walkable.",
+          "icon": "▧",
+          "position": {
+            "x": 42,
+            "y": 94
+          },
+          "note": "Postcard · café, garden, library",
+          "detailImage": "assets/days-clue-photo.webp",
+          "notebookTitle": "Neighborhood photograph",
+          "detailImageWidth": 860,
+          "detailImageHeight": 524
+        },
+        {
+          "id": "chalk",
+          "title": "Café chalkboard",
+          "detail": "The chalkboard says: “Open reading table — Sundays at 11:00. Everyone welcome.” Theo mentions that he volunteers there.",
+          "icon": "☷",
+          "position": {
+            "x": 83,
+            "y": 30
+          },
+          "note": "Reading table · 11:00",
+          "detailImage": "assets/days-clue-chalk.webp",
+          "notebookTitle": "Café chalkboard",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        }
+      ],
+      "characters": [
+        {
+          "id": "mira",
+          "name": "Mira",
+          "role": "Reader and garden volunteer",
+          "bio": "Curious, independent, and quietly funny. Mira values being asked what she wants instead of having her choices made for her.",
+          "portrait": "assets/days-mira-idle-transparent-v2.png",
+          "intro": "“I keep telling myself this bag is big enough for one more book.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Did the dropped book get damaged?",
+              "reply": "“A bent corner. I think it will survive.”",
+              "followUp": "What does the writing inside the cover mean to you?",
+              "followReply": "“Years ago. I wanted to remember that a place can feel like home.”"
+            },
+            {
+              "id": "q2",
+              "ask": "What drew you to the reading table?",
+              "reply": "“I came for coffee, but a chapter sounds nice.”",
+              "followUp": "How does it feel to know there is no pressure to stay?",
+              "followReply": "“That makes staying feel much easier.”"
+            }
+          ]
+        },
+        {
+          "id": "theo",
+          "name": "Theo",
+          "role": "Bookshop volunteer and pianist",
+          "bio": "A considerate young neighbor who loves books, music, and the community garden. He is learning to say what he means without rushing anyone.",
+          "portrait": "assets/days-theo-idle-transparent-v2.png",
+          "intro": "“The reading table starts at eleven. You would be welcome there.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "How often do you volunteer, and what do you enjoy about it?",
+              "reply": "“Most Sundays. Books are a good excuse to meet the neighbors.”",
+              "followUp": "Would you call it a formal event?",
+              "followReply": "“Only if you count debating the ending over coffee.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Where would Mira find the reading table?",
+              "reply": "“Just inside, beside the window.”",
+              "followUp": "What would you say if Mira stayed for just one chapter?",
+              "followReply": "“One chapter is a very good start.”"
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "cafe-choice",
+        "title": "The Café Invitation",
+        "type": "choice",
+        "prompt": "What feels right after this chance encounter?",
+        "options": [
+          {
+            "id": "gift",
+            "label": "Buy the stranger a gift"
+          },
+          {
+            "id": "reading",
+            "label": "Join the open 11:00 reading table"
+          },
+          {
+            "id": "wait",
+            "label": "Wait outside the café"
+          }
+        ],
+        "answer": "reading"
+      },
+      "gate": {
+        "allEvidence": [
+          "book",
+          "receipt",
+          "lilac",
+          "photo",
+          "chalk"
+        ]
+      },
+      "hints": [
+        "The dropped book and inscription",
+        "Joining the reading table",
+        "Volunteering at the bookshop"
+      ],
+      "clue": "Book inscription · blue ink · Receipt · Apr 12 · 10:42 · Pressed lilac · riverside garden · Postcard · café, garden, library · Reading table · 11:00",
+      "success": "The clues lead Mira and Theo to the next small choice."
+    },
+    {
+      "id": "chapter-2",
+      "title": "Shared Pages",
+      "location": "Shared Pages",
+      "subtitle": "A second meeting, and an invitation without expectations.",
+      "scene": "assets/days-scene-02.webp",
+      "intro": "The following Sunday, Mira returns to the reading room because she enjoyed the books. Theo is shelving donated novels. They remember each other, but this time they have room for an actual conversation.",
+      "evidence": [
+        {
+          "id": "ledger",
+          "title": "Volunteer sign-in sheet",
+          "detail": "The sign-in sheet shows Theo volunteered on Apr 12 and Apr 19. Mira attended on Apr 19. No one arranged a secret meeting.",
+          "icon": "▤",
+          "position": {
+            "x": 68,
+            "y": 82
+          },
+          "note": "Volunteer sheet · Apr 12 and 19",
+          "detailImage": "assets/days-clue-ledger.webp",
+          "notebookTitle": "Volunteer sign-in sheet",
+          "detailImageWidth": 1351,
+          "detailImageHeight": 1164
+        },
+        {
+          "id": "margin",
+          "title": "Annotated novel",
+          "detail": "In the margin, Theo has written: “A good ending lets both people choose.” He says he likes stories about ordinary kindness.",
+          "icon": "✎",
+          "position": {
+            "x": 20,
+            "y": 90
+          },
+          "note": "Margin note · choosing freely",
+          "detailImage": "assets/days-clue-margin.webp",
+          "notebookTitle": "Annotated novel",
+          "detailImageWidth": 505,
+          "detailImageHeight": 518
+        },
+        {
+          "id": "shelf",
+          "title": "Return shelf",
+          "detail": "Three books are marked for return: Poems 100, Travel 400, Gardens 600. The shelf labels run from lowest to highest number.",
+          "icon": "▥",
+          "position": {
+            "x": 15,
+            "y": 27
+          },
+          "note": "Shelf labels · 100, 400, 600",
+          "detailImage": "assets/days-clue-shelf.webp",
+          "notebookTitle": "Return shelf",
+          "detailImageWidth": 1374,
+          "detailImageHeight": 1145
+        },
+        {
+          "id": "tea",
+          "title": "Tea and coffee",
+          "detail": "Mira ordered mint tea. Theo drinks black coffee. The librarian offered them a shared table; neither assumed the other would stay.",
+          "icon": "♨",
+          "position": {
+            "x": 33,
+            "y": 70
+          },
+          "note": "Shared table · no pressure",
+          "detailImage": "assets/days-clue-tea.webp",
+          "notebookTitle": "Tea and coffee",
+          "detailImageWidth": 830,
+          "detailImageHeight": 479
+        },
+        {
+          "id": "flyer",
+          "title": "Neighborhood flyer",
+          "detail": "A flyer advertises a Saturday community garden cleanup. Mira says she has already signed up; Theo says he might come.",
+          "icon": "✿",
+          "position": {
+            "x": 90,
+            "y": 40
+          },
+          "note": "Garden cleanup · Saturday",
+          "detailImage": "assets/days-clue-flyer.webp",
+          "notebookTitle": "Neighborhood flyer",
+          "detailImageWidth": 651,
+          "detailImageHeight": 479
+        }
+      ],
+      "characters": [
+        {
+          "id": "mira",
+          "name": "Mira",
+          "role": "Reader and garden volunteer",
+          "bio": "Curious, independent, and quietly funny. Mira values being asked what she wants instead of having her choices made for her.",
+          "portrait": "assets/days-mira-idle-transparent-v2.png",
+          "intro": "“I came back for the books. Seeing you again is a lovely bonus.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "How would you work out the order for these books?",
+              "reply": "“The shelf numbers look like the answer.”",
+              "followUp": "Does helping Theo sort poems, travel, then gardens make it easier?",
+              "followReply": "“Exactly. The little things are easier together.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Did you sign up for the cleanup because Theo would be there?",
+              "reply": "“I signed up before I knew you might be there.”",
+              "followUp": "Do you feel any obligation to go just because Theo will be there?",
+              "followReply": "“I do not. That is why I can say yes.”"
+            }
+          ]
+        },
+        {
+          "id": "theo",
+          "name": "Theo",
+          "role": "Bookshop volunteer and pianist",
+          "bio": "A considerate young neighbor who loves books, music, and the community garden. He is learning to say what he means without rushing anyone.",
+          "portrait": "assets/days-theo-idle-transparent-v2.png",
+          "intro": "“I like an ending that leaves room for both people to choose.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "What were you thinking when you wrote in that margin?",
+              "reply": "“Too many stories mistake a grand gesture for listening.”",
+              "followUp": "What matters more to you than a grand gesture?",
+              "followReply": "“Ask a question, and hear the answer.”"
+            },
+            {
+              "id": "q2",
+              "ask": "What are you drinking while you read?",
+              "reply": "“Black coffee. I should probably switch to tea.”",
+              "followUp": "What would you say if Mira chose mint tea?",
+              "followReply": "“Then we have found a perfectly balanced table.”"
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "book-order",
+        "title": "Return the Books",
+        "type": "sequence",
+        "prompt": "Arrange the shelf numbers from smallest to largest.",
+        "items": [
+          {
+            "id": "100",
+            "label": "Poems · 100"
+          },
+          {
+            "id": "400",
+            "label": "Travel · 400"
+          },
+          {
+            "id": "600",
+            "label": "Gardens · 600"
+          }
+        ],
+        "answer": [
+          "100",
+          "400",
+          "600"
+        ],
+        "presentation": {
+          "mode": "timeline"
+        }
+      },
+      "gate": {
+        "allEvidence": [
+          "ledger",
+          "margin",
+          "shelf",
+          "tea",
+          "flyer"
+        ]
+      },
+      "hints": [
+        "Sorting the returned books",
+        "The cleanup plans",
+        "Theo’s margin note"
+      ],
+      "clue": "Volunteer sheet · Apr 12 and 19 · Margin note · choosing freely · Shelf labels · 100, 400, 600 · Shared table · no pressure · Garden cleanup · Saturday",
+      "success": "The clues lead Mira and Theo to the next small choice."
+    },
+    {
+      "id": "chapter-3",
+      "title": "A Rainy Detour",
+      "location": "A Rainy Detour",
+      "subtitle": "When plans change, a different route reveals something new.",
+      "scene": "assets/days-scene-03.webp",
+      "intro": "A week later, a shower sends neighbors beneath the awnings of Lantern Lane. Mira and Theo happen to shelter at the same bakery. The garden path is flooded, so they work out how to reach the community cleanup.",
+      "evidence": [
+        {
+          "id": "map",
+          "title": "Neighborhood map",
+          "detail": "The map shows three routes to the garden: Canal Walk (closed), Market Street (open), and Bridge Road (open but much longer).",
+          "icon": "▧",
+          "position": {
+            "x": 17,
+            "y": 82
+          },
+          "note": "Map · Market Street open",
+          "detailImage": "assets/days-clue-map.webp",
+          "notebookTitle": "Neighborhood map",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        },
+        {
+          "id": "notice",
+          "title": "Flood notice",
+          "detail": "The council notice says “CANAL WALK CLOSED UNTIL MONDAY.” No shortcuts through the garden wall.",
+          "icon": "▤",
+          "position": {
+            "x": 32,
+            "y": 42
+          },
+          "note": "Closure · Canal Walk",
+          "detailImage": "assets/days-clue-notice.webp",
+          "notebookTitle": "Flood notice",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        },
+        {
+          "id": "umbrella",
+          "title": "Umbrella stand",
+          "detail": "Theo offers Mira a spare umbrella. She thanks him but says she already has one. He accepts the answer with a smile.",
+          "icon": "☂",
+          "position": {
+            "x": 27,
+            "y": 76
+          },
+          "note": "An offer kindly declined",
+          "detailImage": "assets/days-clue-umbrella.webp",
+          "notebookTitle": "Umbrella stand",
+          "detailImageWidth": 491,
+          "detailImageHeight": 470
+        },
+        {
+          "id": "bakery",
+          "title": "Bakery clock",
+          "detail": "The bakery clock reads 2:15. Cleanup starts at 3:00. Market Street takes about fifteen minutes.",
+          "icon": "◷",
+          "position": {
+            "x": 13,
+            "y": 25
+          },
+          "note": "Clock · 2:15; cleanup 3:00",
+          "detailImage": "assets/days-clue-bakery.webp",
+          "notebookTitle": "Bakery clock",
+          "detailImageWidth": 540,
+          "detailImageHeight": 510
+        },
+        {
+          "id": "poster",
+          "title": "Garden volunteer poster",
+          "detail": "The sunflower poster says “Volunteers Welcome!” The neighborhood map shows the open route to the garden along Market Street.",
+          "icon": "✿",
+          "position": {
+            "x": 50,
+            "y": 49
+          },
+          "note": "Garden cleanup · volunteers welcome",
+          "detailImage": "assets/days-clue-poster.webp",
+          "notebookTitle": "Garden volunteer poster",
+          "detailImageWidth": 540,
+          "detailImageHeight": 510
+        }
+      ],
+      "characters": [
+        {
+          "id": "mira",
+          "name": "Mira",
+          "role": "Reader and garden volunteer",
+          "bio": "Curious, independent, and quietly funny. Mira values being asked what she wants instead of having her choices made for her.",
+          "portrait": "assets/days-mira-idle-transparent-v2.png",
+          "intro": "“The rain changed my route. I would still like to make the cleanup.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Which route would you suggest taking to the garden?",
+              "reply": "“The canal path is closed. The poster points to Market Street.”",
+              "followUp": "Do you think there is still time to reach the cleanup?",
+              "followReply": "“The bakery clock says two fifteen. We do.”"
+            },
+            {
+              "id": "q2",
+              "ask": "What would you say if Theo offered you a spare umbrella?",
+              "reply": "“That is kind, but I brought one.”",
+              "followUp": "Would you still want to walk to the garden with him?",
+              "followReply": "“Yes. That I would like.”"
+            }
+          ]
+        },
+        {
+          "id": "theo",
+          "name": "Theo",
+          "role": "Bookshop volunteer and pianist",
+          "bio": "A considerate young neighbor who loves books, music, and the community garden. He is learning to say what he means without rushing anyone.",
+          "portrait": "assets/days-theo-idle-transparent-v2.png",
+          "intro": "“Market Street is still open. We can take the short way, if you want company.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "What makes Canal Walk the wrong route today?",
+              "reply": "“The council closed it until Monday.”",
+              "followUp": "What about taking Bridge Road instead?",
+              "followReply": "“Open, but far longer. We would miss the start.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Are you and Mira running late for the cleanup?",
+              "reply": "“Not yet. The cleanup begins at three.”",
+              "followUp": "Do you feel you and Mira need to rush?",
+              "followReply": "“No rush. We have fifteen minutes to walk.”"
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "rainy-route",
+        "title": "Find the Open Route",
+        "type": "choice",
+        "prompt": "Which route is open and gets them to the garden in time?",
+        "options": [
+          {
+            "id": "canal",
+            "label": "Use the closed Canal Walk"
+          },
+          {
+            "id": "market",
+            "label": "Take Market Street"
+          },
+          {
+            "id": "bridge",
+            "label": "Take the longer Bridge Road"
+          }
+        ],
+        "answer": "market"
+      },
+      "gate": {
+        "allEvidence": [
+          "map",
+          "notice",
+          "umbrella",
+          "bakery",
+          "poster"
+        ]
+      },
+      "hints": [
+        "The route to the garden",
+        "Umbrellas and company",
+        "The closed paths"
+      ],
+      "clue": "Map · Market Street open · Closure · Canal Walk · An offer kindly declined · Clock · 2:15; cleanup 3:00 · Garden cleanup · volunteers welcome",
+      "success": "The clues lead Mira and Theo to the next small choice."
+    },
+    {
+      "id": "chapter-4",
+      "title": "A Familiar Song",
+      "location": "A Familiar Song",
+      "subtitle": "A melody from the past brings hidden feelings to light.",
+      "scene": "assets/days-scene-04.webp",
+      "intro": "At the garden fundraiser, Theo plays a short tune on the old upright piano. Mira recognizes it from the community center where she learned to play as a child. The familiarity is shared history, not a secret family twist.",
+      "evidence": [
+        {
+          "id": "sheet",
+          "title": "Sheet music",
+          "detail": "The first four notes are clearly written on the page: C · E · G · E. A penciled annotation says “repeat the last note softly.”",
+          "icon": "♫",
+          "position": {
+            "x": 15,
+            "y": 34
+          },
+          "note": "Melody · C E G E",
+          "detailImage": "assets/days-clue-sheet.webp",
+          "notebookTitle": "Sheet music",
+          "detailImageWidth": 510,
+          "detailImageHeight": 545
+        },
+        {
+          "id": "piano",
+          "title": "Piano keys",
+          "detail": "The ivory keys are labeled for the fundraiser’s beginner activity. C, D, E, F, G are visible.",
+          "icon": "♬",
+          "position": {
+            "x": 16,
+            "y": 44
+          },
+          "note": "Keyboard · C D E F G",
+          "detailImage": "assets/days-clue-piano.webp",
+          "notebookTitle": "Piano keys",
+          "detailImageWidth": 470,
+          "detailImageHeight": 545
+        },
+        {
+          "id": "program",
+          "title": "Fundraiser program",
+          "detail": "The fundraiser program lists “Sunday Window” as today’s music. Mira recognizes it from an open community-center class, linking this garden gathering to the melody on the sheet music.",
+          "icon": "▤",
+          "position": {
+            "x": 15,
+            "y": 88
+          },
+          "note": "Program · Sunday Window",
+          "detailImage": "assets/days-clue-program.webp",
+          "notebookTitle": "Fundraiser program",
+          "detailImageWidth": 1214,
+          "detailImageHeight": 1295
+        },
+        {
+          "id": "flower",
+          "title": "Garden bouquet",
+          "detail": "Mira arranged wildflowers for the fundraiser. Theo thanks her for making the room feel welcoming.",
+          "icon": "✿",
+          "position": {
+            "x": 17,
+            "y": 69
+          },
+          "note": "Flowers · Mira’s contribution",
+          "detailImage": "assets/days-clue-flower.webp",
+          "notebookTitle": "Garden bouquet",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        },
+        {
+          "id": "memory",
+          "title": "Community photograph",
+          "detail": "A framed photograph shows volunteers together beneath the community garden’s flower-covered pergola. Mira recognizes the place where she first heard “Sunday Window” at an open music class.",
+          "icon": "▧",
+          "position": {
+            "x": 42,
+            "y": 85
+          },
+          "note": "Community garden · shared place",
+          "detailImage": "assets/days-clue-memory.webp",
+          "notebookTitle": "Community photograph",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        }
+      ],
+      "characters": [
+        {
+          "id": "mira",
+          "name": "Mira",
+          "role": "Reader and garden volunteer",
+          "bio": "Curious, independent, and quietly funny. Mira values being asked what she wants instead of having her choices made for her.",
+          "portrait": "assets/days-mira-idle-transparent-v2.png",
+          "intro": "“I know that melody. We used to play it at the community center.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "What do you remember about the melody?",
+              "reply": "“The opening notes: C, E, G, E.”",
+              "followUp": "Would you enjoy playing it with Theo?",
+              "followReply": "“Only if we can laugh when I miss a note.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Did the photograph make you realise you and Theo were in the same group?",
+              "reply": "“Yes. I did not notice we were both in the same community group.”",
+              "followUp": "So you and Theo nearly met back then?",
+              "followReply": "“Almost. I like that we met when we could actually talk.”"
+            }
+          ]
+        },
+        {
+          "id": "theo",
+          "name": "Theo",
+          "role": "Bookshop volunteer and pianist",
+          "bio": "A considerate young neighbor who loves books, music, and the community garden. He is learning to say what he means without rushing anyone.",
+          "portrait": "assets/days-theo-idle-transparent-v2.png",
+          "intro": "“I practiced this for the fundraiser. I did not know you knew it too.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Which notes help you remember the tune?",
+              "reply": "“C, E, G, E. The tune comes back once you start.”",
+              "followUp": "Would you play slowly and let Mira join when she feels ready?",
+              "followReply": "“I will. You can join whenever you feel ready.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Do you think you and Mira crossed paths at the community center?",
+              "reply": "“I think we were in the same room, years ago.”",
+              "followUp": "What would the next verse of your story with Mira be?",
+              "followReply": "“Maybe we should write the next verse ourselves.”"
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "sunday-window",
+        "title": "Play Sunday Window",
+        "type": "sequence",
+        "prompt": "Arrange the notes to match the written melody.",
+        "items": [
+          {
+            "id": "C",
+            "label": "C · first note"
+          },
+          {
+            "id": "E1",
+            "label": "E · second note"
+          },
+          {
+            "id": "G",
+            "label": "G · third note"
+          },
+          {
+            "id": "E2",
+            "label": "E · final note"
+          }
+        ],
+        "answer": [
+          "C",
+          "E1",
+          "G",
+          "E2"
+        ],
+        "presentation": {
+          "mode": "timeline"
+        }
+      },
+      "gate": {
+        "allEvidence": [
+          "sheet",
+          "piano",
+          "program",
+          "flower",
+          "memory"
+        ]
+      },
+      "hints": [
+        "Playing the melody together",
+        "The community photograph",
+        "Starting at the piano"
+      ],
+      "clue": "Melody · C E G E · Keyboard · C D E F G · Program · Sunday Window · Flowers · Mira’s contribution · Community garden · shared place",
+      "success": "The clues lead Mira and Theo to the next small choice."
+    },
+    {
+      "id": "chapter-5",
+      "title": "The Right Time",
+      "location": "The Right Time",
+      "subtitle": "A final choice changes everything.",
+      "scene": "assets/days-scene-05.webp",
+      "intro": "At sunset, they meet at the riverside terrace. No missing letter or coincidence needs explaining. They have spent time together, learned to listen, and can decide whether to see where this might go.",
+      "evidence": [
+        {
+          "id": "message",
+          "title": "Theo’s message",
+          "detail": "Theo writes that he enjoyed today. Mira asks, “Meet next Saturday?” Theo replies, “Yes, 4:30 works!” Their plan is clear on the phone.",
+          "icon": "✉",
+          "position": {
+            "x": 42,
+            "y": 68
+          },
+          "note": "Messages · next Saturday at 4:30",
+          "detailImage": "assets/days-clue-message.webp",
+          "notebookTitle": "Theo’s message",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        },
+        {
+          "id": "calendar",
+          "title": "Mira’s calendar",
+          "detail": "Mira has written ‘Coffee with Theo · Saturday 4:30 PM’ in her calendar. Sunday remains free for herself.",
+          "icon": "▤",
+          "position": {
+            "x": 55,
+            "y": 68
+          },
+          "note": "Calendar · Saturday after 4",
+          "detailImage": "assets/days-clue-calendar.webp",
+          "notebookTitle": "Mira’s calendar",
+          "detailImageWidth": 1535,
+          "detailImageHeight": 1024
+        },
+        {
+          "id": "terrace",
+          "title": "Riverside terrace",
+          "detail": "The terrace café closes at 7 PM on Saturdays. A 4:30 PM visit would leave time for a relaxed conversation.",
+          "icon": "☕",
+          "position": {
+            "x": 82,
+            "y": 44
+          },
+          "note": "Terrace · closes 7 PM",
+          "detailImage": "assets/days-clue-terrace.webp",
+          "notebookTitle": "Riverside terrace",
+          "detailImageWidth": 551,
+          "detailImageHeight": 540
+        },
+        {
+          "id": "lilacs",
+          "title": "Garden lilacs",
+          "detail": "The lilacs are blooming again. Mira thinks about the pressed flower from the first day, and how much has changed since.",
+          "icon": "✿",
+          "position": {
+            "x": 9,
+            "y": 52
+          },
+          "note": "Lilacs · a new season",
+          "detailImage": "assets/days-clue-lilacs.webp",
+          "notebookTitle": "Garden lilacs",
+          "detailImageWidth": 770,
+          "detailImageHeight": 454
+        },
+        {
+          "id": "note",
+          "title": "Mira’s journal",
+          "detail": "Mira writes: “I liked that he asked. I liked that I could say what I wanted, and he listened. Next Saturday feels like a choice we both made.”",
+          "icon": "✎",
+          "position": {
+            "x": 68,
+            "y": 77
+          },
+          "note": "Journal · mutual choice",
+          "detailImage": "assets/days-clue-note.webp",
+          "notebookTitle": "Mira’s journal",
+          "detailImageWidth": 1536,
+          "detailImageHeight": 1024
+        }
+      ],
+      "characters": [
+        {
+          "id": "mira",
+          "name": "Mira",
+          "role": "Reader and garden volunteer",
+          "bio": "Curious, independent, and quietly funny. Mira values being asked what she wants instead of having her choices made for her.",
+          "portrait": "assets/days-mira-idle-transparent-v2.png",
+          "intro": "“I have time next Saturday. I want to decide what that means together.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "What would make Theo’s invitation feel right to you?",
+              "reply": "“An honest invitation, and room to answer honestly.”",
+              "followUp": "How would you feel about coffee with Theo at four thirty?",
+              "followReply": "“That sounds like something I can choose.”"
+            },
+            {
+              "id": "q2",
+              "ask": "Do you think friendship could be a good outcome for you and Theo?",
+              "reply": "“Of course. That is a real choice too.”",
+              "followUp": "If you chose friendship, would you expect him to disappear?",
+              "followReply": "“No. We already have books and the garden.”"
+            }
+          ]
+        },
+        {
+          "id": "theo",
+          "name": "Theo",
+          "role": "Bookshop volunteer and pianist",
+          "bio": "A considerate young neighbor who loves books, music, and the community garden. He is learning to say what he means without rushing anyone.",
+          "portrait": "assets/days-theo-idle-transparent-v2.png",
+          "intro": "“Would you like to meet again next Saturday? Coffee, if that sounds good to you.”",
+          "questions": [
+            {
+              "id": "q1",
+              "ask": "Why would you suggest next Saturday to Mira?",
+              "reply": "“You said you are free after four. I remembered.”",
+              "followUp": "Did you want to remember what mattered to her?",
+              "followReply": "“Yeah. I was hoping I’d get to see you again.”"
+            },
+            {
+              "id": "q2",
+              "ask": "What would you say if Mira wanted to stay friends?",
+              "reply": "“Then we keep our reading table and our garden Saturdays.”",
+              "followUp": "Do you mean that her answer matters more than your plan?",
+              "followReply": "“I do. Your answer matters more than my plan.”"
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "last-note",
+        "title": "The Last Note",
+        "type": "choice",
+        "prompt": "What does the note show about Theo’s invitation?",
+        "options": [
+          {
+            "id": "invitation",
+            "label": "He remembered Mira’s availability and invited her to coffee next Saturday."
+          },
+          {
+            "id": "obligation",
+            "label": "He expects Mira to accept because he planned the meeting."
+          },
+          {
+            "id": "old-date",
+            "label": "He is asking about the date written on an earlier calendar."
+          }
+        ],
+        "answer": "invitation"
+      },
+      "gate": {
+        "allEvidence": [
+          "message",
+          "calendar",
+          "terrace",
+          "lilacs",
+          "note"
+        ]
+      },
+      "hints": [
+        "The invitation",
+        "Choosing friendship",
+        "If Mira wants to stay friends"
+      ],
+      "clue": "Messages · next Saturday at 4:30 · Calendar · Saturday after 4 · Terrace · closes 7 PM · Lilacs · a new season · Journal · mutual choice",
+      "success": "The note is a thoughtful invitation, not an expectation. Mira can choose the kind of next step she wants.",
+      "endings": [
+        {
+          "id": "coffee",
+          "label": "Coffee next Saturday",
+          "text": "Mira says yes to coffee next Saturday. They agree to meet without rushing what is growing."
+        },
+        {
+          "id": "friends",
+          "label": "A friendship worth keeping",
+          "text": "Mira chooses to keep getting to know Theo as a friend, and he respects her answer."
+        }
+      ]
+    }
+  ],
+  "resolution": {
+    "title": "The Right Time",
+    "prompt": "Theo asks Mira whether she would like to meet again next Saturday. She chooses what feels right."
+  },
+  "characterPortraits": {
+    "mira": "assets/days-mira-idle-transparent-v2.png",
+    "theo": "assets/days-theo-idle-transparent-v2.png"
+  },
+  "voiceMap": {
+    "[\"Mira\",\"I keep telling myself this bag is big enough for one more book.\"]": "assets/voices/days/days-mira-ch01-intro-opening-v2.mp3",
+    "[\"Mira\",\"A bent corner. I think it will survive.\"]": "assets/voices/days/days-mira-ch01-q1-answer-opening-v2.mp3",
+    "[\"Mira\",\"Years ago. I wanted to remember that a place can feel like home.\"]": "assets/voices/days/days-mira-ch01-q1-reply-opening-v2.mp3",
+    "[\"Mira\",\"I came for coffee, but a chapter sounds nice.\"]": "assets/voices/days/days-mira-ch01-q2-answer-opening-v2.mp3",
+    "[\"Mira\",\"That makes staying feel much easier.\"]": "assets/voices/days/days-mira-ch01-q2-reply-opening-v2.mp3",
+    "[\"Mira\",\"I came back for the books. Seeing you again is a lovely bonus.\"]": "assets/voices/days/days-mira-ch02-intro-opening-v2.mp3",
+    "[\"Mira\",\"The shelf numbers look like the answer.\"]": "assets/voices/days/days-mira-ch02-q1-answer-opening-v2.mp3",
+    "[\"Mira\",\"Exactly. The little things are easier together.\"]": "assets/voices/days/days-mira-ch02-q1-reply-opening-v2.mp3",
+    "[\"Mira\",\"I signed up before I knew you might be there.\"]": "assets/voices/days/days-mira-ch02-q2-answer-opening-v2.mp3",
+    "[\"Mira\",\"I do not. That is why I can say yes.\"]": "assets/voices/days/days-mira-ch02-q2-reply-opening-v2.mp3",
+    "[\"Mira\",\"The rain changed my route. I would still like to make the cleanup.\"]": "assets/voices/days/days-mira-ch03-intro-opening-v2.mp3",
+    "[\"Mira\",\"The canal path is closed. The poster points to Market Street.\"]": "assets/voices/days/days-mira-ch03-q1-answer-opening-v2.mp3",
+    "[\"Mira\",\"The bakery clock says two fifteen. We do.\"]": "assets/voices/days/days-mira-ch03-q1-reply-opening-v2.mp3",
+    "[\"Mira\",\"That is kind, but I brought one.\"]": "assets/voices/days/days-mira-ch03-q2-answer-opening-v2.mp3",
+    "[\"Mira\",\"Yes. That I would like.\"]": "assets/voices/days/days-mira-ch03-q2-reply-opening-v2.mp3",
+    "[\"Mira\",\"I know that melody. We used to play it at the community center.\"]": "assets/voices/days/days-mira-ch04-intro-opening-v2.mp3",
+    "[\"Mira\",\"The opening notes: C, E, G, E.\"]": "assets/voices/days/days-mira-ch04-q1-answer-opening-v2.mp3",
+    "[\"Mira\",\"Only if we can laugh when I miss a note.\"]": "assets/voices/days/days-mira-ch04-q1-reply-opening-v2.mp3",
+    "[\"Mira\",\"Yes. I did not notice we were both in the same community group.\"]": "assets/voices/days/days-mira-ch04-q2-answer-opening-v2.mp3",
+    "[\"Mira\",\"Almost. I like that we met when we could actually talk.\"]": "assets/voices/days/days-mira-ch04-q2-reply-opening-v2.mp3",
+    "[\"Mira\",\"I have time next Saturday. I want to decide what that means together.\"]": "assets/voices/days/days-mira-ch05-intro-opening-v2.mp3",
+    "[\"Mira\",\"An honest invitation, and room to answer honestly.\"]": "assets/voices/days/days-mira-ch05-q1-answer-opening-v2.mp3",
+    "[\"Mira\",\"That sounds like something I can choose.\"]": "assets/voices/days/days-mira-ch05-q1-reply-opening-v2.mp3",
+    "[\"Mira\",\"Of course. That is a real choice too.\"]": "assets/voices/days/days-mira-ch05-q2-answer-opening-v2.mp3",
+    "[\"Mira\",\"No. We already have books and the garden.\"]": "assets/voices/days/days-mira-ch05-q2-reply-opening-v2.mp3",
+    "[\"Theo\",\"The reading table starts at eleven. You would be welcome there.\"]": "assets/voices/days/days-theo-ch01-intro.mp3",
+    "[\"Theo\",\"Most Sundays. Books are a good excuse to meet the neighbors.\"]": "assets/voices/days/days-theo-ch01-q1-answer.mp3",
+    "[\"Theo\",\"Only if you count debating the ending over coffee.\"]": "assets/voices/days/days-theo-ch01-q1-reply.mp3",
+    "[\"Theo\",\"Just inside, beside the window.\"]": "assets/voices/days/days-theo-ch01-q2-answer.mp3",
+    "[\"Theo\",\"One chapter is a very good start.\"]": "assets/voices/days/days-theo-ch01-q2-reply.mp3",
+    "[\"Theo\",\"I like an ending that leaves room for both people to choose.\"]": "assets/voices/days/days-theo-ch02-intro.mp3",
+    "[\"Theo\",\"Too many stories mistake a grand gesture for listening.\"]": "assets/voices/days/days-theo-ch02-q1-answer.mp3",
+    "[\"Theo\",\"Ask a question, and hear the answer.\"]": "assets/voices/days/days-theo-ch02-q1-reply.mp3",
+    "[\"Theo\",\"Black coffee. I should probably switch to tea.\"]": "assets/voices/days/days-theo-ch02-q2-answer.mp3",
+    "[\"Theo\",\"Then we have found a perfectly balanced table.\"]": "assets/voices/days/days-theo-ch02-q2-reply.mp3",
+    "[\"Theo\",\"Market Street is still open. We can take the short way, if you want company.\"]": "assets/voices/days/days-theo-ch03-intro.mp3",
+    "[\"Theo\",\"The council closed it until Monday.\"]": "assets/voices/days/days-theo-ch03-q1-answer.mp3",
+    "[\"Theo\",\"Open, but far longer. We would miss the start.\"]": "assets/voices/days/days-theo-ch03-q1-reply.mp3",
+    "[\"Theo\",\"Not yet. The cleanup begins at three.\"]": "assets/voices/days/days-theo-ch03-q2-answer.mp3",
+    "[\"Theo\",\"No rush. We have fifteen minutes to walk.\"]": "assets/voices/days/days-theo-ch03-q2-reply.mp3",
+    "[\"Theo\",\"I practiced this for the fundraiser. I did not know you knew it too.\"]": "assets/voices/days/days-theo-ch04-intro.mp3",
+    "[\"Theo\",\"C, E, G, E. The tune comes back once you start.\"]": "assets/voices/days/days-theo-ch04-q1-answer.mp3",
+    "[\"Theo\",\"I will. You can join whenever you feel ready.\"]": "assets/voices/days/days-theo-ch04-q1-reply.mp3",
+    "[\"Theo\",\"I think we were in the same room, years ago.\"]": "assets/voices/days/days-theo-ch04-q2-answer.mp3",
+    "[\"Theo\",\"Maybe we should write the next verse ourselves.\"]": "assets/voices/days/days-theo-ch04-q2-reply.mp3",
+    "[\"Theo\",\"Would you like to meet again next Saturday? Coffee, if that sounds good to you.\"]": "assets/voices/days/days-theo-ch05-intro.mp3",
+    "[\"Theo\",\"You said you are free after four. I remembered.\"]": "assets/voices/days/days-theo-ch05-q1-answer.mp3",
+    "[\"Theo\",\"Then we keep our reading table and our garden Saturdays.\"]": "assets/voices/days/days-theo-ch05-q2-answer.mp3",
+    "[\"Theo\",\"I do. Your answer matters more than my plan.\"]": "assets/voices/days/days-theo-ch05-q2-reply.mp3",
+    "[\"Theo\",\"Yeah. I was hoping I’d get to see you again.\"]": "assets/voices/days/days-theo-ch05-replacement-threeway.mp3",
+    "[\"Mira\",\"Thanks for helping. Not exactly the first impression I was hoping for.\"]": "assets/voices/days/days-mira-ch01-new-01-threeway-review-v3.mp3",
+    "[\"Theo\",\"For what it’s worth, I was hoping for a reason to say hello.\"]": "assets/voices/days/days-theo-ch01-new-02-threeway-review-v3.mp3",
+    "[\"Mira\",\"Would it be all right if I stayed for just one chapter?\"]": "assets/voices/days/days-mira-ch01-new-03-threeway.mp3",
+    "[\"Theo\",\"I was hoping you’d come back. You left me with a very questionable ending.\"]": "assets/voices/days/days-theo-ch02-new-04-threeway.mp3",
+    "[\"Mira\",\"Good. I have several complaints.\"]": "assets/voices/days/days-mira-ch02-new-05-threeway.mp3",
+    "[\"Theo\",\"Had you already signed up for the cleanup before we met?\"]": "assets/voices/days/days-theo-ch02-new-06-threeway.mp3",
+    "[\"Mira\",\"I’m having mint tea. I think I’ll stick with that.\"]": "assets/voices/days/days-mira-ch02-new-07-threeway-review-v2.mp3",
+    "[\"Mira\",\"First the bookshop, now a bakery. Do all your shortcuts involve food?\"]": "assets/voices/days/days-mira-ch03-new-08-threeway.mp3",
+    "[\"Theo\",\"Only the good ones.\"]": "assets/voices/days/days-theo-ch03-new-09-threeway.mp3",
+    "[\"Theo\",\"I brought a spare umbrella. Do you need it?\"]": "assets/voices/days/days-theo-ch03-new-10-threeway.mp3",
+    "[\"Mira\",\"I remember playing this at the community center. I was always nervous about getting it wrong.\"]": "assets/voices/days/days-mira-ch04-new-11-threeway.mp3",
+    "[\"Theo\",\"I get nervous too. It helps when someone plays along.\"]": "assets/voices/days/days-theo-ch04-new-12-threeway.mp3",
+    "[\"Mira\",\"Will you take it slowly? I might need a moment to join in.\"]": "assets/voices/days/days-mira-ch04-new-13-threeway.mp3",
+    "[\"Mira\",\"Why next Saturday?\"]": "assets/voices/days/days-mira-ch05-new-14-threeway.mp3",
+    "[\"Mira\",\"You remembered that?\"]": "assets/voices/days/days-mira-ch05-new-15-threeway.mp3",
+    "[\"Mira\",\"And if I wanted us to stay friends?\"]": "assets/voices/days/days-mira-ch05-new-16-threeway.mp3",
+    "[\"Mira\",\"Even if that wasn’t the answer you hoped for?\"]": "assets/voices/days/days-mira-ch05-new-17-threeway.mp3"
+  },
+  "autoVoice": true,
+  "characterSprites": {
+    "mira": {
+      "src": "assets/days-mira-idle-transparent-v2.png",
+      "columns": 1,
+      "rows": 1,
+      "frames": {
+        "idle": "assets/days-mira-idle-transparent-v2.png",
+        "blink": "assets/days-mira-blink-transparent-v2.png",
+        "speaking": "assets/days-mira-speaking-transparent-v2.png",
+        "thoughtful": "assets/days-mira-thoughtful-transparent-v2.png"
+      }
+    },
+    "theo": {
+      "src": "assets/days-theo-idle-transparent-v2.png",
+      "columns": 1,
+      "rows": 1,
+      "frames": {
+        "idle": "assets/days-theo-idle-transparent-v2.png",
+        "blink": "assets/days-theo-blink-aligned-transparent-v2.png",
+        "speaking": "assets/days-theo-speaking-conversational-transparent-v2.png",
+        "thoughtful": "assets/days-theo-thoughtful-transparent-v2.png"
+      }
+    }
+  }
+}
