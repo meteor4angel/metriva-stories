@@ -202,9 +202,21 @@
             "ink": "#283a2d"
           },
           "actions": [
-            { "action": "submit", "label": "Submit answer", "icon": "submit" },
-            { "action": "hint", "label": "Progressive hint", "icon": "hint" },
-            { "action": "close", "label": "Return to investigation", "icon": "evidence" }
+            {
+              "action": "submit",
+              "label": "Submit answer",
+              "icon": "submit"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint",
+              "icon": "hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation",
+              "icon": "evidence"
+            }
           ]
         }
       },
@@ -341,28 +353,43 @@
         "id": "closing-timeline",
         "title": "The 6:12 Timeline",
         "type": "sequence",
-      "prompt": "Arrange the recorded events from earliest to latest. A receipt places a ribbon sale after closing and before the greenhouse ledger was signed.",
+        "prompt": "Arrange the recorded events from earliest to latest. A receipt places a ribbon sale after closing and before the greenhouse ledger was signed.",
         "items": [
           {
             "id": "close",
-          "label": "Shop closes",
-          "time": "6:00 PM",
-          "imageCrop": { "x": 0, "y": 395, "width": 540, "height": 285 },
-          "imageAlt": "Flower shop door with a closed sign"
+            "label": "Shop closes",
+            "time": "6:00 PM",
+            "imageCrop": {
+              "x": 0,
+              "y": 395,
+              "width": 540,
+              "height": 285
+            },
+            "imageAlt": "Flower shop door with a closed sign"
           },
           {
             "id": "sale",
-          "label": "Ribbon sale",
-          "time": "6:12 PM",
-          "imageCrop": { "x": 525, "y": 395, "width": 550, "height": 285 },
-          "imageAlt": "Lavender ribbon and sewing supplies"
+            "label": "Ribbon sale",
+            "time": "6:12 PM",
+            "imageCrop": {
+              "x": 525,
+              "y": 395,
+              "width": 550,
+              "height": 285
+            },
+            "imageAlt": "Lavender ribbon and sewing supplies"
           },
           {
             "id": "ledger",
-          "label": "Ledger signed",
-          "time": "6:20 PM",
-          "imageCrop": { "x": 995, "y": 395, "width": 535, "height": 285 },
-          "imageAlt": "Open handwritten ledger"
+            "label": "Ledger signed",
+            "time": "6:20 PM",
+            "imageCrop": {
+              "x": 995,
+              "y": 395,
+              "width": 535,
+              "height": 285
+            },
+            "imageAlt": "Open handwritten ledger"
           }
         ],
         "answer": [
@@ -371,29 +398,50 @@
           "ledger"
         ],
         "presentation": {
-        "mode": "timeline",
-        "imageSheet": {
-          "src": "assets/story01-timeline-illustrations.png",
-          "width": 1536,
-          "height": 1024
-        },
-        "initialOrder": ["sale", "ledger", "close"],
-        "theme": {
-          "green": "#294434",
-          "gold": "#b88337",
-          "cream": "#f7ecd4",
-          "panel": "#fffaf0",
-          "line": "#d8b982",
-          "ink": "#283a2d"
-        },
-        "sectionTitle": "Put the events in order",
-        "sectionDescription": "Compare the timestamps, then arrange each event from earliest to latest.",
-        "actions": [
-          { "action": "check", "label": "Check the sequence", "icon": "check" },
-          { "action": "reset", "label": "Reset arrangement", "icon": "reset" },
-          { "action": "hint", "label": "Need a gentle hint?", "icon": "hint" },
-          { "action": "evidence", "target": "ledger", "label": "Return to ledger evidence", "icon": "evidence" }
-        ]
+          "mode": "timeline-clean",
+          "imageSheet": {
+            "src": "assets/story01-timeline-illustrations.png",
+            "width": 1536,
+            "height": 1024
+          },
+          "theme": {
+            "green": "#294434",
+            "gold": "#b88337",
+            "cream": "#f7ecd4",
+            "panel": "#fffaf0",
+            "line": "#d8b982",
+            "ink": "#283a2d"
+          },
+          "sectionTitle": "Put the events in order",
+          "sectionDescription": "Compare the timestamps, then arrange each event from earliest to latest.",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence",
+              "icon": "check"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement",
+              "icon": "reset"
+            },
+            {
+              "action": "hint",
+              "label": "Need a gentle hint?",
+              "icon": "hint"
+            },
+            {
+              "action": "evidence",
+              "target": "ledger",
+              "label": "Return to ledger evidence",
+              "icon": "evidence"
+            }
+          ],
+          "layout": "card-slots",
+          "sideImage": "assets/scene-greenhouse.png",
+          "sideImageAlt": "The Greenhouse",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last"
         }
       },
       "gate": {

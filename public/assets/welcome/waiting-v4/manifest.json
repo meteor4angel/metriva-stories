@@ -1,0 +1,91 @@
+{
+  "canvas": [
+    640,
+    660
+  ],
+  "order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "source": "codex-clipboard-03215281-c2eb-4ed2-94af-8788d0e29048.png",
+  "assets": {
+    "1": {
+      "path": "waiting-v4/waiting-1.webp",
+      "crop": [
+        1,
+        99,
+        384,
+        522
+      ]
+    },
+    "2": {
+      "path": "waiting-v4/waiting-2.webp",
+      "crop": [
+        370,
+        112,
+        768,
+        541
+      ]
+    },
+    "3": {
+      "path": "waiting-v4/waiting-3.webp",
+      "crop": [
+        772,
+        88,
+        1157,
+        528
+      ]
+    },
+    "4": {
+      "path": "waiting-v4/waiting-4.webp",
+      "crop": [
+        1152,
+        93,
+        1533,
+        528
+      ]
+    },
+    "5": {
+      "path": "waiting-v4/waiting-5.webp",
+      "crop": [
+        5,
+        584,
+        398,
+        984
+      ]
+    },
+    "6": {
+      "path": "waiting-v4/waiting-6.webp",
+      "crop": [
+        389,
+        582,
+        797,
+        980
+      ]
+    },
+    "7": {
+      "path": "waiting-v4/waiting-7.webp",
+      "crop": [
+        781,
+        570,
+        1152,
+        980
+      ]
+    },
+    "8": {
+      "path": "waiting-v4/waiting-8.webp",
+      "crop": [
+        1151,
+        568,
+        1529,
+        985
+      ]
+    }
+  }
+}

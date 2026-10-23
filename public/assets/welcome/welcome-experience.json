@@ -1,0 +1,364 @@
+{
+  "id": "metriva-welcome",
+  "version": "1.2",
+  "enabled": true,
+  "engine": "image-sequence",
+  "scope": "homepage",
+  "rendering": {
+    "mode": "transparent-overlay",
+    "position": "reserved-homepage-nook",
+    "allowPageInteraction": true,
+    "mobileScale": 0.65,
+    "respectReducedMotion": true,
+    "zIndex": 100
+  },
+  "storage": {
+    "visitedKey": "metrivaHasVisited",
+    "dismissedSessionKey": "metrivaWelcomeDismissed",
+    "soundKey": "metrivaWelcomeSound",
+    "seenSessionKey": "metrivaWelcomeSeenSession",
+    "reducedMotionKey": "metrivaWelcomeReducedMotion"
+  },
+  "characters": {
+    "female": {
+      "type": "human",
+      "expressions": {
+        "neutral": "female/neutral.webp",
+        "wave": "female/wave.webp",
+        "happy": "female/happy.webp",
+        "point": "female/point.webp",
+        "surprised": "female/surprised.webp",
+        "disappointed": "female/disappointed-v2.webp",
+        "goodbye": "female/goodbye.webp"
+      }
+    },
+    "male": {
+      "type": "human",
+      "expressions": {
+        "neutral": "male/neutral.webp",
+        "wave": "male/wave.webp",
+        "happy": "male/happy.webp",
+        "point": "male/point.webp",
+        "surprised": "male/surprised.webp",
+        "disappointed": "male/disappointed-v2.webp",
+        "goodbye": "male/goodbye.webp"
+      }
+    },
+    "biscuit": {
+      "type": "dog",
+      "expressions": {
+        "sit": "biscuit/sit.webp",
+        "excited": "biscuit/excited.webp",
+        "sad": "biscuit/sad.webp",
+        "run": "biscuit/run.webp",
+        "rest": "biscuit/rest.webp"
+      }
+    },
+    "cat": {
+      "type": "cat",
+      "expressions": {
+        "sit": "cat/sit.webp",
+        "wave": "cat/wave.webp",
+        "unimpressed": "cat/unimpressed.webp",
+        "stretch": "cat/stretch.webp",
+        "sleep": "cat/sleep.webp"
+      }
+    },
+    "bird": {
+      "type": "bird",
+      "expressions": {
+        "perched": "bird/perched.webp",
+        "flutter": "bird/flutter.webp",
+        "curious": "bird/curious.webp",
+        "sleep": "bird/sleep.webp"
+      }
+    }
+  },
+  "groupWaiting": {
+    "enabled": true,
+    "assets": {
+      "1": "waiting-v4/waiting-1.webp",
+      "2": "waiting-v4/waiting-2.webp",
+      "3": "waiting-v4/waiting-3.webp",
+      "4": "waiting-v4/waiting-4.webp",
+      "5": "waiting-v4/waiting-5.webp",
+      "6": "waiting-v4/waiting-6.webp",
+      "7": "waiting-v4/waiting-7.webp",
+      "8": "waiting-v4/waiting-8.webp"
+    },
+    "sequence": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "frameDurationMs": 4500,
+    "transition": "crossfade",
+    "transitionMs": 500,
+    "loop": true,
+    "hoverAsset": "waiting-v4/hover.webp"
+  },
+  "door": {
+    "enabled": true,
+    "closed": "door/closed.webp",
+    "open": null,
+    "position": "bottom-right",
+    "exitDirection": "right",
+    "useClippingMask": true,
+    "mode": "included-in-group",
+    "art": "door/closed.webp"
+  },
+  "audio": {
+    "enabled": true,
+    "defaultMuted": true,
+    "requireUserGesture": true,
+    "showCaptions": true,
+    "voiceAssets": {
+      "female": "audio/female/",
+      "male": "audio/male/"
+    },
+    "availableClips": []
+  },
+  "sequences": {
+    "firstVisit": [
+      {
+        "id": "enter",
+        "state": "entering",
+        "animation": "slide-in",
+        "durationMs": 1600,
+        "poses": {
+          "male": "happy",
+          "bird": "flutter",
+          "biscuit": "excited",
+          "female": "wave",
+          "cat": "wave"
+        },
+        "tableau": "peek-left",
+        "text": "Hello! Welcome to Metriva Stories!",
+        "speaker": "female",
+        "expression": "wave",
+        "groupPose": "peek"
+      },
+      {
+        "id": "hello",
+        "state": "greeting",
+        "speaker": "female",
+        "text": "Hello! Welcome to Metriva Stories!",
+        "expression": "wave",
+        "audio": "female/welcome.mp3",
+        "durationMs": 3400,
+        "poses": {
+          "male": "wave",
+          "bird": "flutter",
+          "biscuit": "excited",
+          "cat": "wave"
+        },
+        "groupPose": "greet"
+      },
+      {
+        "id": "curious",
+        "state": "greeting",
+        "speaker": "male",
+        "text": "We're so happy you're here!",
+        "expression": "happy",
+        "audio": "male/curious.mp3",
+        "durationMs": 3000,
+        "poses": {
+          "bird": "flutter",
+          "biscuit": "excited",
+          "female": "happy",
+          "cat": "sit"
+        },
+        "groupPose": "return-greet"
+      },
+      {
+        "id": "choose",
+        "state": "inviting",
+        "speaker": "male",
+        "text": "Go on, pick your first story!",
+        "expression": "point",
+        "audio": "male/choose.mp3",
+        "durationMs": 2800,
+        "poses": {
+          "bird": "curious",
+          "female": "point",
+          "cat": "sit",
+          "biscuit": "sit"
+        },
+        "groupPose": "invite"
+      },
+      {
+        "id": "idle",
+        "state": "waiting",
+        "useGroupWaiting": true,
+        "durationMs": null
+      }
+    ],
+    "returningVisit": [
+      {
+        "id": "return-enter",
+        "state": "returning",
+        "animation": "playful-slide-in",
+        "durationMs": 900,
+        "poses": {
+          "bird": "flutter",
+          "cat": "stretch",
+          "female": "happy",
+          "male": "happy",
+          "biscuit": "run"
+        },
+        "groupPose": "return-run"
+      },
+      {
+        "id": "welcome-back",
+        "state": "greeting",
+        "speaker": "female",
+        "text": "Welcome back!",
+        "expression": "happy",
+        "audio": "female/return.mp3",
+        "durationMs": 1600,
+        "poses": {
+          "bird": "flutter",
+          "cat": "wave",
+          "male": "wave",
+          "biscuit": "excited"
+        },
+        "groupPose": "greet"
+      },
+      {
+        "id": "love-us",
+        "state": "greeting",
+        "speaker": "male",
+        "text": "You sure love us!",
+        "expression": "happy",
+        "audio": "male/love-us.mp3",
+        "durationMs": 2000,
+        "poses": {
+          "bird": "perched",
+          "female": "happy",
+          "cat": "stretch",
+          "biscuit": "excited"
+        },
+        "groupPose": "hug"
+      },
+      {
+        "id": "another-story",
+        "state": "inviting",
+        "speaker": "female",
+        "text": "Ready for another story?",
+        "expression": "point",
+        "audio": "female/another-story.mp3",
+        "durationMs": 2200,
+        "poses": {
+          "bird": "curious",
+          "cat": "sit",
+          "male": "point",
+          "biscuit": "sit"
+        },
+        "groupPose": "return-invite"
+      },
+      {
+        "id": "return-idle",
+        "state": "waiting",
+        "useGroupWaiting": true,
+        "durationMs": null
+      }
+    ],
+    "onClose": [
+      {
+        "audio": "female/disappointed.mp3",
+        "speaker": "female",
+        "expression": "disappointed",
+        "state": "disappointed",
+        "tableau": "cluster",
+        "text": "Aww… You don't want us? Okay then…",
+        "id": "reaction",
+        "poses": {
+          "male": "disappointed",
+          "bird": "curious",
+          "biscuit": "sad",
+          "cat": "unimpressed"
+        },
+        "durationMs": 2600,
+        "groupPose": "disappointed"
+      },
+      {
+        "state": "exiting",
+        "durationMs": 1200,
+        "id": "door-travel",
+        "door": "open",
+        "tableau": "cluster",
+        "poses": {
+          "male": "goodbye",
+          "bird": "flutter",
+          "biscuit": "run",
+          "female": "goodbye",
+          "cat": "stretch"
+        },
+        "groupPose": "return-run"
+      },
+      {
+        "audio": "male/goodbye.mp3",
+        "speaker": "male",
+        "expression": "goodbye",
+        "state": "exiting",
+        "tableau": "door-peek",
+        "text": "See you around!",
+        "id": "door-peek",
+        "door": "open",
+        "poses": {
+          "bird": "flutter",
+          "biscuit": "sit",
+          "female": "goodbye",
+          "cat": "sit"
+        },
+        "durationMs": 2000,
+        "groupPose": "door"
+      },
+      {
+        "state": "exiting",
+        "id": "door-close",
+        "durationMs": 650,
+        "door": "closed",
+        "tableau": "door-hide",
+        "groupPose": "door"
+      },
+      {
+        "state": "hidden",
+        "id": "hidden",
+        "durationMs": 0
+      }
+    ]
+  },
+  "interaction": {
+    "closeButton": true,
+    "soundToggle": true,
+    "skipOnNavigation": true,
+    "minimizeAfterGreeting": false,
+    "clickThroughOutsideControls": true
+  },
+  "groupPoses": {
+    "fallback": "waiting-v4/waiting-1.webp",
+    "assets": {
+      "curious": "group-v3/curious.webp",
+      "return-greet": "group-v3/return-greet.webp",
+      "door": "group-v3/door.webp",
+      "waiting-1": "group-v3/waiting-1.webp",
+      "waiting-4": "group-v3/waiting-4.webp",
+      "greet": "group-v3/greet.webp",
+      "disappointed": "group-v3/disappointed.webp",
+      "waiting-2": "group-v3/waiting-2.webp",
+      "return-invite": "group-v3/return-invite.webp",
+      "invite": "group-v3/invite.webp",
+      "peek": "group-v3/peek.webp",
+      "return-run": "group-v3/return-run.webp",
+      "hug": "group-v3/hug.webp",
+      "waiting-3": "group-v3/waiting-3.webp"
+    },
+    "enabled": true
+  }
+}

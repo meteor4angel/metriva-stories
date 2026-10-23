@@ -7,6 +7,8 @@ require('../js/story-engine.js');
 const Engine=global.MetrivaStoryEngine;
 const root=path.resolve(__dirname,'..');
 const {checkAssets}=require('../scripts/story-visual-continuity.js');
+global.window=global;
+require('../js/days-conversations.js');
 
 for(const number of [1,4,5]){
   const id=String(number).padStart(2,'0');
@@ -48,6 +50,79 @@ test('Story 1 question answers and follow-ups map to their matching recordings',
     }
     assert.equal(story.voiceMap[JSON.stringify([person.name,person.intro])],undefined,'The character menu introduction must not reuse a question recording.');
   }
+});
+
+test('Story 5 dialogue follows the approved chapter scripts and every spoken line has a recording',()=>{
+  const story=require('../stories/story-05.json');
+  assert.equal(global.DAYS_CONVERSATIONS.length,story.chapters.length);
+  const htmlPage=fs.readFileSync(path.join(root,'story-05.html'),'utf8');
+  const inlineDefinition=htmlPage.match(/<script type="application\/json" id="story-definition">([\s\S]*?)<\/script>/);
+  assert.ok(inlineDefinition,'Story 5 page includes its inline definition');
+  assert.deepEqual(JSON.parse(inlineDefinition[1]).conversationScript,global.DAYS_CONVERSATIONS,'built Story 5 page embeds the canonical conversation script');
+  for(const [chapterIndex,chapter] of story.chapters.entries()){
+    const script=global.DAYS_CONVERSATIONS[chapterIndex];
+    assert.ok(script.opening.length>=4,`${chapter.id} has its opening scene`);
+    for(const person of chapter.characters){
+      const topics=script.topics.filter(topic=>topic.focus===person.id);
+      assert.equal(person.questions.length,topics.length,`${chapter.id}/${person.id} topic count`);
+      topics.forEach((topic,index)=>{
+        assert.equal(topic.lines.length,4,`${topic.id} has four dialogue turns`);
+        const question=person.questions[index];
+        assert.deepEqual([question.ask,question.reply,question.followUp,question.followReply],topic.lines.map(line=>line.text),`${topic.id} matches Story 5 data`);
+      });
+    }
+    for(const line of [...script.opening,...script.topics.flatMap(topic=>topic.lines)]){
+      if(line.speaker==='you')continue;
+      const speaker=line.speaker[0].toUpperCase()+line.speaker.slice(1);
+      assert.ok(story.voiceMap[JSON.stringify([speaker,line.text])],`Missing voice map for ${speaker}: ${line.text}`);
+    }
+  }
+});
+
+test('Story 5 renders every scripted speaker, addressee, opening, and topic label',()=>{
+  const story=require('../stories/story-05.json');
+  const script=global.DAYS_CONVERSATIONS;
+  const runtime=Object.create(Engine.StoryRuntime.prototype);
+  runtime.story={...story,conversationScript:script};
+  runtime.condition=()=>true;runtime.completed=()=>false;runtime.dialogueKey=()=>'';runtime.hasCharacterConversation=()=>true;
+  runtime.voiceControl=(speaker)=>`voice:${speaker}`;
+  let rendered;runtime.showCharacterConversation=(...args)=>{rendered=args;};
+  const html=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  for(const [chapterIndex,chapter] of story.chapters.entries()){
+    runtime.state={chapter:chapterIndex,transcript:[],dialogue:{chapter:chapterIndex,characterId:'mira',questionId:null,phase:'opening',line:0}};
+    for(const [lineIndex,line] of script[chapterIndex].opening.entries()){
+      runtime.state.dialogue.line=lineIndex;runtime.renderDialogue();
+      const speaker=line.speaker==='you'?'You':line.speaker[0].toUpperCase()+line.speaker.slice(1);
+      assert.ok(rendered[2].includes(`<span class="s6-speaker">${speaker}</span>`),`${chapter.id} opening speaker ${speaker}`);
+      assert.ok(rendered[2].includes(html(line.text)),`${chapter.id} opening text`);
+      if(line.to){const recipient=line.to==='you'?'You':chapter.characters.find(person=>person.id===line.to).name;assert.ok(rendered[2].includes(`→ ${recipient}`),`${chapter.id} opening recipient ${recipient}`);}
+      if(speaker==='You')assert.ok(!rendered[3].includes('voice:'));else assert.ok(rendered[3].includes(`voice:${speaker}`));
+    }
+    for(const person of chapter.characters){
+      runtime.state.dialogue={chapter:chapterIndex,characterId:person.id,questionId:null,phase:'menu',line:0,showIntro:false};runtime.renderDialogue();
+      const labels=script[chapterIndex].topics.filter(topic=>topic.focus===person.id).map(topic=>topic.label);
+      for(const label of labels)assert.ok(rendered[2].includes(html(label)),`${chapter.id}/${person.id} topic label ${label}`);
+      const topics=script[chapterIndex].topics.filter(topic=>topic.focus===person.id);
+      for(const [topicIndex,topic] of topics.entries())for(const [lineIndex,line] of topic.lines.entries()){
+        runtime.state.dialogue={chapter:chapterIndex,characterId:person.id,questionId:person.questions[topicIndex].id,phase:'exchange',line:lineIndex};runtime.renderDialogue();
+        const speaker=line.speaker==='you'?'You':line.speaker[0].toUpperCase()+line.speaker.slice(1);
+        assert.ok(rendered[2].includes(`<span class="s6-speaker">${speaker}</span>`),`${topic.id} speaker ${speaker}`);
+        assert.ok(rendered[2].includes(html(line.text)),`${topic.id} line text`);
+        if(line.to){const recipient=line.to==='you'?'You':chapter.characters.find(item=>item.id===line.to).name;assert.ok(rendered[2].includes(`→ ${recipient}`),`${topic.id} recipient ${recipient}`);}
+        if(speaker==='You')assert.ok(!rendered[3].includes('voice:'));else assert.ok(rendered[3].includes(`voice:${speaker}`));
+      }
+    }
+  }
+});
+
+test('Story 5 dialogue uses the illustrated conversation stage at desktop and compact widths',()=>{
+  const story=require('../stories/story-05.json');
+  const runtime=Object.create(Engine.StoryRuntime.prototype);
+  runtime.story=story;runtime.motionPaused=false;runtime.current=()=>story.chapters[0];runtime.sceneSource=()=>story.chapters[0].scene;runtime.portrait=()=>'<img class="s6-conversation-portrait" alt="Mira">';
+  const markup=runtime.conversationMarkup({id:'mira',name:'Mira'},'<h2 class="s6-story05-dialogue-title">A Chance Encounter</h2>','Mira','<button>Continue</button>');
+  assert.match(markup,/s6-stage-conversation s6-story05-conversation/);
+  assert.match(markup,/background-image:url/);
+  assert.match(markup,/<footer class="s6-dialog-actions"><button>Continue<\/button>/);
 });
 
 test('Context-specific dialogue audio takes priority over a generic line mapping',()=>{
@@ -276,6 +351,14 @@ test('Stories 1, 4, and 5 retain their pre-migration scenes, clue art, and avail
   assert.deepEqual([four.pageAppearance.backgroundImage,five.pageAppearance.backgroundImage],['assets/story04-page-background.png','assets/story05-page-background.png']);
 });
 
+test('Speaking portraits animate visibly between speaking, thoughtful, blinking, and idle frames',()=>{
+  assert.equal(Engine.characterFrame(true,false,0,5000),'speaking');
+  assert.equal(Engine.characterFrame(true,false,700,5000),'idle');
+  assert.equal(Engine.characterFrame(false,false,1850,0),'thoughtful');
+  assert.equal(Engine.characterFrame(false,false,3300,0),'blink');
+  assert.equal(Engine.characterFrame(false,false,0,0),'idle');
+});
+
 test('Shared dialogue falls back to static portraits and text when no motion or voice assets are configured',()=>{
   const story={number:1,characterPortraits:{ada:'assets/ada-still.png'},characterSprites:{},voiceMap:{}};
   const runtime=Object.create(Engine.StoryRuntime.prototype);runtime.story=story;
@@ -300,10 +383,10 @@ test('Story 1 Chapter 2 uses configurable illustrated sequence data and linked a
   const chapter=story.chapters[1],puzzle=chapter.puzzle,presentation=puzzle.presentation;
   assert.equal(Engine.validateDefinition(story),story);
   assert.equal(puzzle.type,'sequence');
-  assert.equal(presentation.mode,'timeline');
+  assert.equal(presentation.mode,'timeline-clean');
   assert.deepEqual(puzzle.answer,['close','sale','ledger']);
   assert.equal(puzzle.items.length,3);
-  assert.deepEqual(presentation.initialOrder,['sale','ledger','close'],'the player starts with a genuinely unsolved arrangement');
+  assert.equal(presentation.layout,'card-slots');
   assert.ok(puzzle.items.every(item=>item.imageCrop&&item.time));
   assert.equal(presentation.actions.find(action=>action.action==='evidence').target,'ledger');
   assert.deepEqual(checkAssets(story,root),[]);
@@ -313,18 +396,17 @@ test('Story 1 Chapter 2 uses configurable illustrated sequence data and linked a
   runtime.current=()=>chapter;runtime.chapterGateMet=()=>true;runtime.isSolved=()=>false;
   runtime.showModal=(title,body,actions)=>{runtime.modal={title,body,actions};};
   runtime.showPuzzle();
-  assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],presentation.initialOrder);
-  assert.equal((runtime.modal.body.match(/class="s6-sequence-step is-illustrated/g)||[]).length,3);
+  assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],[null,null,null]);
+  assert.equal((runtime.modal.body.match(/data-timeline-event=/g)||[]).length,3);
   assert.match(runtime.modal.body,/6:00 PM/);
   assert.match(runtime.modal.body,/story01-timeline-illustrations\.png/);
   assert.match(runtime.modal.actions,/data-s6="puzzle-evidence" data-id="ledger"/);
-  assert.match(runtime.modal.actions,/data-s6="puzzle-reset"/);
+  assert.match(runtime.modal.actions,/data-s6="timeline-reset"/);
 
   const fourItems=structuredClone(story);
   const sequence=fourItems.chapters[1].puzzle;
   sequence.items.push({id:'witness',label:'Witness arrives'});
   sequence.answer.push('witness');
-  sequence.presentation.initialOrder.push('witness');
   assert.equal(Engine.validateDefinition(fourItems),fourItems,'the shared sequence model accepts configurable option counts');
   const badLink=structuredClone(story);badLink.chapters[1].puzzle.presentation.actions[3].target='missing';
   assert.throws(()=>Engine.validateDefinition(badLink),/invalid sequence actions or evidence links/);

@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Welcome experience review</title><style>body{margin:0;background:#263c31;color:#fff5df;font:14px Georgia,serif}nav{padding:12px;display:flex;flex-wrap:wrap;gap:12px}a{color:#ffe3a1}iframe{display:block;margin:auto;border:0;background:#f8f1e5;width:100%;height:calc(100dvh - 120px)}.phone{width:390px;max-width:100%}#status{padding:0 12px 10px}</style></head><body><nav><a href="?mode=first">First visit</a><a href="?mode=returning">Returning visit</a><a href="?mode=waiting">Waiting loop</a><a href="?mode=exit">Goodbye</a><a href="?mode=reduced">Reduced motion</a><a href="?mode=missing">Missing artwork</a><a href="?mode=first&amp;mobile=1">Phone greeting</a><a href="?mode=waiting&amp;mobile=1">Phone waiting</a><a href="?mode=exit&amp;mobile=1">Phone goodbye</a><a href="?mode=peek">Left-door peek</a><a href="?mode=invite">Invite pose</a><a href="?mode=door">Goodbye door peek</a></nav><p id="status">This isolated review uses temporary memory. Player progress and visitor settings are untouched.</p><iframe title="Metriva homepage preview"></iframe><script>
+(async()=>{
+ const p=new URLSearchParams(location.search),mode=p.get('mode')||'first',frame=document.querySelector('iframe');
+ if(p.has('mobile')){frame.className='phone';if(p.get('mobile')==='320')frame.style.width='320px'}
+ const [source,config]=await Promise.all([fetch('../index.html',{cache:'no-store'}).then(r=>r.text()),fetch('../public/assets/welcome/welcome-experience.json',{cache:'no-store'}).then(r=>r.json())]);
+ // Analytics is unchanged on the real homepage; this isolated art review needs none.
+ const html=source.replace(/<script async src="https:\/\/www\.googletagmanager\.com[^>]*><\/script>/g,'').replace(/<script>\s*window\.dataLayer[\s\S]*?<\/script>/g,'');
+ const controls=`<script>
+ window.addEventListener('DOMContentLoaded',async()=>{
+   const config=${JSON.stringify(config)},mode=${JSON.stringify(mode)};
+   // Hold review captions long enough to inspect; live homepage keeps original timing.
+   if(${JSON.stringify(p.has('hold'))}){
+     config.sequences.firstVisit[1].durationMs=60000;
+     config.sequences.returningVisit[1].durationMs=60000;
+     config.sequences.onClose[0].durationMs=60000;
+   }
+   const store=seed=>({data:{...seed},getItem(k){return this.data[k]??null},setItem(k,v){this.data[k]=String(v)}});
+   const local=store(mode==='returning'?{metrivaHasVisited:'true'}:{}),session=store({});
+   if(mode==='missing'){config.groupPoses.assets.greet='group-v3/missing-art.webp';config.groupWaiting.assets[1]='group/missing-art.webp'}
+   if(mode==='waiting'){config.groupWaiting.transitionMs=50;if(${JSON.stringify(p.has('hold'))})config.groupWaiting.loop=false;}
+   const reduced=mode==='reduced';
+   window.reviewWelcome=await MetrivaWelcome.start({config,localStorage:local,sessionStorage:session,media:{matches:reduced,addEventListener(){}},durationScale:mode==='waiting'?.1:1});
+   if(mode==='waiting'){reviewWelcome.cancel();reviewWelcome.waiting()}
+   if(mode==='exit'){reviewWelcome.close()}
+   if(mode==='door-close'){reviewWelcome.cancel();reviewWelcome.closing=true;config.sequences.onClose[3].durationMs=60000;reviewWelcome.run(config.sequences.onClose,3)}
+   if(mode==='door'){reviewWelcome.cancel();reviewWelcome.closing=true;config.sequences.onClose[2].durationMs=60000;reviewWelcome.run(config.sequences.onClose,2)}
+   if(mode==='peek'){reviewWelcome.cancel();config.sequences.firstVisit[0].durationMs=60000;reviewWelcome.run(config.sequences.firstVisit)}
+   if(mode==='invite'){reviewWelcome.cancel();config.sequences.firstVisit[3].durationMs=60000;reviewWelcome.run(config.sequences.firstVisit,3)}
+   const trace=[];
+   const update=()=>{
+     const el=document.querySelector('.mw-welcome'),number=el?.dataset.groupFrame;
+     if(number&&trace.at(-1)!==number&&trace.length<8)trace.push(number);
+     parent.document.getElementById('status').textContent='Isolated review · '+(el?.dataset.state||'closed')+' · '+(trace.length?'waiting frames '+trace.join(' → ')+' · ':'')+(document.documentElement.scrollWidth<=innerWidth?'no horizontal overflow':'HORIZONTAL OVERFLOW');
+   };
+   new MutationObserver(update).observe(document.querySelector('#app'),{subtree:true,childList:true,attributes:true,attributeFilter:['data-state','data-group-frame']});update();
+   if(!document.querySelector('.mw-slot')?.classList.contains('is-floating'))document.querySelector('.mw-slot')?.scrollIntoView({block:'center'});
+ });
+ <\/script>`;
+ frame.srcdoc=html.replace('<head>','<head><base href="'+new URL('../',location.href).href+'">').replace('src="js/welcome-experience.js?v=20261023-hover-caption"','src="js/welcome-experience.js?v=20261023-hover-caption" data-autostart="false"').replace('</body>',controls+'</body>');
+})();
+</script></body></html>
+

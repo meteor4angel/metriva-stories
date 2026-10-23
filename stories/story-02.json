@@ -586,17 +586,23 @@
           {
             "id": "whisper",
             "label": "Whispered title",
-            "icon": "speech"
+            "icon": "speech",
+            "image": "assets/library-clue-transcript.webp",
+            "imageAlt": "Transcript Scraps"
           },
           {
             "id": "chime",
             "label": "Clock chime",
-            "icon": "clock"
+            "icon": "clock",
+            "image": "assets/library-clue-transcript.webp",
+            "imageAlt": "Transcript Scraps"
           },
           {
             "id": "steps",
             "label": "Footsteps",
-            "icon": "footsteps"
+            "icon": "footsteps",
+            "image": "assets/library-clue-transcript.webp",
+            "imageAlt": "Transcript Scraps"
           }
         ],
         "answer": [
@@ -606,14 +612,14 @@
         ],
         "presentation": {
           "mode": "timeline-clean",
-          "layout": "ordered-list",
+          "layout": "card-slots",
           "displayTitle": "After closing",
           "sideImage": "assets/library-listening-painted.png",
           "sideImageAlt": "A warm listening room with the cylinder recording",
           "sideImagePosition": "center",
           "sourceTitle": "The evidence",
-          "timelineTitle": "Your timeline",
-          "timelineDescription": "Earliest to latest",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
           "sectionTitle": "Put the events in order",
           "sectionDescription": "Use the arrows to place the events from earliest to latest.",
           "theme": {
@@ -625,10 +631,22 @@
             "ink": "#2b3c32"
           },
           "actions": [
-            { "action": "check", "label": "Check sequence" },
-            { "action": "reset", "label": "Reset arrangement" },
-            { "action": "hint", "label": "Progressive hint" },
-            { "action": "close", "label": "Return to investigation" }
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
           ]
         },
         "success": "The restored recording ends with a latch clicking open. Theo draws a rough map of the old west wing."
@@ -910,15 +928,21 @@
         "items": [
           {
             "id": "stairs",
-            "label": "Original staircase"
+            "label": "Original staircase",
+            "image": "assets/library-clue-original.png",
+            "imageAlt": "The Original Drawing"
           },
           {
             "id": "window",
-            "label": "West window"
+            "label": "West window",
+            "image": "assets/library-clue-original.png",
+            "imageAlt": "The Original Drawing"
           },
           {
             "id": "pillar",
-            "label": "Central pillar"
+            "label": "Central pillar",
+            "image": "assets/library-clue-original.png",
+            "imageAlt": "The Original Drawing"
           }
         ],
         "answer": [
@@ -927,7 +951,30 @@
           "stairs"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/library-workshop-painted.png",
+          "sideImageAlt": "The Restoration Workshop",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         },
         "success": "Comparing the shared landmarks reveals a hidden chamber behind the revised west wall. Evelyn retrieves the original key from the restoration safe."
       },

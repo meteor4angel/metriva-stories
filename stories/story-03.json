@@ -383,21 +383,50 @@
         "items": [
           {
             "id": "water",
-            "label": "Water · 11:54"
+            "label": "Water · 11:54",
+            "image": "assets/train-clue-water.webp",
+            "imageAlt": "Water receipt"
           },
           {
             "id": "watch",
-            "label": "Nora leaves · 11:49"
+            "label": "Nora leaves · 11:49",
+            "image": "assets/train-clue-watch.webp",
+            "imageAlt": "Pocket watch"
           },
           {
             "id": "tea",
-            "label": "Tea · 11:42"
+            "label": "Tea · 11:42",
+            "image": "assets/train-clue-tea.webp",
+            "imageAlt": "Tea receipt"
           }
         ],
         "presentation": {
-          "mode": "timeline",
+          "mode": "timeline-clean",
           "topLabel": "Earliest",
-          "bottomLabel": "Latest"
+          "bottomLabel": "Latest",
+          "layout": "card-slots",
+          "sideImage": "assets/train-ch2-dining.png",
+          "sideImageAlt": "The Dining Car",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "Earliest to latest",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "hints": [
@@ -917,21 +946,50 @@
         "items": [
           {
             "id": "1",
-            "label": "1 · Align siding"
+            "label": "1 · Align siding",
+            "image": "assets/train-clue-diagram.webp",
+            "imageAlt": "Signal diagram"
           },
           {
             "id": "2",
-            "label": "2 · Warn bridge"
+            "label": "2 · Warn bridge",
+            "image": "assets/train-clue-diagram.webp",
+            "imageAlt": "Signal diagram"
           },
           {
             "id": "3",
-            "label": "3 · Stop main line"
+            "label": "3 · Stop main line",
+            "image": "assets/train-clue-diagram.webp",
+            "imageAlt": "Signal diagram"
           }
         ],
         "presentation": {
-          "mode": "timeline",
+          "mode": "timeline-clean",
           "topLabel": "First action",
-          "bottomLabel": "Last action"
+          "bottomLabel": "Last action",
+          "layout": "card-slots",
+          "sideImage": "assets/train-ch5-tower.png",
+          "sideImageAlt": "The Last Platform",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First action to last action",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "hints": [

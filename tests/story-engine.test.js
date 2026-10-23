@@ -481,11 +481,11 @@ test('built Story 6 page contains a JSON payload matching the authoring source',
   assert.deepEqual(JSON.parse(match[1]),story);
 });
 
-test('catalog keeps the five existing stories and adds Story 6', () => {
+test('catalog keeps the existing stories and lists Stories 6 and 7', () => {
   const context={window:{}};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..','js','story-config.js'),'utf8'),context);
   const ids=Array.from(context.window.METRIVA_STORIES,entry=>entry.id);
-  assert.deepEqual(ids,['vanishing-letter','echoes-library','midnight-train','letters-after-midnight','days-we-almost-met','brackenmere-bell']);
+  assert.deepEqual(ids,['vanishing-letter','echoes-library','midnight-train','letters-after-midnight','days-we-almost-met','brackenmere-bell','clockmakers-last-hour']);
 });
 
 test('each Story 6 clue resolves to one physical object and a master-derived view', () => {

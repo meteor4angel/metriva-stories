@@ -108,23 +108,23 @@
             {
               "id": "q1",
               "ask": "Why did Iris keep the letters?",
-              "reply": "“She never told me. But she could never bring herself to throw away even a torn page.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“She never told me. But she could never bring herself to throw away even a torn page.”"
+              "reply": "She never told me. But she could never bring herself to throw away even a torn page.",
+              "followUp": "Were these torn pages kept together?",
+              "followReply": "Yes, inside the cedar trunk. Compare the watermark and the edges before you decide how they fit."
             },
             {
               "id": "q2",
               "ask": "Did she know Julian?",
-              "reply": "“I heard the name once. She said it softly, as though the years had not made it any easier.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“I heard the name once. She said it softly, as though the years had not made it any easier.”"
+              "reply": "I heard the name once. She said it softly, as though the years had not made it any easier.",
+              "followUp": "Is there anything here that could identify him?",
+              "followReply": "Look at the photograph and the envelope. They may give you more than a name I only overheard."
             },
             {
               "id": "q3",
               "ask": "What was Iris like near the end?",
-              "reply": "“She still visited the rooftop each spring. Some places hold a person’s whole life.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“She still visited the rooftop each spring. Some places hold a person’s whole life.”"
+              "reply": "She still visited the rooftop each spring. Some places hold a person’s whole life.",
+              "followUp": "Did she ever invite anyone to go with her?",
+              "followReply": "She preferred to go alone. I respected that, even when I wondered what she was remembering."
             }
           ]
         }
@@ -137,19 +137,27 @@
         "items": [
           {
             "id": "A",
-            "label": "A · Dear Julian"
+            "label": "A · Dear Julian",
+            "image": "assets/letters-c1-paper.png",
+            "imageAlt": "Torn letter pages"
           },
           {
             "id": "B",
-            "label": "B · The stairs were closed"
+            "label": "B · The stairs were closed",
+            "image": "assets/letters-c1-paper.png",
+            "imageAlt": "Torn letter pages"
           },
           {
             "id": "C",
-            "label": "C · I waited by the station"
+            "label": "C · I waited by the station",
+            "image": "assets/letters-c1-paper.png",
+            "imageAlt": "Torn letter pages"
           },
           {
             "id": "D",
-            "label": "D · I hope you understand"
+            "label": "D · I hope you understand",
+            "image": "assets/letters-c1-paper.png",
+            "imageAlt": "Torn letter pages"
           }
         ],
         "answer": [
@@ -159,7 +167,30 @@
           "D"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/cover-letters-after-midnight.png",
+          "sideImageAlt": "The Attic",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "gate": {
@@ -272,23 +303,23 @@
             {
               "id": "q1",
               "ask": "Did Julian mention Iris?",
-              "reply": "“No. He was kind, but the past was the one thing he would not explain.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“No. He was kind, but the past was the one thing he would not explain.”"
+              "reply": "No. He was kind, but the past was the one thing he would not explain.",
+              "followUp": "Then how can we identify his handwriting?",
+              "followReply": "The framed calligraphy is signed. Compare its long curved J with the writing on the desk."
             },
             {
               "id": "q2",
               "ask": "Why were there two bundles?",
-              "reply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”"
+              "reply": "The green ink is hers; the violet is his. I had never realized both of them kept writing.",
+              "followUp": "Should we separate them by writer before reading?",
+              "followReply": "That would help. Use the ink and signatures, rather than assuming every page in the tin is his."
             },
             {
               "id": "q3",
               "ask": "Can we examine the studio?",
-              "reply": "“Of course. The notebook and the old stationery tin are still where he left them.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“Of course. The notebook and the old stationery tin are still where he left them.”"
+              "reply": "Of course. The notebook and the old stationery tin are still where he left them.",
+              "followUp": "What should stay in place while we compare them?",
+              "followReply": "Keep the loose pages beside their envelopes. An address or date could matter as much as the words."
             }
           ]
         }
@@ -420,30 +451,30 @@
           "id": "rowan",
           "name": "Rowan Ellis",
           "role": "Julian’s grandson and bookbinder",
-          "bio": "“Granddad never spoke much about this box. He kept every letter.”",
-          "intro": "“Granddad never spoke much about this box. He kept every letter.”",
+          "bio": "The dates make the long gaps visible. Let us read each letter beside its envelope.",
+          "intro": "The dates make the long gaps visible. Let us read each letter beside its envelope.",
           "portrait": "assets/letters-rowan.png",
           "questions": [
             {
               "id": "q1",
-              "ask": "Did Julian mention Iris?",
-              "reply": "“No. He was kind, but the past was the one thing he would not explain.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“No. He was kind, but the past was the one thing he would not explain.”"
+              "ask": "Which of these letters comes first?",
+              "reply": "Iris’s green letter is dated June 12, 1987. Julian’s violet reply is dated the following day.",
+              "followUp": "Does the order change how you read his reply?",
+              "followReply": "Yes. He was answering something she had actually written, not composing a farewell out of nowhere."
             },
             {
               "id": "q2",
-              "ask": "Why were there two bundles?",
-              "reply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”"
+              "ask": "What connects the postcard to the early letters?",
+              "reply": "In September 1995, Iris still writes about passing the rooftop. That place remained important long after 1987.",
+              "followUp": "Does mentioning it mean they met there again?",
+              "followReply": "We cannot tell that from a postcard. It records a memory, not proof of another meeting."
             },
             {
               "id": "q3",
-              "ask": "Can we examine the studio?",
-              "reply": "“Of course. The notebook and the old stationery tin are still where he left them.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“Of course. The notebook and the old stationery tin are still where he left them.”"
+              "ask": "What does Julian’s last letter add to the timeline?",
+              "reply": "The April 2004 envelope belongs at the far end. His words still leave their story unfinished.",
+              "followUp": "What should we check after putting the dates in order?",
+              "followReply": "The calendar circles June 19 and mentions a storm. We should see what happened at the rooftop that evening."
             }
           ]
         }
@@ -456,19 +487,27 @@
         "items": [
           {
             "id": "1987i",
-            "label": "Iris · June 12, 1987"
+            "label": "Iris · June 12, 1987",
+            "image": "assets/letters-c3-iris87.png",
+            "imageAlt": "Iris’s first letter"
           },
           {
             "id": "1987j",
-            "label": "Julian · June 13, 1987"
+            "label": "Julian · June 13, 1987",
+            "image": "assets/letters-c3-julian87.png",
+            "imageAlt": "Julian’s reply"
           },
           {
             "id": "1995",
-            "label": "Iris · September 1995"
+            "label": "Iris · September 1995",
+            "image": "assets/letters-c3-postcard.png",
+            "imageAlt": "Later postcard"
           },
           {
             "id": "2004",
-            "label": "Julian · April 2004"
+            "label": "Julian · April 2004",
+            "image": "assets/letters-c3-last.png",
+            "imageAlt": "Last letter"
           }
         ],
         "answer": [
@@ -478,7 +517,30 @@
           "2004"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/letters-master-ch3.png",
+          "sideImageAlt": "The Unsent Years",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "gate": {
@@ -584,30 +646,30 @@
           "id": "rowan",
           "name": "Rowan Ellis",
           "role": "Julian’s grandson and bookbinder",
-          "bio": "“Granddad never spoke much about this box. He kept every letter.”",
-          "intro": "“Granddad never spoke much about this box. He kept every letter.”",
+          "bio": "The bench, mosaic and closed stair all belong to the same place. We should compare them before opening the box.",
+          "intro": "The bench, mosaic and closed stair all belong to the same place. We should compare them before opening the box.",
           "portrait": "assets/letters-rowan.png",
           "questions": [
             {
               "id": "q1",
-              "ask": "Did Julian mention Iris?",
-              "reply": "“No. He was kind, but the past was the one thing he would not explain.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“No. He was kind, but the past was the one thing he would not explain.”"
+              "ask": "What does the stairwell notice tell us?",
+              "reply": "The interior rooftop stair closed at six on June 19, 1987. That is the Friday marked on the calendar.",
+              "followUp": "Could anyone still have reached the garden?",
+              "followReply": "The exterior stair brought us here today. A closed interior door does not prove the rooftop was empty."
             },
             {
               "id": "q2",
-              "ask": "Why were there two bundles?",
-              "reply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”"
+              "ask": "Are those Iris and Julian’s initials on the bench?",
+              "reply": "I + J, worn into the wood. Granddad returned here each spring; now I understand why this bench mattered.",
+              "followUp": "Do the initials explain the missed meeting?",
+              "followReply": "Only that they shared this place. We still need the letters to tell us what each person expected."
             },
             {
               "id": "q3",
-              "ask": "Can we examine the studio?",
-              "reply": "“Of course. The notebook and the old stationery tin are still where he left them.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“Of course. The notebook and the old stationery tin are still where he left them.”"
+              "ask": "How do the stars relate to the keepsake box?",
+              "reply": "The three dials repeat the mosaic’s stars. Its eastern, central and western positions suggest the course of a day.",
+              "followUp": "Where should the sequence begin?",
+              "followReply": "At first light in the east. Follow the pattern across the mosaic before trying the dials."
             }
           ]
         }
@@ -620,15 +682,21 @@
         "items": [
           {
             "id": "dawn",
-            "label": "Dawn"
+            "label": "Dawn",
+            "image": "assets/letters-c4-mosaic.png",
+            "imageAlt": "Star mosaic"
           },
           {
             "id": "noon",
-            "label": "Noon"
+            "label": "Noon",
+            "image": "assets/letters-c4-mosaic.png",
+            "imageAlt": "Star mosaic"
           },
           {
             "id": "dusk",
-            "label": "Dusk"
+            "label": "Dusk",
+            "image": "assets/letters-c4-mosaic.png",
+            "imageAlt": "Star mosaic"
           }
         ],
         "answer": [
@@ -637,7 +705,30 @@
           "dusk"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/letters-master-ch4.png",
+          "sideImageAlt": "The Rooftop Garden",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "gate": {
@@ -743,30 +834,30 @@
           "id": "rowan",
           "name": "Rowan Ellis",
           "role": "Julian’s grandson and bookbinder",
-          "bio": "“Granddad never spoke much about this box. He kept every letter.”",
-          "intro": "“Granddad never spoke much about this box. He kept every letter.”",
+          "bio": "Now we have both instructions for that evening. I want to understand what each of them believed.",
+          "intro": "Now we have both instructions for that evening. I want to understand what each of them believed.",
           "portrait": "assets/letters-rowan.png",
           "questions": [
             {
               "id": "q1",
-              "ask": "Did Julian mention Iris?",
-              "reply": "“No. He was kind, but the past was the one thing he would not explain.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“No. He was kind, but the past was the one thing he would not explain.”"
+              "ask": "Why did Iris wait at the station while Julian waited here?",
+              "reply": "Her note says the station clock at seven. His changed plan says the rooftop, but that envelope never reached her.",
+              "followUp": "So neither knew where the other was waiting?",
+              "followReply": "Exactly. Each kept a different instruction and mistook the other person’s absence for an answer."
             },
             {
               "id": "q2",
-              "ask": "Why were there two bundles?",
-              "reply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“The green ink is hers; the violet is his. I had never realized both of them kept writing.”"
+              "ask": "How does the storm record fit their two accounts?",
+              "reply": "The stairs closed at six, before the proposed meeting. Julian used the exterior access while Iris followed the station note.",
+              "followUp": "Was the storm the whole reason they stayed apart?",
+              "followReply": "It disrupted the evening, but the undelivered change of plan left them waiting in different places."
             },
             {
               "id": "q3",
-              "ask": "Can we examine the studio?",
-              "reply": "“Of course. The notebook and the old stationery tin are still where he left them.”",
-              "followUp": "What else can the letters tell us?",
-              "followReply": "“Of course. The notebook and the old stationery tin are still where he left them.”"
+              "ask": "What should we do with both collections now?",
+              "reply": "Keep their letters together, with the dates and envelopes. Neither voice should disappear from the story.",
+              "followUp": "Can understanding this still make a difference?",
+              "followReply": "We cannot return that evening to them. We can stop telling it as though one simply chose not to come."
             }
           ]
         }

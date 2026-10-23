@@ -110,17 +110,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "Did the dropped book get damaged?",
-              "reply": "“A bent corner. I think it will survive.”",
-              "followUp": "What does the writing inside the cover mean to you?",
-              "followReply": "“Years ago. I wanted to remember that a place can feel like home.”"
+              "ask": "Did the book get damaged?",
+              "reply": "A bent corner. I think it will survive.",
+              "followUp": "When did you write that note inside the cover?",
+              "followReply": "Years ago. I wanted to remember that a place can feel like home."
             },
             {
               "id": "q2",
-              "ask": "What drew you to the reading table?",
-              "reply": "“I came for coffee, but a chapter sounds nice.”",
-              "followUp": "How does it feel to know there is no pressure to stay?",
-              "followReply": "“That makes staying feel much easier.”"
+              "ask": "Would you like to join the reading table?",
+              "reply": "I came for coffee, but a chapter sounds nice.",
+              "followUp": "Does knowing you can leave after one chapter make it easier?",
+              "followReply": "That makes staying feel much easier."
             }
           ]
         },
@@ -134,17 +134,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "How often do you volunteer, and what do you enjoy about it?",
-              "reply": "“Most Sundays. Books are a good excuse to meet the neighbors.”",
-              "followUp": "Would you call it a formal event?",
-              "followReply": "“Only if you count debating the ending over coffee.”"
+              "ask": "Do you volunteer here often?",
+              "reply": "Most Sundays. Books are a good excuse to meet the neighbors.",
+              "followUp": "Is the reading table a formal event?",
+              "followReply": "Only if you count debating the ending over coffee."
             },
             {
               "id": "q2",
-              "ask": "Where would Mira find the reading table?",
-              "reply": "“Just inside, beside the window.”",
-              "followUp": "What would you say if Mira stayed for just one chapter?",
-              "followReply": "“One chapter is a very good start.”"
+              "ask": "Where is the reading table?",
+              "reply": "Just inside, beside the window.",
+              "followUp": "Would it be all right if I stayed for just one chapter?",
+              "followReply": "One chapter is a very good start."
             }
           ]
         }
@@ -282,17 +282,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "How would you work out the order for these books?",
-              "reply": "“The shelf numbers look like the answer.”",
-              "followUp": "Does helping Theo sort poems, travel, then gardens make it easier?",
-              "followReply": "“Exactly. The little things are easier together.”"
+              "ask": "What would help us put these books in order?",
+              "reply": "The shelf numbers look like the answer.",
+              "followUp": "So poems, travel, then gardens?",
+              "followReply": "Exactly. The little things are easier together."
             },
             {
               "id": "q2",
-              "ask": "Did you sign up for the cleanup because Theo would be there?",
-              "reply": "“I signed up before I knew you might be there.”",
-              "followUp": "Do you feel any obligation to go just because Theo will be there?",
-              "followReply": "“I do not. That is why I can say yes.”"
+              "ask": "Had you already signed up for the cleanup before we met?",
+              "reply": "I signed up before I knew you might be there.",
+              "followUp": "Do you feel obliged to go because Theo will be there?",
+              "followReply": "I do not. That is why I can say yes."
             }
           ]
         },
@@ -306,17 +306,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "What were you thinking when you wrote in that margin?",
-              "reply": "“Too many stories mistake a grand gesture for listening.”",
-              "followUp": "What matters more to you than a grand gesture?",
-              "followReply": "“Ask a question, and hear the answer.”"
+              "ask": "What bothered you about that ending?",
+              "reply": "Too many stories mistake a grand gesture for listening.",
+              "followUp": "What would you rather see someone do?",
+              "followReply": "Ask a question, and hear the answer."
             },
             {
               "id": "q2",
-              "ask": "What are you drinking while you read?",
-              "reply": "“Black coffee. I should probably switch to tea.”",
-              "followUp": "What would you say if Mira chose mint tea?",
-              "followReply": "“Then we have found a perfectly balanced table.”"
+              "ask": "What are you both drinking?",
+              "reply": "Black coffee. I should probably switch to tea.",
+              "followUp": "I’m having mint tea. I think I’ll stick with that.",
+              "followReply": "Then we have found a perfectly balanced table."
             }
           ]
         }
@@ -329,15 +329,21 @@
         "items": [
           {
             "id": "100",
-            "label": "Poems · 100"
+            "label": "Poems · 100",
+            "image": "assets/days-clue-shelf.webp",
+            "imageAlt": "Return shelf"
           },
           {
             "id": "400",
-            "label": "Travel · 400"
+            "label": "Travel · 400",
+            "image": "assets/days-clue-shelf.webp",
+            "imageAlt": "Return shelf"
           },
           {
             "id": "600",
-            "label": "Gardens · 600"
+            "label": "Gardens · 600",
+            "image": "assets/days-clue-shelf.webp",
+            "imageAlt": "Return shelf"
           }
         ],
         "answer": [
@@ -346,7 +352,30 @@
           "600"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/days-scene-02.webp",
+          "sideImageAlt": "Shared Pages",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "gate": {
@@ -461,17 +490,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "Which route would you suggest taking to the garden?",
-              "reply": "“The canal path is closed. The poster points to Market Street.”",
-              "followUp": "Do you think there is still time to reach the cleanup?",
-              "followReply": "“The bakery clock says two fifteen. We do.”"
+              "ask": "Which way can we get to the garden?",
+              "reply": "The canal path is closed. The poster points to Market Street.",
+              "followUp": "Do we still have time to get there?",
+              "followReply": "The bakery clock says two fifteen. We do."
             },
             {
               "id": "q2",
-              "ask": "What would you say if Theo offered you a spare umbrella?",
-              "reply": "“That is kind, but I brought one.”",
-              "followUp": "Would you still want to walk to the garden with him?",
-              "followReply": "“Yes. That I would like.”"
+              "ask": "I brought a spare umbrella. Do you need it?",
+              "reply": "That is kind, but I brought one.",
+              "followUp": "Would you still like to walk with Theo?",
+              "followReply": "Yes. That I would like."
             }
           ]
         },
@@ -485,17 +514,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "What makes Canal Walk the wrong route today?",
-              "reply": "“The council closed it until Monday.”",
-              "followUp": "What about taking Bridge Road instead?",
-              "followReply": "“Open, but far longer. We would miss the start.”"
+              "ask": "Why can’t we take Canal Walk?",
+              "reply": "The council closed it until Monday.",
+              "followUp": "Would Bridge Road work instead?",
+              "followReply": "Open, but far longer. We would miss the start."
             },
             {
               "id": "q2",
-              "ask": "Are you and Mira running late for the cleanup?",
-              "reply": "“Not yet. The cleanup begins at three.”",
-              "followUp": "Do you feel you and Mira need to rush?",
-              "followReply": "“No rush. We have fifteen minutes to walk.”"
+              "ask": "Are we running late for the cleanup?",
+              "reply": "Not yet. The cleanup begins at three.",
+              "followUp": "Do we need to hurry on the way?",
+              "followReply": "No rush. We have fifteen minutes to walk."
             }
           ]
         }
@@ -633,17 +662,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "What do you remember about the melody?",
-              "reply": "“The opening notes: C, E, G, E.”",
-              "followUp": "Would you enjoy playing it with Theo?",
-              "followReply": "“Only if we can laugh when I miss a note.”"
+              "ask": "Do you remember the opening notes?",
+              "reply": "The opening notes: C, E, G, E.",
+              "followUp": "Would you like to play it with Theo?",
+              "followReply": "Only if we can laugh when I miss a note."
             },
             {
               "id": "q2",
-              "ask": "Did the photograph make you realise you and Theo were in the same group?",
-              "reply": "“Yes. I did not notice we were both in the same community group.”",
-              "followUp": "So you and Theo nearly met back then?",
-              "followReply": "“Almost. I like that we met when we could actually talk.”"
+              "ask": "Does the photograph show you were in the same community group?",
+              "reply": "Yes. I did not notice we were both in the same community group.",
+              "followUp": "So you nearly met then?",
+              "followReply": "Almost. I like that we met when we could actually talk."
             }
           ]
         },
@@ -657,17 +686,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "Which notes help you remember the tune?",
-              "reply": "“C, E, G, E. The tune comes back once you start.”",
-              "followUp": "Would you play slowly and let Mira join when she feels ready?",
-              "followReply": "“I will. You can join whenever you feel ready.”"
+              "ask": "Theo, which notes would get us started?",
+              "reply": "C, E, G, E. The tune comes back once you start.",
+              "followUp": "Will you take it slowly? I might need a moment to join in.",
+              "followReply": "I will. You can join whenever you feel ready."
             },
             {
               "id": "q2",
-              "ask": "Do you think you and Mira crossed paths at the community center?",
-              "reply": "“I think we were in the same room, years ago.”",
-              "followUp": "What would the next verse of your story with Mira be?",
-              "followReply": "“Maybe we should write the next verse ourselves.”"
+              "ask": "Do you remember being in the same room as Mira?",
+              "reply": "I think we were in the same room, years ago.",
+              "followUp": "What would you like to happen after all these almost-meetings?",
+              "followReply": "Maybe we should write the next verse ourselves."
             }
           ]
         }
@@ -680,19 +709,27 @@
         "items": [
           {
             "id": "C",
-            "label": "C · first note"
+            "label": "C · first note",
+            "image": "assets/days-clue-sheet.webp",
+            "imageAlt": "Sheet music"
           },
           {
             "id": "E1",
-            "label": "E · second note"
+            "label": "E · second note",
+            "image": "assets/days-clue-sheet.webp",
+            "imageAlt": "Sheet music"
           },
           {
             "id": "G",
-            "label": "G · third note"
+            "label": "G · third note",
+            "image": "assets/days-clue-sheet.webp",
+            "imageAlt": "Sheet music"
           },
           {
             "id": "E2",
-            "label": "E · final note"
+            "label": "E · final note",
+            "image": "assets/days-clue-sheet.webp",
+            "imageAlt": "Sheet music"
           }
         ],
         "answer": [
@@ -702,7 +739,30 @@
           "E2"
         ],
         "presentation": {
-          "mode": "timeline"
+          "mode": "timeline-clean",
+          "layout": "card-slots",
+          "sideImage": "assets/days-scene-04.webp",
+          "sideImageAlt": "A Familiar Song",
+          "timelineTitle": "Your sequence",
+          "timelineDescription": "First to last",
+          "actions": [
+            {
+              "action": "check",
+              "label": "Check sequence"
+            },
+            {
+              "action": "reset",
+              "label": "Reset arrangement"
+            },
+            {
+              "action": "hint",
+              "label": "Progressive hint"
+            },
+            {
+              "action": "close",
+              "label": "Return to investigation"
+            }
+          ]
         }
       },
       "gate": {
@@ -817,17 +877,17 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "What would make Theo’s invitation feel right to you?",
-              "reply": "“An honest invitation, and room to answer honestly.”",
-              "followUp": "How would you feel about coffee with Theo at four thirty?",
-              "followReply": "“That sounds like something I can choose.”"
+              "ask": "What matters to you about the way Theo asks?",
+              "reply": "An honest invitation, and room to answer honestly.",
+              "followUp": "Would coffee at four thirty suit you?",
+              "followReply": "That sounds like something I can choose."
             },
             {
               "id": "q2",
-              "ask": "Do you think friendship could be a good outcome for you and Theo?",
-              "reply": "“Of course. That is a real choice too.”",
-              "followUp": "If you chose friendship, would you expect him to disappear?",
-              "followReply": "“No. We already have books and the garden.”"
+              "ask": "Would friendship be a good outcome for you, too?",
+              "reply": "Of course. That is a real choice too.",
+              "followUp": "Would choosing friendship mean losing what you already share?",
+              "followReply": "No. We already have books and the garden."
             }
           ]
         },
@@ -841,17 +901,10 @@
           "questions": [
             {
               "id": "q1",
-              "ask": "Why would you suggest next Saturday to Mira?",
-              "reply": "“You said you are free after four. I remembered.”",
-              "followUp": "Did you want to remember what mattered to her?",
-              "followReply": "“Yeah. I was hoping I’d get to see you again.”"
-            },
-            {
-              "id": "q2",
-              "ask": "What would you say if Mira wanted to stay friends?",
-              "reply": "“Then we keep our reading table and our garden Saturdays.”",
-              "followUp": "Do you mean that her answer matters more than your plan?",
-              "followReply": "“I do. Your answer matters more than my plan.”"
+              "ask": "And if I wanted us to stay friends?",
+              "reply": "Then we keep our reading table and our garden Saturdays.",
+              "followUp": "Even if that wasn’t the answer you hoped for?",
+              "followReply": "I do. Your answer matters more than my plan."
             }
           ]
         }

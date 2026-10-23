@@ -17,6 +17,10 @@ if (!match) throw new Error(`No JSON story definition found for "${id}" in stori
 const {file:jsonPath,definition}=match;
 if (!definition.id || !Number.isInteger(definition.number)) throw new Error(`Story id/number is invalid in ${jsonPath}`);
 global.window=globalThis;
+if(definition.id==='days-we-almost-met'){
+  require('../js/days-conversations.js');
+  definition.conversationScript=globalThis.DAYS_CONVERSATIONS;
+}
 require('../js/story-engine.js');
 global.MetrivaStoryEngine.validateDefinition(definition);
 const assetErrors=checkAssets(definition,root);
@@ -27,9 +31,14 @@ const escapedJson = JSON.stringify(definition)
   .replace(/</g, '\\u003c')
   .replace(/\u2028/g, '\\u2028')
   .replace(/\u2029/g, '\\u2029');
-const html = fs.readFileSync(templatePath, 'utf8')
+let html = fs.readFileSync(templatePath, 'utf8')
   .replaceAll('__TITLE__', definition.title.replace(/[&<>"']/g, ''))
   .replace('__STORY_JSON__', escapedJson);
+if(definition.companion?.scenePet){
+  html=html.replace('<script src="js/story-engine.js', '<script src="js/scene-companion.js?v=story7-gold-progress-20261023"></script>\n  <script src="js/story-engine.js');
+  html=html.replace('css/story-engine.css?v=story7-gold-progress-20261023','css/story-engine.css?v=story7-gold-progress-20261023');
+  html=html.replace('js/story-engine.js?v=story7-gold-progress-20261023','js/story-engine.js?v=story7-gold-progress-20261023');
+}
 const outputPath = path.join(root, `story-${String(definition.number).padStart(2, '0')}.html`);
 fs.writeFileSync(outputPath, html, 'utf8');
 if(definition.legacyPage){

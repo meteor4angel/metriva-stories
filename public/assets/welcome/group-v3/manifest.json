@@ -1,0 +1,155 @@
+{
+  "canvas": [
+    640,
+    660
+  ],
+  "waitingOrder": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "assets": {
+    "peek": {
+      "source": "sheet-1",
+      "crop": [
+        25,
+        84,
+        234,
+        636
+      ],
+      "path": "group-v3/peek.webp"
+    },
+    "greet": {
+      "source": "sheet-1",
+      "crop": [
+        241,
+        149,
+        611,
+        635
+      ],
+      "path": "group-v3/greet.webp"
+    },
+    "invite": {
+      "source": "sheet-1",
+      "crop": [
+        611,
+        158,
+        941,
+        630
+      ],
+      "path": "group-v3/invite.webp"
+    },
+    "disappointed": {
+      "source": "sheet-1",
+      "crop": [
+        943,
+        163,
+        1255,
+        631
+      ],
+      "path": "group-v3/disappointed.webp"
+    },
+    "door": {
+      "source": "sheet-1",
+      "crop": [
+        1269,
+        85,
+        1530,
+        642
+      ],
+      "path": "group-v3/door.webp"
+    },
+    "waiting-1": {
+      "source": "sheet-1",
+      "crop": [
+        18,
+        665,
+        430,
+        989
+      ],
+      "path": "group-v3/waiting-1.webp"
+    },
+    "waiting-2": {
+      "source": "sheet-1",
+      "crop": [
+        444,
+        685,
+        799,
+        1001
+      ],
+      "path": "group-v3/waiting-2.webp"
+    },
+    "waiting-3": {
+      "source": "sheet-1",
+      "crop": [
+        815,
+        639,
+        1159,
+        995
+      ],
+      "path": "group-v3/waiting-3.webp"
+    },
+    "waiting-4": {
+      "source": "sheet-1",
+      "crop": [
+        1181,
+        684,
+        1517,
+        1002
+      ],
+      "path": "group-v3/waiting-4.webp"
+    },
+    "return-run": {
+      "source": "sheet-2",
+      "crop": [
+        345,
+        0,
+        885,
+        365
+      ],
+      "path": "group-v3/return-run.webp"
+    },
+    "return-greet": {
+      "source": "sheet-2",
+      "crop": [
+        887,
+        0,
+        1310,
+        365
+      ],
+      "path": "group-v3/return-greet.webp"
+    },
+    "return-invite": {
+      "source": "sheet-2",
+      "crop": [
+        1728,
+        0,
+        2172,
+        365
+      ],
+      "path": "group-v3/return-invite.webp"
+    },
+    "hug": {
+      "source": "sheet-2",
+      "crop": [
+        520,
+        365,
+        1020,
+        724
+      ],
+      "path": "group-v3/hug.webp"
+    },
+    "curious": {
+      "source": "sheet-2",
+      "crop": [
+        1530,
+        365,
+        2172,
+        724
+      ],
+      "path": "group-v3/curious.webp"
+    }
+  },
+  "notes": "Complete group crops. All five characters stay together. Originals and prior assets are preserved."
+}

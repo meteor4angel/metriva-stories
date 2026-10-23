@@ -3,7 +3,13 @@
   'use strict';
   const ENGINE_VERSION = '1.7.0';
   const clone = value => JSON.parse(JSON.stringify(value));
-  const characterFrame = (characterSpeaking,voiceSpeaking,elapsed,speakFor) => characterSpeaking&&(voiceSpeaking||elapsed<speakFor)&&elapsed%480<230?'speaking':elapsed%4400>4000?'blink':'idle';
+  const characterFrame = (characterSpeaking,voiceSpeaking,elapsed,speakFor) => {
+    const cycle=elapsed%3600;
+    if(characterSpeaking&&(voiceSpeaking||elapsed<speakFor)&&elapsed%900<560)return 'speaking';
+    if(cycle>=3200&&cycle<3500)return 'blink';
+    if(cycle>=1700&&cycle<2150)return 'thoughtful';
+    return 'idle';
+  };
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const unquoteDialogue = value => {const text=String(value??'').trim(),pairs=[['“','”'],['"','"'],['‘','’'],["'","'"]];for(const [start,end]of pairs)if(text.startsWith(start)&&text.endsWith(end)&&text.length>=2)return text.slice(start.length,text.length-end.length);return text;};
   const dialogueMarkup = value => {const text=String(value??'').trim();return text!==unquoteDialogue(text)?escapeHtml(text):`“${escapeHtml(text)}”`;};
@@ -21,6 +27,13 @@
     bell:'<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
     event:'<circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/>'
   };return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[icon]||paths.event}</g></svg>`;};
+  function spriteWindowStyle(sprite,name='idle') {
+    const frame=sprite.frames[name]??sprite.frames.idle??0,cols=sprite.columns,rows=sprite.rows,sheet=sprite.sheetSize;
+    const region=sprite.frameWindows?.[frame]||{x:frame%cols*sheet.width/cols,y:Math.floor(frame/cols)*sheet.height/rows,width:sheet.width/cols,height:sheet.height/rows};
+    const scale=90.625/Math.max(region.width,region.height),width=region.width*scale,height=region.height*scale;
+    return {position:'absolute',left:'50%',bottom:'4.6875%',width:width+'%',height:height+'%',transform:'translateX(-50%)',backgroundImage:'url("'+sprite.src+'")',backgroundRepeat:'no-repeat',backgroundSize:(sheet.width/region.width*100)+'% '+(sheet.height/region.height*100)+'%',backgroundPosition:(sheet.width===region.width?0:region.x/(sheet.width-region.width)*100)+'% '+(sheet.height===region.height?0:region.y/(sheet.height-region.height)*100)+'%'};
+  }
+  const spriteWindowMarkup=(sprite,name)=>'<span class="s6-sprite-frame" aria-hidden="true" style="'+Object.entries(spriteWindowStyle(sprite,name)).map(([key,value])=>key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+':'+escapeHtml(value)).join(';')+'"></span>';
   const chapterPickerIconMarkup=icon=>({
     'map-pin':'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
     book:'<path d="M12 6C9 3 5 3 2.5 4v15c3-.8 6-.5 9.5 2 3.5-2.5 6.5-2.8 9.5-2V4c-2.5-1-6.5-1-9.5 2Z"/><path d="M12 6v15"/>',
@@ -482,6 +495,11 @@
         if(!characterIds.has(id))errors.push(`character sprite ${id} has an unknown character`);
         if(typeof sprite==='string')continue;
         if(!sprite||typeof sprite!=='object'||typeof sprite.src!=='string'||!sprite.src.trim()){errors.push(`character sprite ${id} needs an image source`);continue;}
+        if(sprite.sheetSize!==undefined||sprite.frameWindows!==undefined){
+          const sheet=sprite.sheetSize,windows=sprite.frameWindows;
+          if(!sheet||!Number.isInteger(sheet.width)||!Number.isInteger(sheet.height)||sheet.width<1||sheet.height<1||!windows||typeof windows!=='object'||Array.isArray(windows))errors.push(`character sprite ${id} has invalid frame windows`);
+          else for(const [index,r]of Object.entries(windows))if(!/^\d+$/.test(index)||Number(index)>=(Number(sprite.columns)||2)*(Number(sprite.rows)||2)||!r||!['x','y','width','height'].every(k=>Number.isInteger(r[k]))||r.x<0||r.y<0||r.width<1||r.height<1||r.x+r.width>sheet.width||r.y+r.height>sheet.height)errors.push(`character sprite ${id} has an invalid frame window ${index}`);
+        }
         if(sprite.frames!==undefined){
           const columns=Number(sprite.columns)||2,rows=Number(sprite.rows)||2;
           if(!sprite.frames||typeof sprite.frames!=='object'||Array.isArray(sprite.frames)||!Object.keys(sprite.frames).length)errors.push(`character sprite ${id} frames must be a non-empty map`);
@@ -518,13 +536,13 @@
     return Object.keys(rule).length>0;
   }
 
-  const freshState = () => ({schemaVersion:1,chapter:0,found:[],solved:[],completedDialogues:[],characterIntrosSeen:[],transcript:[],dialogue:null,puzzleDrafts:{},puzzleRouteSelections:{},objectStates:{},openingSeen:false,rescueLine:0,rescueDone:false,resolutionLine:0,resolutionDone:false,booksSeen:[],bookshelfSlots:[null,null,null,null],bookInspectionId:null,bookSlipReady:false,ending:null});
+  const freshState = () => ({schemaVersion:1,chapter:0,found:[],solved:[],completedDialogues:[],characterIntrosSeen:[],conversationOpenings:[],transcript:[],dialogue:null,puzzleDrafts:{},puzzleRouteSelections:{},objectStates:{},companion:{affection:40,mood:'idle',collapsed:false,discoveries:[],searchTarget:null,message:'Biscuit is close by, ready to help.'},openingSeen:false,rescueLine:0,rescueDone:false,resolutionLine:0,resolutionDone:false,booksSeen:[],bookshelfSlots:[null,null,null,null],bookInspectionId:null,bookSlipReady:false,ending:null});
 
   class StoryRuntime {
     constructor({story,repository,mount,modal}) {
       this.story = validateDefinition(story); this.repository = repository; this.root = document.querySelector(mount); this.overlay = document.querySelector(modal); this.revision = 0; this.savedAt = null; this.storageAvailable = true; this.hintIndex = 0; this.zoom = {scale:1,dx:0,dy:0,pointer:null}; this.feedback = ''; this.sequenceSelected=null;this.sequenceFeedback='';this.sequenceDrag=null;this.modalStack=[];this.completionToken=0; this.visualDebug=Boolean(global.location?.search&&new URLSearchParams(global.location.search).has('visual-debug'));this.debugOverlay=this.visualDebug;
       this.voiceMuted=false;this.motionPaused=false;this.voiceSpeaking=false;this.spriteTimer=null;
-      try {this.voiceMuted=global.localStorage?.getItem(`metrivastories_story${String(story.number).padStart(2,'0')}_voices`)==='muted';this.motionPaused=global.localStorage?.getItem(`metrivastories_story${String(story.number).padStart(2,'0')}_motion`)==='paused';} catch {}
+      try {this.voiceMuted=global.localStorage?.getItem(`metrivastories_story${String(story.number).padStart(2,'0')}_voices`)==='muted';const motionKey=`metrivastories_story${String(story.number).padStart(2,'0')}_motion${story.number===5?'_v2':''}`,motionPreference=global.localStorage?.getItem(motionKey);this.motionPaused=motionPreference==='paused'||(!motionPreference&&Boolean(global.matchMedia?.('(prefers-reduced-motion: reduce)').matches));} catch {}
       if (!this.root || !this.overlay) throw new Error('Story mount or modal container is missing.');
       this.allowedEvidence = new Set(story.chapters.flatMap(ch=>ch.evidence.map(e=>e.id)));
       this.allowedDialogue = new Set(story.chapters.flatMap(ch=>ch.characters.flatMap(p=>p.questions.map(q=>`${ch.id}:${p.id}:${q.id}`))));
@@ -539,6 +557,7 @@
       this.revision = saved?.revision || 0; this.savedAt = saved?.savedAt || null;
       this.goToUnlockedChapter(); this.render();
       if(!saved?.state&&this.story.openingIntroduction)this.showOpening();
+      else if(this.state.dialogue?.phase==='opening')this.renderDialogue();
       else if(this.isSolved(this.story.chapters.length-1)&&!this.state.rescueDone&&this.story.chapters.at(-1).rescueDialogue)this.showRescueDialogue();
       if (!this.storageAvailable) this.toast('Progress could not be loaded from this browser.');
       return this;
@@ -595,6 +614,7 @@
       if (!raw || typeof raw !== 'object') return state;
       this.allowedCharacterIntros ||= new Set(this.story.chapters.flatMap(ch=>ch.characters.map(person=>`${ch.id}:${person.id}:intro`)));
       state.openingSeen=raw.openingSeen!==false;
+      state.conversationOpenings=Array.isArray(raw.conversationOpenings)?[...new Set(raw.conversationOpenings.filter(index=>Number.isInteger(index)&&index>=0&&index<this.story.chapters.length))]:[];
       state.rescueDone=Boolean(raw.rescueDone||raw.ending);
       state.resolutionDone=Boolean(raw.resolutionDone||raw.ending);
       state.resolutionLine=Number.isInteger(raw.resolutionLine)?Math.max(0,Math.min((this.story.resolution?.dialogue?.length||1)-1,raw.resolutionLine)):0;
@@ -607,13 +627,15 @@
       state.rescueLine=Number.isInteger(raw.rescueLine)?Math.max(0,Math.min(this.story.chapters.at(-1).rescueDialogue?.lines.length-1||0,raw.rescueLine)):0;
       state.found = [...new Set((Array.isArray(raw.found)?raw.found:[]).filter(id=>this.allowedEvidence.has(id)))];
       state.objectStates=normalizeObjectStates(this.story,raw.objectStates);
+      const companion=raw.companion||{};
+      state.companion={affection:Number.isFinite(companion.affection)?Math.max(0,Math.min(100,companion.affection)):40,mood:['idle','happy','curious','sniffing','excited','alert','worried','sleepy','affectionate','proud','treat','loved'].includes(companion.mood)?companion.mood:'idle',collapsed:Boolean(companion.collapsed),discoveries:Array.isArray(companion.discoveries)?[...new Set(companion.discoveries.filter(id=>this.allowedEvidence.has(id)))]:[],searchTarget:this.allowedEvidence.has(companion.searchTarget)?companion.searchTarget:null,message:typeof companion.message==='string'?companion.message.slice(0,180):'Biscuit is close by, ready to help.',paused:Boolean(companion.paused),minimized:Boolean(companion.minimized),positions:Object.fromEntries(this.story.chapters.map(ch=>{const p=companion.positions?.[ch.id];return [ch.id,{x:Number.isFinite(p?.x)?Math.max(0,Math.min(1,p.x)):.95,y:Number.isFinite(p?.y)?Math.max(0,Math.min(1,p.y)):.98}];}))};
       const savedSolved=new Set((Array.isArray(raw.solved)?raw.solved:[]).filter(id=>this.story.chapters.some(ch=>ch.puzzle.id===id)));
       for(const chapter of this.story.chapters){if(!savedSolved.has(chapter.puzzle.id))break;state.solved.push(chapter.puzzle.id);}
       state.completedDialogues = [...new Set((Array.isArray(raw.completedDialogues)?raw.completedDialogues:[]).filter(id=>this.allowedDialogue.has(id)))];
       state.characterIntrosSeen = [...new Set((Array.isArray(raw.characterIntrosSeen)?raw.characterIntrosSeen:[]).filter(id=>this.allowedCharacterIntros.has(id)))];
       for(const id of state.completedDialogues){const [chapterId,personId]=id.split(':');const introKey=`${chapterId}:${personId}:intro`;if(this.allowedCharacterIntros.has(introKey))state.characterIntrosSeen.push(introKey);}
       state.characterIntrosSeen=[...new Set(state.characterIntrosSeen)];
-      state.transcript = (Array.isArray(raw.transcript)?raw.transcript:[]).filter(line=>line&&typeof line.speaker==='string'&&typeof line.text==='string'&&Number.isInteger(line.chapter)).map(line=>({chapter:Math.max(0,Math.min(this.story.chapters.length-1,line.chapter)),speaker:line.speaker.slice(0,80),text:line.text.slice(0,2000)})).slice(-300);
+      state.transcript = (Array.isArray(raw.transcript)?raw.transcript:[]).filter(line=>line&&typeof line.speaker==='string'&&typeof line.text==='string'&&Number.isInteger(line.chapter)).map(line=>({chapter:Math.max(0,Math.min(this.story.chapters.length-1,line.chapter)),speaker:line.speaker.slice(0,80),text:line.text.slice(0,2000),...(typeof line.to==='string'?{to:line.to.slice(0,80)}:{})})).slice(-300);
       state.chapter = Number.isInteger(raw.chapter)?Math.max(0,Math.min(this.story.chapters.length-1,raw.chapter)):0;
       state.ending = state.solved.length===this.story.chapters.length&&this.story.chapters.at(-1).endings?.some(ending=>ending.id===raw.ending)?raw.ending:null;
       state.puzzleDrafts = {};
@@ -639,12 +661,17 @@
       if (d&&Number.isInteger(d.chapter)&&this.story.chapters[d.chapter]) {
         const person=this.story.chapters[d.chapter].characters.find(p=>p.id===d.characterId);
         const question=person?.questions.find(q=>q.id===d.questionId);
-        if (person&&((d.phase==='menu'&&!d.questionId)||(d.phase==='exchange'&&question&&Number.isInteger(d.line)&&d.line>=0&&d.line<4))) {
+        const script=this.story.conversationScript?.[d.chapter];
+        const scriptTopic=script?.topics?.find((topic,index)=>topic.focus===person?.id&&person?.questions[index%person.questions.length]?.id===d.questionId);
+        const lines=d.phase==='opening'?script?.opening:d.phase==='exchange'?(scriptTopic?.lines||null):null;
+        if (person&&((d.phase==='menu'&&!d.questionId)||(d.phase==='opening'&&Array.isArray(lines)&&Number.isInteger(d.line)&&d.line>=0&&d.line<lines.length)||(d.phase==='exchange'&&question&&Number.isInteger(d.line)&&d.line>=0&&d.line<(lines?.length||4)))) {
           const line=d.line||0;
           const replySpeaker=person.historical?'Eleanor’s manuscript':person.name;
-          const lines=question?[{speaker:'You',text:question.ask},{speaker:replySpeaker,text:question.reply},{speaker:'You',text:question.followUp},{speaker:replySpeaker,text:question.followReply}]:[];
+          const fallbackLines=question?[{speaker:'You',text:question.ask},{speaker:replySpeaker,text:question.reply},{speaker:'You',text:question.followUp},{speaker:replySpeaker,text:question.followReply}]:[];
+          const checkLines=lines||fallbackLines;
           const last=state.transcript.at(-1);
-          const recorded=d.recordedLine===line&&last?.chapter===d.chapter&&last?.speaker===lines[line]?.speaker&&last?.text===lines[line]?.text?line:null;
+          const recordedSpeaker=script&&checkLines[line]?.speaker?checkLines[line].speaker==='you'?'You':checkLines[line].speaker[0].toUpperCase()+checkLines[line].speaker.slice(1):checkLines[line]?.speaker;
+          const recorded=d.recordedLine===line&&last?.chapter===d.chapter&&last?.speaker===recordedSpeaker&&last?.text===checkLines[line]?.text?line:null;
           const introKey=`${this.story.chapters[d.chapter].id}:${person.id}:intro`;
           const showIntro=typeof d.showIntro==='boolean'?d.showIntro:!state.characterIntrosSeen.includes(introKey);
           state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:d.questionId||null,phase:d.phase,line,recordedLine:recorded,...(d.phase==='menu'?{showIntro}: {})};
@@ -735,19 +762,91 @@
     portrait(person,className='s6-person-portrait') {
       const sprite=this.story.characterSprites?.[person.id];
       const src=typeof sprite==='string'?sprite:sprite?.src;
-      if(src&&([2,3].includes(this.story.number)||className==='s6-conversation-portrait')){
+      if(src&&([2,3].includes(this.story.number)||['s6-conversation-portrait','s7-companion-portrait','s7-companion-hero'].includes(className))){
+        if(sprite.sheetSize&&sprite.frameWindows)return `<span class="${className} s6-sprite-portrait" role="img" aria-label="Portrait of ${escapeHtml(person.name)}" data-sprite-id="${escapeHtml(person.id)}"${person.expression?` data-expression="${escapeHtml(person.expression)}"`:''} style="aspect-ratio:${escapeHtml(sprite.aspectRatio||'1')}" >${spriteWindowMarkup(sprite,person.expression||'idle')}</span>`;
         const columns=Number(sprite?.columns)||2,rows=Number(sprite?.rows)||2;
-        return `<span class="${className} s6-sprite-portrait" role="img" aria-label="Portrait of ${escapeHtml(person.name)}" data-sprite-id="${escapeHtml(person.id)}" style="background-image:url(&quot;${escapeHtml(src)}&quot;);background-size:${columns*100}% ${rows*100}%;background-position:0% 0%;aspect-ratio:${escapeHtml(sprite?.aspectRatio||'1')}"></span>`;
+        const frame=sprite?.frames?.[person.expression]??sprite?.frames?.idle;
+        const individual=typeof frame==='string',initial=individual?0:Number(frame)||0,initialX=(initial%columns)*100/(columns-1||1),initialY=Math.floor(initial/columns)*100/(rows-1||1);
+        return `<span class="${className} s6-sprite-portrait" role="img" aria-label="Portrait of ${escapeHtml(person.name)}" data-sprite-id="${escapeHtml(person.id)}"${person.expression?` data-expression="${escapeHtml(person.expression)}"`:''} style="background-image:url(&quot;${escapeHtml(individual?frame:src)}&quot;);background-size:${individual?'contain':`${columns*100}% ${rows*100}%`};background-position:${individual?'center bottom':`${initialX}% ${initialY}%`};aspect-ratio:${escapeHtml(sprite?.aspectRatio||'1')}"></span>`;
       }
       const portraitSrc=this.story.characterPortraits?.[person.id];
       return portraitSrc?`<img class="${className}" src="${escapeHtml(portraitSrc)}" alt="Portrait of ${escapeHtml(person.name)}" loading="lazy" decoding="async">`:`<span class="s6-person-fallback">${escapeHtml(person.initials||person.name.split(/\s+/).map(part=>part[0]).join('').slice(0,2))}</span>`;
     }
+    companionMarkup(chapter) {
+      const dog=chapter.characters.find(person=>person.companion),state=this.state.companion,config=this.story.companion;
+      if(!dog)return '';
+      if(state.collapsed)return `<section class="s7-companion is-collapsed"><button type="button" class="s7-companion-toggle" data-s6="companion-toggle" aria-expanded="false">🐾 Biscuit · ${escapeHtml(state.message)} <span>Show</span></button></section>`;
+      const target=chapter.evidence.find(item=>item.id===state.searchTarget);
+      const examined=target&&this.has(target.id),availableTarget=target&&!examined;
+      const message=examined?'Nice work! That clue is in your notebook. Ready to look for another?':state.message;
+      const expression=this.sceneCompanion?.searching?'investigating':['treat','loved','happy'].includes(state.mood)?state.mood:availableTarget?'investigating':state.mood||'idle';
+      return `<section class="s7-companion is-enhanced ${state.paused||this.motionPaused?'is-still':''}" aria-label="Biscuit, your companion"><div class="s7-companion-head"><div><img class="s7-companion-avatar" src="${escapeHtml(this.story.characterPortraits.biscuit)}" alt=""><span><strong>Biscuit</strong><small>${escapeHtml(config.role||'Your loyal sidekick')}</small></span></div><button type="button" class="s7-companion-toggle" data-s6="companion-toggle" aria-expanded="true" aria-label="Collapse Biscuit panel">−</button></div><div class="s7-companion-feature">${this.portrait({...dog,expression},'s7-companion-hero')}<div class="s7-companion-guidance"><p class="s7-companion-message" role="status" aria-live="polite">${escapeHtml(message)}</p>${availableTarget?`<button class="s7-follow" data-s6="companion-follow" data-id="${escapeHtml(target.id)}">Follow Biscuit to this clue →</button>`:''}</div></div><div class="s7-companion-actions"><button type="button" class="s6-quiet" data-s6="companion-pet"><span aria-hidden="true">♥</span> Pet</button><button type="button" class="s6-quiet" data-s6="companion-treat"><span aria-hidden="true">◉</span> Give treat</button><button type="button" class="s6-quiet" data-s6="companion-search"><span aria-hidden="true">⌕</span> Ask to search</button></div><small class="s7-companion-bond">Trust ${state.affection}% · optional, never required</small></section>`;
+
+    }
+    refreshCompanionPanel() {
+      const panel=this.root.querySelector('.s7-companion');if(panel)panel.outerHTML=this.companionMarkup(this.current());
+    }
+    sceneExplorerModel() {
+      const ch=this.current(),items=ch.evidence.filter(item=>this.objectVisible(ch,item));
+      if(this.explorerChapter!==ch.id){this.explorerChapter=ch.id;this.explorerIndex=0;}
+      const index=Math.max(0,Math.min(items.length-1,this.explorerIndex||0));this.explorerIndex=index;
+      return {chapter:ch,items,index,item:items[index],found:ch.evidence.filter(item=>this.has(item.id)).length};
+    }
+    sceneExplorerMarkup() {
+      const {chapter:ch,items,index,item,found}=this.sceneExplorerModel();if(!item)return '';
+      const examined=this.has(item.id);
+      return `<section class="s7-clue-explorer" aria-label="Scene clue explorer"><div class="s7-explorer-heading"><h3>Explore the scene</h3><span>${found} of ${ch.evidence.length} clues found</span></div><div class="s7-explorer-browser"><button type="button" class="s7-explorer-arrow" data-s6="explorer-step" data-delta="-1" aria-label="Previous scene clue" ${items.length<2?'disabled':''}>‹</button><div class="s7-explorer-card" aria-live="polite"><span class="s7-explorer-thumb">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-evidence-thumb')}</span><div><small>Clue ${index+1} of ${items.length}${examined?' · Examined':''}</small><strong>${escapeHtml(item.title)}</strong><p>${examined?'This clue is in your notebook. You can examine it again.':'Look closely at this part of the scene to learn more.'}</p></div></div><button type="button" class="s7-explorer-arrow" data-s6="explorer-step" data-delta="1" aria-label="Next scene clue" ${items.length<2?'disabled':''}>›</button></div><button type="button" class="s6-btn s7-examine-clue" data-s6="inspect" data-id="${escapeHtml(item.id)}">⌕ ${examined?'Review':'Examine'} this clue</button><div class="s7-explorer-dots" aria-label="Choose a scene clue">${items.map((e,i)=>`<button type="button" data-s6="explorer-pick" data-index="${i}" aria-label="Select clue ${i+1}: ${escapeHtml(e.title)}" aria-pressed="${i===index}"><span></span></button>`).join('')}</div></section>`;
+    }
+    selectExplorer(index,focusSelector) {
+      const {items}=this.sceneExplorerModel();if(!items.length)return;
+      this.explorerIndex=((index%items.length)+items.length)%items.length;
+      const explorer=this.root.querySelector('.s7-clue-explorer');if(explorer)explorer.outerHTML=this.sceneExplorerMarkup();
+      if(focusSelector)this.root.querySelector(focusSelector)?.focus({preventScroll:true});
+      this.root.querySelector('.s7-explorer-card')?.scrollIntoView({behavior:this.motionPaused?'auto':'smooth',block:'nearest'});
+    }
+    followCompanionClue(id) {
+      const {items}=this.sceneExplorerModel(),index=items.findIndex(item=>item.id===id);if(index<0)return;
+      this.selectExplorer(index);const explorer=this.root.querySelector('.s7-clue-explorer');
+      const clue=explorer?.querySelector('.s7-examine-clue')||[...this.root.querySelectorAll('.s6-object-list [data-id]')].find(button=>button.dataset.id===id);
+      clue?.scrollIntoView({behavior:this.motionPaused?'auto':'smooth',block:'center'});clue?.focus({preventScroll:true});
+    }
+    decorateStory7Scene() {
+      this.root.classList.add('s7-enhanced-investigation');
+
+      const scene=this.root.querySelector('.s6-scene'),expand=document.createElement('button');expand.type='button';expand.className='s7-scene-expand';expand.dataset.s6='scene-expand';expand.setAttribute('aria-label','Expand investigation scene');expand.textContent='⛶';scene?.append(expand);
+      const nav=document.createElement('nav');nav.className='s7-mobile-chapters';nav.setAttribute('aria-label','Chapter navigation');
+      const i=this.state.chapter,previous=i-1,next=i+1;
+      nav.innerHTML=`<button type="button" data-s6="chapter" data-index="${previous}" ${previous<0||!this.chapterUnlocked(previous)?'disabled':''} aria-label="Previous chapter">‹ <span>Chapter ${String(Math.max(1,i)).padStart(2,'0')}</span></button><button type="button" class="is-current" data-s6="locations" aria-label="Choose chapter">${String(i+1).padStart(2,'0')} · ${escapeHtml(this.current().location)}</button><button type="button" data-s6="chapter" data-index="${next}" ${next>=this.story.chapters.length||!this.chapterUnlocked(next)?'disabled':''} aria-label="Next chapter"><span>Chapter ${String(Math.min(this.story.chapters.length,next+1)).padStart(2,'0')}</span> ›</button>`;
+      this.root.querySelector('.s6-tabs')?.after(nav);
+    }
+    expandScene() {
+      const scene=this.root.querySelector('.s6-scene')?.cloneNode(true);if(!scene)return;
+      scene.querySelector('.s7-scene-pet')?.remove();scene.querySelector('.s7-scene-expand')?.remove();
+      this.showModal(this.current().title,`<section class="s7-scene-expanded"><h2>${escapeHtml(this.current().title)}</h2><p>Select a numbered marker to examine a clue. On small screens, swipe across the image.</p><div class="s7-scene-pan" tabindex="0" aria-label="Enlarged scene; scroll horizontally to explore">${scene.outerHTML}</div></section>`, '<button class="s6-quiet" data-s6="close">Return to investigation</button>');
+    }
+    async petCompanion(action) {
+      const state=this.state.companion,config=this.story.companion,chapter=this.current();
+      if(action==='search'&&this.story.companion?.scenePet&&this.sceneCompanion)return this.sceneCompanion.search();
+      if(action==='search'){
+        const search=chapter.companionSearch||{},target=search.targets?.find(id=>!this.has(id));
+        if(!target){state.mood='curious';state.message=search.emptyMessage||'Biscuit has sniffed every corner that matters here.';state.searchTarget=null;await this.save();this.render();return;}
+        state.mood='sniffing';state.message=search.searchMessage||'Biscuit is following a scent…';state.searchTarget=target;await this.save();this.render();
+        const chapterIndex=this.state.chapter,delay=global.matchMedia?.('(prefers-reduced-motion: reduce)').matches?0:(config.discoveryDelay||850);
+        global.setTimeout(async()=>{if(this.state.chapter!==chapterIndex||this.has(target))return;const item=this.current().evidence.find(entry=>entry.id===target);if(!item)return;state.mood='excited';state.message=search.foundMessage||`Biscuit found ${item.title.toLowerCase()}!`;state.discoveries=[...new Set([...state.discoveries,target])];this.state.found.push(target);this.state.objectStates=applyObjectTransitions(this.story,this.state.objectStates,item.onExamine);await this.save();this.render();this.inspect(target,false,true);},delay);
+        return;
+      }
+      if(action==='pet'){state.affection=Math.min(100,state.affection+(config.petGain||3));state.mood=this.story.companion?.scenePet?'loved':'happy';state.message=config.petMessage||'Biscuit leans into your hand and gives a happy wag.';}
+      else {state.affection=Math.min(100,state.affection+(config.treatGain||5));state.mood=this.story.companion?.scenePet?'treat':'affectionate';state.message=config.treatMessage||'Biscuit accepts the treat with a delighted wag.';}
+      await this.save();this.render();
+    }
     render() {
+      this.sceneCompanion?.destroy();
       const ch=this.current(),gate=this.chapterGateMet(ch),foundInChapter=ch.evidence.filter(e=>this.has(e.id)).length,solved=this.isSolved(this.state.chapter),puzzle=ch.puzzle;
       const tabs=this.story.chapters.map((chapter,index)=>{const collected=chapter.evidence.filter(item=>this.has(item.id)).length,total=chapter.evidence.length;return `<button class="${index===this.state.chapter?'is-active':''}" data-s6="chapter" data-index="${index}" aria-label="Chapter ${index+1}, ${escapeHtml(chapter.location)}, ${collected} of ${total} evidence collected" ${index===this.state.chapter?'aria-current="page"':''} ${!this.chapterUnlocked(index)?'disabled title="Solve the current chapter puzzle to unlock this location"':''}><span>${String(index+1).padStart(2,'0')} · ${escapeHtml(chapter.location)}</span><span class="s6-tab-count">${collected}/${total}</span></button>`}).join('');
       const regions=ch.evidence.map(e=>this.objectVisible(ch,e)&&e.inspectionRegion?`<button class="s6-inspection-region" style="left:${e.inspectionRegion.x}%;top:${e.inspectionRegion.y}%;width:${e.inspectionRegion.width}%;height:${e.inspectionRegion.height}%" data-s6="inspect-region" data-id="${e.id}" tabindex="-1" aria-hidden="true"></button>`:'').join('');
-      const hotspots=ch.evidence.map((e,index)=>this.objectVisible(ch,e)?`<button class="s6-hotspot ${this.has(e.id)?'is-found':''}" style="--x:${e.markerPosition?.x??e.position.x}%;--y:${e.markerPosition?.y??e.position.y}%" data-s6="inspect" data-id="${e.id}" aria-label="${this.has(e.id)?'Review':'Examine'} ${escapeHtml(e.title)}" title="${escapeHtml(e.title)}">${this.has(e.id)?'✓':index+1}</button>`:'').join('');
-      const people=ch.characters.map(person=>{const available=this.characterAvailable(person,ch);const questions=this.availableQuestions(person).length;const unread=person.questions.filter(q=>this.condition(q.availableWhen||{always:true})&&!this.completed(this.dialogueKey(person.id,q.id))).length;return `<button class="s6-person" data-s6="character" data-id="${person.id}" ${!available?'disabled title="Examine more evidence to meet this person"':''}><span class="s6-person-mark">${this.portrait(person)}</span><span><strong>${escapeHtml(person.name)}</strong><small>${escapeHtml(person.role)} · ${available?`${questions} questions available`:'Not introduced yet'}</small></span><span class="s6-person-state">${available&&unread?`New · ${unread}`:available?'Speak →':'Locked'}</span></button>`}).join('');
+      const hotspots=ch.evidence.map((e,index)=>this.objectVisible(ch,e)?`<button class="s6-hotspot ${this.has(e.id)?'is-found':''} ${this.state.companion?.discoveries?.includes(e.id)?'is-biscuit-clue':''}" style="--x:${e.markerPosition?.x??e.position.x}%;--y:${e.markerPosition?.y??e.position.y}%" data-s6="inspect" data-id="${e.id}" aria-label="${this.has(e.id)?'Review':'Examine'} ${escapeHtml(e.title)}" title="${escapeHtml(e.title)}">${this.state.companion?.discoveries?.includes(e.id)?'🐾':this.has(e.id)?'✓':index+1}</button>`:'').join('');
+      const people=ch.characters.filter(person=>!person.companion).map(person=>{const available=this.characterAvailable(person,ch);const questions=this.availableQuestions(person).length;const unread=person.questions.filter(q=>this.condition(q.availableWhen||{always:true})&&!this.completed(this.dialogueKey(person.id,q.id))).length;return `<button class="s6-person" data-s6="character" data-id="${person.id}" ${!available?'disabled title="Examine more evidence to meet this person"':''}><span class="s6-person-mark">${this.portrait(person)}</span><span><strong>${escapeHtml(person.name)}</strong><small>${escapeHtml(person.role)} · ${available?`${questions} questions available`:'Not introduced yet'}</small></span><span class="s6-person-state">${available&&unread?`New · ${unread}`:available?'Speak →':'Locked'}</span></button>`}).join('');
+      const companionCard=this.story.companion?this.companionMarkup(ch):'';
       const evidence=ch.evidence.filter(item=>this.has(item.id));
       const subject=this.story.caseSubject,recovered=this.isSolved(this.story.chapters.length-1);
       const caseSubjectCard=subject?(recovered?`<button type="button" class="s6-case-subject is-rescued" data-s6="edda-conversation" aria-label="Speak with ${escapeHtml(subject.name)} after her rescue"><span class="s6-person-mark">${this.portrait(subject)}</span><span><strong>${escapeHtml(subject.name)}</strong><small>${escapeHtml(subject.recoveredDescription||'Found safe.')} · Speak with her</small></span><span class="s6-person-state">Speak →</span></button>`:`<div class="s6-case-subject"><span class="s6-person-mark">${this.portrait(subject)}</span><span><strong>${escapeHtml(subject.name)}</strong><small>${escapeHtml(subject.description)}</small></span><span class="s6-person-state">Missing</span></div>`):'';
@@ -755,13 +854,15 @@
       this.root.innerHTML=`<header class="s6-heading"><div><span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · ${escapeHtml(this.story.genre)} · ${this.story.duration}</span><h1>${escapeHtml(this.story.title)}</h1><p>${escapeHtml(this.story.tagline)}</p></div><div class="s6-progress"><div class="s6-progress-label"><span>Story progress</span><span>${this.progress()}%</span></div><div class="s6-progress-track" role="progressbar" aria-valuenow="${this.progress()}" aria-valuemin="0" aria-valuemax="100"><span style="width:${this.progress()}%"></span></div></div></header>
       <nav class="s6-tabs" aria-label="Unlocked locations">${tabs}</nav>
       <div class="s6-game"><section class="s6-scene-card"><header class="s6-scene-head"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} of ${String(this.story.chapters.length).padStart(2,'0')}</span><h2>${escapeHtml(ch.title)}</h2><p>${escapeHtml(ch.subtitle)}</p></header><div class="s6-scene" style="aspect-ratio:${ch.spatial?.master.width||1672}/${ch.spatial?.master.height||941}"><img src="${escapeHtml(this.sceneSource(ch))}" alt="Scene: ${escapeHtml(ch.location)}">${regions}${this.debugMarkup(ch)}${hotspots}</div><div class="s6-scene-foot"><span>${foundInChapter} of ${ch.evidence.length} evidence collected</span><span class="s6-foot-help">Select a numbered marker or a clue below${this.visualDebug?' · Developer geometry preview':''}</span></div>${this.visualDebug?`<button class="s6-quiet s6-debug-toggle" data-s6="debug-toggle">${this.debugOverlay?'Hide':'Show'} scene geometry</button>`:''}<div class="s6-object-list">${ch.evidence.map((e,i)=>`<button class="${this.has(e.id)?'is-found':''}" data-s6="inspect" data-id="${e.id}">${i+1}. ${escapeHtml(e.title)} ${this.has(e.id)?'✓':''}</button>`).join('')}</div></section>
-      <aside class="s6-panel"><section class="s6-panel-main"><h2>Investigation</h2><p class="s6-objective">${escapeHtml(ch.intro)}</p><div class="s6-completion ${solved?'is-done':''}">${solved?'✓ Chapter complete':gate?'✓ Investigation gate open':escapeHtml(status)}</div><div class="s6-actions"><button class="s6-btn" data-s6="puzzle" ${!gate||solved?'disabled':''}>${escapeHtml(puzzle.title)} →</button>${solved&&this.state.chapter<this.story.chapters.length-1?'<button class="s6-btn" data-s6="continue">Next chapter →</button>':''}${solved&&this.state.chapter===this.story.chapters.length-1&&!this.state.ending?(ch.rescueDialogue&&!this.state.rescueDone?'<button class="s6-btn" data-s6="rescue-dialogue">Continue Edda’s conversation →</button>':'<button class="s6-btn" data-s6="ending">Choose the next step →</button>'):''}${this.state.ending?'<button class="s6-quiet" data-s6="ending-review">Review the resolution →</button>':''}<button class="s6-quiet" data-s6="hint">💡 Progressive hint</button></div>${this.state.ending?`<div class="s6-note"><strong>Case resolved.</strong> ${escapeHtml(this.story.chapters.at(-1).endings.find(item=>item.id===this.state.ending)?.label||'')}</div>`:''}${this.lastError?`<p class="s6-feedback" role="status">${escapeHtml(this.lastError)}</p>`:''}</section><section><hr><h3>People in this case</h3><div class="s6-people">${people}${caseSubjectCard}</div><p class="s6-foot-help">Ask an available person about a clue, then follow up. Their answers are added to your conversation log.</p></section></aside></div>
+      <aside class="s6-panel"><section class="s6-panel-main"><h2>Investigation</h2><p class="s6-objective">${escapeHtml(ch.intro)}</p><div class="s6-completion ${solved?'is-done':''}">${solved?'✓ Chapter complete':gate?'✓ Investigation gate open':escapeHtml(status)}</div><div class="s6-actions"><button class="s6-btn" data-s6="puzzle" ${!gate||solved?'disabled':''}>${escapeHtml(puzzle.title)} →</button>${solved&&this.state.chapter<this.story.chapters.length-1?'<button class="s6-btn" data-s6="continue">Next chapter →</button>':''}${solved&&this.state.chapter===this.story.chapters.length-1&&!this.state.ending?(ch.rescueDialogue&&!this.state.rescueDone?'<button class="s6-btn" data-s6="rescue-dialogue">Continue Edda’s conversation →</button>':'<button class="s6-btn" data-s6="ending">Choose the next step →</button>'):''}${this.state.ending?'<button class="s6-quiet" data-s6="ending-review">Review the resolution →</button>':''}<button class="s6-quiet" data-s6="hint">💡 Progressive hint</button></div>${this.state.ending?`<div class="s6-note"><strong>Case resolved.</strong> ${escapeHtml(this.story.chapters.at(-1).endings.find(item=>item.id===this.state.ending)?.label||'')}</div>`:''}${this.lastError?`<p class="s6-feedback" role="status">${escapeHtml(this.lastError)}</p>`:''}</section>${companionCard}<section><hr><h3>People in this case</h3><div class="s6-people">${people}${caseSubjectCard}</div><p class="s6-foot-help">Ask an available person about a clue, then follow up. Their answers are added to your conversation log.</p></section></aside></div>
       <section class="s6-notebook"><div class="s6-notebook-head"><h2>Your Notebook</h2><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${foundInChapter} of ${ch.evidence.length} evidence collected</span></div>${evidence.length?`<div class="s6-evidence-grid">${evidence.map(item=>`<button class="s6-evidence-card" data-s6="inspect" data-id="${item.id}"><span class="s6-evidence-thumb-frame">${evidenceImageMarkup(ch,item,this.state.objectStates,'s6-evidence-thumb')}</span><span class="s6-evidence-copy"><small class="s6-evidence-index">Evidence ${String(ch.evidence.findIndex(entry=>entry.id===item.id)+1).padStart(2,'0')}</small><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.note||'Evidence collected · Examine again')}</small></span></button>`).join('')}</div>`:'<p class="s6-foot-help">Your notebook is empty. Examine a marked object in the scene to begin.</p>'}<div class="s6-tools"><p>${this.storageAvailable?'Progress saved in this browser.':'Progress could not be saved. Export a copy before closing this page.'}${this.savedAt?` Last saved ${new Date(this.savedAt).toLocaleString()}.`:''}</p><button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="export">Export save</button><button class="s6-quiet" data-s6="import">Import save</button><button class="s6-quiet s6-restart" data-s6="restart">Restart this story</button><input type="file" id="s6-import-file" accept="application/json,.json" class="s6-hidden"></div></section>`;
       if(solved&&this.story.pageAppearance){
         const completion=this.root.querySelector('.s6-completion');
         if(completion)completion.innerHTML=`<span class="s6-completion-icon" aria-hidden="true">✓</span><span class="s6-completion-copy"><strong>Chapter complete</strong><small>${foundInChapter===ch.evidence.length?`You found all ${ch.evidence.length} pieces of evidence in this chapter.`:`You found ${foundInChapter} of ${ch.evidence.length} pieces of evidence in this chapter.`}</small></span>`;
       }
       if(this.story.pageAppearance)this.decorateInvestigationPage(ch,foundInChapter,solved);
+      if(this.story.number===7)this.decorateStory7Scene();
+      if(this.story.companion?.scenePet&&global.MetrivaSceneCompanion)this.sceneCompanion=global.MetrivaSceneCompanion.mount(this);
       if(solved&&isVisualRoute(puzzle)){
         const review=this.root.querySelector('[data-s6="puzzle"]');
         if(review){review.disabled=false;review.textContent='Review the route →';}
@@ -904,6 +1005,7 @@
     findEvidence(id) { return this.story.chapters.flatMap((chapter,index)=>chapter.evidence.map(item=>({...item,chapter:index}))).find(item=>item.id===id); }
     inspect(id,stack=false,fromScene=false) {
       const item=this.findEvidence(id); if(!item||item.chapter!==this.state.chapter)return;
+      if(this.story.number===7){this.explorerChapter=this.current().id;this.explorerIndex=this.current().evidence.filter(e=>this.objectVisible(this.current(),e)).findIndex(e=>e.id===id);}
       if(!this.has(id)){this.state.found.push(id);this.state.objectStates=applyObjectTransitions(this.story,this.state.objectStates,item.onExamine);this.save();this.render();}
       if(fromScene&&item.conversationOnInspect){this.openCharacter(item.conversationOnInspect);return;}
       const chapter=this.story.chapters[item.chapter];
@@ -942,14 +1044,19 @@
     zoomEnd(event) { if(this.zoom.pointer&&event.pointerId===this.zoom.pointer.id){this.zoom.pointer=null;this.overlay.querySelector('.s6-zoom-view')?.classList.remove('is-dragging');} }
     openCharacter(id) {
       const chapter=this.current(),person=chapter.characters.find(entry=>entry.id===id); if(!person||!this.characterAvailable(person))return;
+      const script=this.story.conversationScript?.[this.state.chapter];
+      if(script&&(!script.openingCharacterId||script.openingCharacterId===id)&&!this.state.conversationOpenings.includes(this.state.chapter)){
+        this.state.dialogue={chapter:this.state.chapter,characterId:id,questionId:null,phase:'opening',line:0};this.save();this.renderDialogue();return;
+      }
       const openingOwnsIntro=this.state.chapter===0&&this.story.openingIntroduction?.characterId===id;
-      const showIntro=!openingOwnsIntro&&!this.hasCharacterConversation(id,this.state.chapter),introKey=this.characterIntroKey(id,this.state.chapter);
+      const chapterOpeningOwnsIntro=this.state.conversationOpenings?.includes(this.state.chapter)&&script?.opening?.some(line=>line.speaker===id&&unquoteDialogue(line.text)===unquoteDialogue(person.intro));
+      const showIntro=!openingOwnsIntro&&!chapterOpeningOwnsIntro&&!this.hasCharacterConversation(id,this.state.chapter),introKey=this.characterIntroKey(id,this.state.chapter);
       this.state.characterIntrosSeen||=[];if(!this.state.characterIntrosSeen.includes(introKey))this.state.characterIntrosSeen.push(introKey);
       this.state.dialogue={chapter:this.state.chapter,characterId:id,questionId:null,phase:'menu',line:0,showIntro};this.save();this.renderDialogue();
     }
     conversationMarkup(person,content,speaker=person.name,actions='') {
       const animated=Boolean(this.story.characterSprites?.[person.id]?.frames);
-      if([1,2,3,6].includes(this.story.number)){
+      if([1,2,3,5,6,7].includes(this.story.number)){
         const scene=this.sceneSource(this.current());
         const backdrop=this.current().conversationBackdrop||{};
         const motion=animated?`<button type="button" class="s6-quiet" data-s6="toggle-motion" aria-pressed="${!this.motionPaused}">${this.motionPaused?'Resume motion':'Pause motion'}</button>`:'';
@@ -959,7 +1066,7 @@
       return `<div class="s6-conversation"><div class="s6-conversation-art" data-actor-speaking="${speaker!=='You'}">${this.portrait(person,'s6-conversation-portrait')}${animated?`<button type="button" class="s6-quiet s6-motion-toggle" data-s6="toggle-motion" aria-pressed="${!this.motionPaused}">${this.motionPaused?'Resume motion':'Pause motion'}</button>`:''}</div><div class="s6-conversation-body">${content}</div></div>`;
     }
     showCharacterConversation(title,person,content,actions,speaker=person.name) {
-      const staged=[1,2,3,6].includes(this.story.number);
+      const staged=[1,2,3,5,6,7].includes(this.story.number);
       this.showModal(title,this.conversationMarkup(person,content,speaker,staged?actions:''),staged?'':actions,{voiceDialogue:true});
     }
     voiceControl(speaker,spokenText,context=null) {
@@ -998,6 +1105,7 @@
       if(!sprite||typeof sprite==='string'||!sprite.frames)return;
       const columns=Number(sprite.columns)||2,rows=Number(sprite.rows)||2,frames=sprite.frames;
       const setFrame=name=>{
+        if(sprite.sheetSize&&sprite.frameWindows){Object.assign((actor.querySelector?.('.s6-sprite-frame')||actor).style,spriteWindowStyle(sprite,name));return;}
         const frame=frames[name]??frames.idle??0;
         if(typeof frame==='string'){
           actor.style.backgroundImage=`url("${frame.replaceAll('"','%22')}")`;
@@ -1008,10 +1116,14 @@
           actor.style.backgroundPosition=`${(index%columns)*100/(columns-1||1)}% ${Math.floor(index/columns)*100/(rows-1||1)}%`;
         }
       };
-      setFrame('idle');
-      const reduced=global.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      actor.closest('.s6-conversation-art')?.classList.toggle('is-motion-paused',Boolean(this.motionPaused||reduced));
-      if(this.motionPaused||reduced)return;
+      const requested=actor.dataset.expression;
+      const cycle=sprite.expressionCycles?.[requested||'idle'];
+      const hasCycle=Array.isArray(cycle)&&cycle.length>1;
+      setFrame(requested&&frames[requested]!==undefined?requested:'idle');
+      const art=actor.closest('.s6-conversation-art');
+      art?.classList.toggle('is-motion-paused',Boolean(this.motionPaused));
+      art?.classList.toggle('is-motion-enabled',!this.motionPaused);
+      if(this.motionPaused||(requested&&frames[requested]!==undefined&&!hasCycle))return;
       const start=Date.now(),speaks=actor.closest('.s6-conversation-art')?.dataset.actorSpeaking==='true';
       const body=actor.closest('.s6-conversation')?.querySelector('.s6-conversation-body');
       const spokenText=body?.querySelector('.s6-dialogue-text')?.textContent||body?.querySelector('p:not(.s6-stage-direction)')?.textContent||'';
@@ -1019,36 +1131,45 @@
       this.spriteTimer=global.setInterval(()=>{
         if(!actor.isConnected){this.stopCharacterAnimation();return;}
         const elapsed=Date.now()-start;
-        setFrame(characterFrame(speaks,this.voiceSpeaking,elapsed,speakFor));
+        setFrame(hasCycle?cycle[Math.floor(elapsed/(sprite.cycleInterval||1400))%cycle.length]:characterFrame(speaks,this.voiceSpeaking,elapsed,speakFor));
       },90);
     }
     toggleMotion() {
       this.motionPaused=!this.motionPaused;
-      try {global.localStorage?.setItem(`metrivastories_story${String(this.story.number).padStart(2,'0')}_motion`,this.motionPaused?'paused':'enabled');} catch {}
+      const motionKey=`metrivastories_story${String(this.story.number).padStart(2,'0')}_motion${this.story.number===5?'_v2':''}`;
+      try {global.localStorage?.setItem(motionKey,this.motionPaused?'paused':'enabled');} catch {}
       const button=this.overlay.querySelector('[data-s6="toggle-motion"]');if(button){button.textContent=this.motionPaused?'Resume motion':'Pause motion';button.setAttribute('aria-pressed',String(!this.motionPaused));}
       this.stopCharacterAnimation();this.startCharacterAnimation();
     }
     renderDialogue() {
       const d=this.state.dialogue;if(!d)return;
       const chapter=this.story.chapters[d.chapter],person=chapter.characters.find(item=>item.id===d.characterId);if(!person)return;
-      if(d.phase==='exchange'){
-        const q=person.questions.find(item=>item.id===d.questionId);if(!q)return;
+      if(d.phase==='exchange'||d.phase==='opening'){
+        const q=person.questions.find(item=>item.id===d.questionId);if(d.phase==='exchange'&&!q)return;
+        const script=this.story.conversationScript?.[d.chapter];
+        const topic=script?.topics?.filter(item=>item.focus===person.id)[person.questions.findIndex(item=>item.id===d.questionId)];
         const replySpeaker=person.historical?'Eleanor’s manuscript':person.name;
-        const lines=[{speaker:'You',text:q.ask},{speaker:replySpeaker,text:q.reply,direction:person.direction||'A thoughtful pause.'},{speaker:'You',text:q.followUp},{speaker:replySpeaker,text:q.followReply,direction:person.direction||'They answer gently.'}];
-        const line=lines[d.line];
-        if(d.recordedLine!==d.line){this.state.transcript.push({chapter:d.chapter,speaker:line.speaker,text:line.text});this.state.transcript=this.state.transcript.slice(-300);d.recordedLine=d.line;this.save();}
-        const controls=d.line<3?`<button class="s6-btn" data-s6="dialogue-next">${d.line===0?'Hear the reply →':'Continue →'}</button>`:`<button class="s6-btn" data-s6="dialogue-finish">Finish this conversation →</button>`;
-        this.showCharacterConversation(`${person.name} · conversation`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · conversation</span><p class="s6-stage-direction">${line.speaker==='You'?'You ask the question.':escapeHtml(line.direction||'')}</p><span class="s6-speaker">${escapeHtml(line.speaker)}</span><p class="s6-dialogue-text">${dialogueMarkup(line.text)}</p>`,`${controls}${this.voiceControl(line.speaker,line.text,{characterId:person.id,questionId:q.id,line:d.line,chapter:d.chapter})}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,line.speaker);
+        const rawLines=d.phase==='opening'?script?.opening:topic?.lines;
+        const lines=rawLines?.map(item=>({...item,speaker:item.speaker==='you'?'You':chapter.characters.find(character=>character.id===item.speaker)?.name||item.speaker[0].toUpperCase()+item.speaker.slice(1)}))||(q?[{speaker:'You',text:q.ask},{speaker:replySpeaker,text:q.reply,direction:person.direction||'A thoughtful pause.'},{speaker:'You',text:q.followUp},{speaker:replySpeaker,text:q.followReply}]:[]);
+        const line=lines[d.line];if(!line)return;
+        const speakerPerson=Object.assign({},line.speaker==='You'?(chapter.characters.find(item=>item.id===line.to)||person):(chapter.characters.find(item=>item.name===line.speaker)||person),{expression:line.expression||null});
+        const recipient=line.to?`<small class="s6-dialogue-recipient">→ ${line.to==='you'?'You':escapeHtml(chapter.characters.find(item=>item.id===line.to)?.name||line.to)}</small>`:'';
+        if(d.recordedLine!==d.line){this.state.transcript.push({chapter:d.chapter,speaker:line.speaker,text:line.text,...(line.to?{to:line.to}:{})});this.state.transcript=this.state.transcript.slice(-300);d.recordedLine=d.line;this.save();}
+        const last=d.line===lines.length-1;
+        const controls=last?`<button class="s6-btn" data-s6="dialogue-finish">${d.phase==='opening'?'Choose a topic →':'Finish this conversation →'}</button>`:`<button class="s6-btn" data-s6="dialogue-next">${d.line===0?'Continue →':'Continue →'}</button>`;
+        const conversationTitle=d.phase==='opening'?(d.chapter===0?this.story.openingIntroduction?.title||chapter.title:chapter.title):topic?.label||person.name;
+        this.showCharacterConversation(`${d.phase==='opening'?conversationTitle:person.name} · conversation`,speakerPerson,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · ${d.phase==='opening'?'first meeting':'conversation'}</span><h2 class="s6-story05-dialogue-title">${escapeHtml(conversationTitle)}</h2><p class="s6-stage-direction">${line.speaker==='You'?'You speak.':escapeHtml(line.direction||'')}</p><span class="s6-speaker">${escapeHtml(line.speaker)}</span>${recipient}<p class="s6-dialogue-text">${dialogueMarkup(line.text)}</p>`,`${controls}${line.speaker==='You'?'':this.voiceControl(line.speaker,line.text)}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,line.speaker);
         return;
       }
-      const questions=person.questions.map(q=>{const available=this.condition(q.availableWhen||{always:true});const done=this.completed(this.dialogueKey(person.id,q.id,d.chapter));return `<button class="s6-question" data-s6="ask" data-id="${q.id}" ${!available?'disabled title="Examine related evidence to unlock this question"':''}>${escapeHtml(q.ask)}${done?'<small>Discussed · ask again</small>':!available?'<small>Locked · investigate related evidence</small>':''}</button>`}).join('');
+      const topics=this.story.conversationScript?.[d.chapter]?.topics?.filter(topic=>topic.focus===person.id);
+      const questions=person.questions.map((q,index)=>{const available=this.condition(q.availableWhen||{always:true});const done=this.completed(this.dialogueKey(person.id,q.id,d.chapter));const label=topics?.[index]?.label||q.ask;return `<button class="s6-question" data-s6="ask" data-id="${q.id}" ${!available?'disabled title="Examine related evidence to unlock this question"':''}>${escapeHtml(label)}${done?'<small>Discussed · ask again</small>':!available?'<small>Locked · investigate related evidence</small>':''}</button>`}).join('');
       const showIntro=d.showIntro??!this.hasCharacterConversation(person.id,d.chapter),introText=showIntro?(person.intro||'Ask what you would like to know. Their answers may help connect the evidence.'):'What would you like to ask?';
       const introVoice=showIntro?this.voiceControl(person.historical?'Eleanor’s manuscript':person.name,person.intro):'';
       const introCopy=person.intro===person.bio&&showIntro?'':`<p>${escapeHtml(introText)}</p>`;
       this.showCharacterConversation(`Speak with ${person.name}`,person,`<span class="s6-eyebrow">${escapeHtml(chapter.location)} · ${escapeHtml(person.role)}</span><h2>${escapeHtml(person.name)}</h2><p class="s6-stage-direction">${escapeHtml(person.bio)}</p>${introCopy}<div class="s6-choice-list">${questions}</div>`,`${introVoice}<button class="s6-quiet" data-s6="transcript">Conversation log</button><button class="s6-quiet" data-s6="close">Return to investigation</button>`,showIntro?person.name:'You');
     }
-    nextDialogue() { const d=this.state.dialogue;if(!d||d.phase!=='exchange')return;d.line=Math.min(3,d.line+1);d.recordedLine=null;this.save();this.renderDialogue(); }
-    finishDialogue() { const d=this.state.dialogue;if(!d||d.phase!=='exchange')return;this.state.completedDialogues.push(this.dialogueKey(d.characterId,d.questionId,d.chapter));this.state.completedDialogues=[...new Set(this.state.completedDialogues)];this.state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:null,phase:'menu',line:0,showIntro:false};this.save();this.render();this.renderDialogue(); }
+    nextDialogue() { const d=this.state.dialogue;if(!d||!['exchange','opening'].includes(d.phase))return;const person=this.story.chapters[d.chapter].characters.find(item=>item.id===d.characterId),topic=this.story.conversationScript?.[d.chapter]?.topics?.filter(item=>item.focus===person?.id)[person?.questions.findIndex(item=>item.id===d.questionId)],lines=d.phase==='opening'?this.story.conversationScript[d.chapter].opening:topic?.lines;d.line=Math.min((lines?.length||4)-1,d.line+1);d.recordedLine=null;this.save();this.renderDialogue(); }
+    finishDialogue() { const d=this.state.dialogue;if(!d||!['exchange','opening'].includes(d.phase))return;if(d.phase==='opening'){this.state.conversationOpenings=[...new Set([...this.state.conversationOpenings,d.chapter])];this.state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:null,phase:'menu',line:0,showIntro:false};}else{this.state.completedDialogues.push(this.dialogueKey(d.characterId,d.questionId,d.chapter));this.state.completedDialogues=[...new Set(this.state.completedDialogues)];this.state.dialogue={chapter:d.chapter,characterId:d.characterId,questionId:null,phase:'menu',line:0,showIntro:false};}this.save();this.render();this.renderDialogue(); }
     showHint(index=null) {
       const chapter=this.current(),hints=chapter.hints||[{text:'Examine the scene and talk with the people here.'}];
       let available=0;for(let i=1;i<hints.length;i++){const entry=hints[i];const rule=typeof entry==='string'?(i===1?{anyEvidence:chapter.evidence.map(item=>item.id)}:chapter.gate):entry.availableWhen;if(this.condition(rule))available=i;else break;}
@@ -1107,14 +1228,14 @@
         const theme=presentation.theme||{},vars={green:'--s6-clean-green',gold:'--s6-clean-gold',cream:'--s6-clean-cream',panel:'--s6-clean-panel',line:'--s6-clean-line',ink:'--s6-clean-ink'},themeVars=Object.entries(theme).map(([key,value])=>`${vars[key]}:${value}`).join(';'),sideImage=presentation.sideImage?`<figure class="s6-clean-timeline-art"><img src="${escapeHtml(presentation.sideImage)}" alt="${escapeHtml(presentation.sideImageAlt||'')}" style="object-fit:${presentation.sideImageFit==='contain'?'contain':'cover'};object-position:${escapeHtml(presentation.sideImagePosition||'center')}"></figure>`:'';
         this.showModal(p.title,`<section class="s6-clean-timeline is-ordered-list"${themeVars?` style="${themeVars}"`:''}><header class="s6-clean-timeline-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${escapeHtml(ch.location)}</span><h2>${escapeHtml(presentation.displayTitle||p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><div class="s6-clean-timeline-layout"><section class="s6-sequence is-timeline" aria-label="Arrange the events in order"><div class="s6-sequence-heading"><div><strong>${escapeHtml(presentation.sectionTitle||'Put the events in order')}</strong><small>${escapeHtml(presentation.sectionDescription||'Use the arrows to arrange the events from earliest to latest.')}</small></div></div><div class="s6-sequence-board"><div class="s6-sequence-steps">${rows}</div></div></section>${sideImage}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(this.sequenceFeedback||'Use the arrows to place the events in chronological order.')}</p></section>`,`<div class="s6-clean-timeline-actions">${actionMarkup}</div>`);return;
       }
-      const assigned=new Set(draft.filter(Boolean)),events=p.items.filter(item=>!assigned.has(item.id)).map(item=>{const selected=this.sequenceSelected===item.id;return `<button type="button" class="s6-clean-timeline-event${selected?' is-selected':''}" data-s6="timeline-pick" data-id="${escapeHtml(item.id)}" draggable="true" data-timeline-event="${escapeHtml(item.id)}" aria-pressed="${selected}"><span class="s6-clean-timeline-pick" aria-hidden="true">${timelineIconMarkup(item.icon)}</span><span>${escapeHtml([item.time,item.label].filter(Boolean).join(' · '))}</span></button>`;}).join('');
-      const slots=draft.map((id,index)=>{const item=p.items.find(entry=>entry.id===id);return `<div class="s6-clean-timeline-slot${item?' is-filled':''}" data-timeline-slot data-index="${index}"><span class="s6-clean-timeline-number">${String(index+1).padStart(2,'0')}</span>${item?`<button type="button" class="s6-clean-timeline-placed" data-s6="timeline-remove" data-index="${index}" aria-label="Remove ${escapeHtml(item.label)} from timeline">${escapeHtml([item.time,item.label].filter(Boolean).join(' · '))}<span aria-hidden="true">×</span></button>`:`<button type="button" class="s6-clean-timeline-empty" data-s6="timeline-place" data-index="${index}" ${this.sequenceSelected?'':'disabled'}>${this.sequenceSelected?'Place selected event here':'Place an event here'}</button>`}</div>`;}).join('');
+      const assigned=new Set(draft.filter(Boolean)),events=p.items.filter(item=>!assigned.has(item.id)).map(item=>{const selected=this.sequenceSelected===item.id;return `<button type="button" class="s6-clean-timeline-event${selected?' is-selected':''}" data-s6="timeline-pick" data-id="${escapeHtml(item.id)}" draggable="true" data-timeline-event="${escapeHtml(item.id)}" aria-pressed="${selected}"><span class="s6-clean-timeline-thumbnail">${sequenceArtMarkup(item,presentation)||timelineIconMarkup(item.icon)}</span><span class="s6-clean-timeline-card-copy">${item.time?`<strong>${escapeHtml(item.time)}</strong>`:''}<span>${escapeHtml(item.label)}</span>${item.caption?`<small>${escapeHtml(item.caption)}</small>`:''}</span><span class="s6-clean-timeline-grip" aria-hidden="true">⠿</span></button>`;}).join('');
+      const slots=draft.map((id,index)=>{const item=p.items.find(entry=>entry.id===id);return `<div class="s6-clean-timeline-slot${item?' is-filled':''}" data-timeline-slot data-index="${index}"><span class="s6-clean-timeline-number">${String(index+1).padStart(2,'0')}</span>${item?`<button type="button" class="s6-clean-timeline-placed" draggable="true" data-timeline-event="${escapeHtml(item.id)}" data-s6="timeline-remove" data-index="${index}" aria-label="Remove ${escapeHtml(item.label)} from timeline">${escapeHtml([item.time,item.label].filter(Boolean).join(' · '))}<span aria-hidden="true">×</span></button>`:`<button type="button" class="s6-clean-timeline-empty" data-s6="timeline-place" data-index="${index}" ${this.sequenceSelected?'':'disabled'}>${this.sequenceSelected?'Place selected event here':'Place an event here'}</button>`}</div>`;}).join('');
       const actions=presentation.actions||[{action:'check',label:'Check sequence'},{action:'reset',label:'Reset arrangement'},{action:'hint',label:'Progressive hint'},{action:'close',label:'Return to investigation'}];
       const actionMap={check:'timeline-check',reset:'timeline-reset',hint:'hint',evidence:'puzzle-evidence',close:'close'},actionMarkup=actions.map(action=>`<button type="button" class="${action.action==='check'?'s6-btn':'s6-quiet'} s6-clean-timeline-action" data-s6="${actionMap[action.action]}"${action.action==='evidence'?` data-id="${escapeHtml(action.target)}"`:''}>${escapeHtml(action.label)}${action.action==='check'?' →':''}</button>`).join('');
       const theme=presentation.theme||{},vars={green:'--s6-clean-green',gold:'--s6-clean-gold',cream:'--s6-clean-cream',panel:'--s6-clean-panel',line:'--s6-clean-line',ink:'--s6-clean-ink'},themeVars=Object.entries(theme).map(([key,value])=>`${vars[key]}:${value}`).join(';');
       const status=this.sequenceFeedback||`${assigned.size} of ${p.items.length} events placed. Choose a card or drag it into a timeline position.`;
       const sideImage=presentation.sideImage?`<figure class="s6-clean-timeline-art"><img src="${escapeHtml(presentation.sideImage)}" alt="${escapeHtml(presentation.sideImageAlt||'')}" style="object-fit:${presentation.sideImageFit==='contain'?'contain':'cover'};object-position:${escapeHtml(presentation.sideImagePosition||'center')}"></figure>`:'';
-      this.showModal(p.title,`<section class="s6-clean-timeline"${themeVars?` style="${themeVars}"`:''}><header class="s6-clean-timeline-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${escapeHtml(ch.location)}</span><h2>${escapeHtml(presentation.displayTitle||p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><div class="s6-clean-timeline-layout"><div><section class="s6-clean-timeline-source"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.sourceTitle||'The evidence')}</span><small>Select a card or drag it into place</small></div><div class="s6-clean-timeline-events" aria-label="Available events">${events||'<p class="s6-clean-timeline-empty-source">All events are in the timeline.</p>'}</div></section><section class="s6-clean-timeline-destination"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.timelineTitle||'Your timeline')}</span><small>${escapeHtml(presentation.timelineDescription||'Earliest to latest')}</small></div><div class="s6-clean-timeline-slots" aria-label="Timeline positions">${slots}</div></section></div>${sideImage}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(status)}</p></section>`,`<div class="s6-clean-timeline-actions">${actionMarkup}</div>`);
+      this.showModal(p.title,`<section class="s6-clean-timeline is-card-slots"${themeVars?` style="${themeVars}"`:''}><div class="s6-clean-timeline-layout"><div class="s6-clean-timeline-left"><header class="s6-clean-timeline-heading"><span class="s6-eyebrow">Chapter ${String(this.state.chapter+1).padStart(2,'0')} · ${escapeHtml(ch.location)}</span><h2>${escapeHtml(presentation.displayTitle||p.title)}</h2><p>${escapeHtml(p.prompt)}</p></header><section class="s6-clean-timeline-source"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.sourceTitle||'The evidence')}</span><small>Select a card or drag it into place</small></div><div class="s6-clean-timeline-events" aria-label="Available events">${events||'<p class="s6-clean-timeline-empty-source">All cards are in your sequence.</p>'}</div></section><section class="s6-clean-timeline-destination"><div class="s6-clean-timeline-section-head"><span class="s6-eyebrow">${escapeHtml(presentation.timelineTitle||'Your sequence')}</span><small>${escapeHtml(presentation.timelineDescription||'First to last')}</small></div><div class="s6-clean-timeline-slots" aria-label="Timeline positions">${slots}</div></section></div>${sideImage}</div><p class="s6-feedback" id="s6-puzzle-feedback" role="status" aria-live="polite">${escapeHtml(status)}</p></section>`,`<div class="s6-clean-timeline-actions">${actionMarkup}</div>`);
     }
     async placeCleanTimelineEvent(id,index) {
       const p=this.current().puzzle;if(p.presentation?.mode!=='timeline-clean'||!p.items.some(item=>item.id===id)||!Number.isInteger(index)||index<0||index>=p.items.length)return;
@@ -1446,7 +1567,7 @@
       this.overlay.querySelector(`[data-s6="sequence-select"][data-index="${to}"]`)?.focus();
     }
     sequenceDragStart(event) {
-      const timelineEvent=event.target.closest?.('.s6-clean-timeline-event');
+      const timelineEvent=event.target.closest?.('[data-timeline-event]');
       if(timelineEvent){this.timelineDragId=timelineEvent.dataset.timelineEvent;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',this.timelineDragId);timelineEvent.classList.add('is-dragging');return;}
       const step=event.target.closest?.('.s6-sequence-step,.s6-book-spine');
       if(!step)return;
@@ -1473,7 +1594,7 @@
     sequenceDragEnd() {
       this.sequenceDrag=null;
       this.timelineDragId=null;
-      this.overlay.querySelectorAll('.s6-sequence-step.is-dragging,.s6-sequence-step.is-drop-target,.s6-book-spine.is-dragging,.s6-book-spine.is-drop-target,.s6-clean-timeline-event.is-dragging,[data-timeline-slot].is-drop-target').forEach(node=>node.classList.remove('is-dragging','is-drop-target'));
+      this.overlay.querySelectorAll('.s6-sequence-step.is-dragging,.s6-sequence-step.is-drop-target,.s6-book-spine.is-dragging,.s6-book-spine.is-drop-target,[data-timeline-event].is-dragging,[data-timeline-slot].is-drop-target').forEach(node=>node.classList.remove('is-dragging','is-drop-target'));
     }
     puzzleChoice(id) { const p=this.current().puzzle;if(!p.options?.some(option=>option.id===id))return;this.deductionChoice=id;this.deductionFeedback='';this.showPuzzle();this.overlay.querySelector(`[data-s6="puzzle-choice"][data-id="${id}"]`)?.focus(); }
     deductionSubmit() {const p=this.current().puzzle;if(p.type==='input'){const value=this.overlay.querySelector('[data-s6="puzzle-input"]')?.value||'';this.state.puzzleDrafts[p.id]=value.slice(0,40);if(value.trim().toLocaleLowerCase()!==p.answer.trim().toLocaleLowerCase()){this.deductionFeedback='That combination does not fit the evidence yet. Try again.';this.overlay.querySelector('#s6-puzzle-feedback').textContent=this.deductionFeedback;this.save();return;}this.deductionFeedback='';this.solvePuzzle();return;}if(p.presentation?.mode==='token-insert'){this.placeToken();return;}if(!this.deductionChoice)return;if(this.deductionChoice!==p.answer){this.deductionFeedback=['single-question','single-question-clues'].includes(p.presentation?.mode)?'That answer does not match the evidence yet. Try another.':'That answer does not fit all the clues. Review the evidence and try again.';this.overlay.querySelector('#s6-puzzle-feedback').textContent=this.deductionFeedback;return;}this.deductionFeedback='';this.solvePuzzle();}
@@ -1517,6 +1638,7 @@
     }
     showOpening() {
       const intro=this.story.openingIntroduction;if(!intro)return;
+      if(intro.scriptedConversation){const chapterIndex=intro.chapterIndex||0;this.state.dialogue={chapter:chapterIndex,characterId:intro.characterId,questionId:null,phase:'opening',line:0};this.save();this.renderDialogue();return;}
       const person=intro.characterId?this.story.chapters.flatMap(ch=>ch.characters).find(entry=>entry.id===intro.characterId):null;
       const speaker=intro.speaker||person?.name,text=intro.text.join(' '),voice=speaker?this.voiceControl(speaker,text):'';
       if(person){
@@ -1551,7 +1673,7 @@
     async nextResolutionLine() {const lines=this.story.resolution?.dialogue||[],line=lines[this.state.resolutionLine];if(!line)return;this.state.transcript.push({chapter:this.story.chapters.length-1,speaker:line.speaker,text:line.text});this.state.transcript=this.state.transcript.slice(-300);if(this.state.resolutionLine<lines.length-1){this.state.resolutionLine++;await this.save();this.showResolutionDialogue();}else{this.state.resolutionDone=true;await this.save();this.showEnding();}}
     showEnding() {if(this.story.resolution?.dialogue&&!this.state.resolutionDone)return this.showResolutionDialogue();const endings=this.story.chapters.at(-1).endings||[],title=this.story.resolution?.title||'Resolve the case',prompt=this.story.resolution?.prompt||"Edda is safe. The bell's cause is understood. The upper hamlet still needs water, and the way the diversion was handled must be addressed.";this.showModal(title,`<span class="s6-eyebrow">Story ${String(this.story.number).padStart(2,'0')} · final choice</span><h2>${escapeHtml(title)}</h2><p>${escapeHtml(prompt)}</p><div class="s6-ending">${endings.map(ending=>`<button class="s6-choice" data-s6="choose-ending" data-id="${ending.id}"><strong>${escapeHtml(ending.label)}</strong><br><small>${escapeHtml(ending.text)}</small></button>`).join('')}</div>`); }
     chooseEnding(id) { const ending=this.story.chapters.at(-1).endings?.find(item=>item.id===id);if(!ending)return;this.state.ending=id;this.save();this.render();this.showModal('The case is closed',`<span class="s6-eyebrow">${escapeHtml(ending.label)}</span><h2>${escapeHtml(ending.label)}</h2><p>${escapeHtml(ending.text)}</p><div class="s6-note">${escapeHtml(this.story.resolution?.finalNote||this.story.chapters.at(-1).clue)}</div>`,`<button class="s6-quiet" data-s6="close">Return to your case</button><button class="s6-quiet" data-s6="transcript">Conversation log</button>`); }
-    showTranscript() { const entries=this.state.transcript.map(line=>`<article class="s6-note"><span class="s6-eyebrow">${escapeHtml(this.story.chapters[line.chapter]?.location||'Conversation')}</span><br><strong>${escapeHtml(line.speaker)}</strong><br>${dialogueMarkup(line.text)}</article>`).join('');const stack=!this.overlay.classList.contains('is-hidden');this.showModal('Conversation log',`<div class="s6-log-heading"><span class="s6-eyebrow">Saved conversation history</span><h2>Conversation log</h2></div>${entries?`<div class="s6-transcript" tabindex="0" aria-label="Conversation entries">${entries}</div>`:'<p>No conversations have been recorded yet.</p>'}`,`<button class="s6-quiet" data-s6="close">${stack?'Return to previous view':'Return to investigation'}</button>`,{stack}); }
+    showTranscript() { const entries=this.state.transcript.map(line=>`<article class="s6-note"><span class="s6-eyebrow">${escapeHtml(this.story.chapters[line.chapter]?.location||'Conversation')}</span><br><strong>${escapeHtml(line.speaker)}</strong>${line.to?` <small>→ ${escapeHtml(line.to==='you'?'You':this.story.chapters[line.chapter]?.characters.find(person=>person.id===line.to)?.name||line.to)}</small>`:''}<br>${dialogueMarkup(line.text)}</article>`).join('');const stack=!this.overlay.classList.contains('is-hidden');this.showModal('Conversation log',`<div class="s6-log-heading"><span class="s6-eyebrow">Saved conversation history</span><h2>Conversation log</h2></div>${entries?`<div class="s6-transcript" tabindex="0" aria-label="Conversation entries">${entries}</div>`:'<p>No conversations have been recorded yet.</p>'}`,`<button class="s6-quiet" data-s6="close">${stack?'Return to previous view':'Return to investigation'}</button>`,{stack}); }
     restartPrompt() { this.showModal('Restart this story?',`<span class="s6-eyebrow">${escapeHtml(this.story.title)}</span><h2>Begin this case again?</h2><p>This clears this story's clues, conversations, chapter progress, and ending from this browser. Your other stories are not affected.</p>`,`<button class="s6-restart s6-quiet" data-s6="restart-confirm">Restart this story</button><button class="s6-btn" data-s6="close">Keep my progress</button>`); }
     async restart() { await this.repository.clear(this.story.id);for(const key of [this.story.legacySaveKey,...(this.story.legacySaveKeys||[])])if(key)global.localStorage.removeItem(key);this.state=freshState();this.revision=0;this.savedAt=null;this.lastError=null;this.closeModal();this.render();if(this.story.openingIntroduction)this.showOpening(); }
     async exportSave() { const envelope={format:'metriva-story-save',schemaVersion:1,storyId:this.story.id,exportedAt:new Date().toISOString(),state:this.state};const blob=new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`${this.story.id}-save.json`;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000); }
@@ -1565,6 +1687,9 @@
       switch(action){
         case 'chapter':await this.goToChapter(Number(control.dataset.index));break;
         case 'locations':this.showLocations();break;
+        case 'explorer-step':this.selectExplorer((this.explorerIndex||0)+Number(control.dataset.delta),'[data-s6="explorer-step"][data-delta="'+control.dataset.delta+'"]');break;
+        case 'explorer-pick':this.selectExplorer(Number(control.dataset.index),'[data-s6="explorer-pick"][data-index="'+control.dataset.index+'"]');break;
+        case 'scene-expand':this.expandScene();break;
         case 'person-jump':await this.goToChapter(Number(control.dataset.index));break;
         case 'notebook-scroll':this.scrollNotebook(Number(control.dataset.direction));break;
         case 'review-puzzle':this.showPuzzleReview();break;
@@ -1588,6 +1713,11 @@
         case 'zoom-reset':this.resetZoom();break;
         case 'debug-toggle':this.debugOverlay=!this.debugOverlay;this.render();break;
         case 'character':this.openCharacter(id);break;
+        case 'companion-pet':await this.petCompanion('pet');break;
+        case 'companion-treat':await this.petCompanion('treat');break;
+        case 'companion-search':await this.petCompanion('search');break;
+        case 'companion-toggle':this.state.companion.collapsed=!this.state.companion.collapsed;await this.save();this.render();break;
+        case 'companion-follow':{if(this.story.number===7){this.followCompanionClue(id);break;}const clue=[...this.root.querySelectorAll('.s6-object-list [data-id]')].find(item=>item.dataset.id===id);clue?.scrollIntoView({behavior:this.motionPaused?'auto':'smooth',block:'center'});clue?.focus();break;}
         case 'ask':{const d=this.state.dialogue,p=this.current().characters.find(person=>person.id===d?.characterId),q=p?.questions.find(question=>question.id===id);if(q&&this.condition(q.availableWhen||{always:true})){d.phase='exchange';d.questionId=id;d.line=0;d.recordedLine=null;await this.save();this.renderDialogue();}break;}
         case 'dialogue-next':this.nextDialogue();break;
         case 'dialogue-finish':this.finishDialogue();break;
@@ -1684,5 +1814,5 @@
     }
   }
 
-  global.MetrivaStoryEngine={version:ENGINE_VERSION,boot,StoryRuntime,validateDefinition,validateSpatial,evaluateCondition,sceneImage,evidenceView,evidenceImageMarkup,documentMarkup,characterFrame,insertSequenceItem,toggleRouteSelection,routeCorrectPrefix,normalizeRouteSelection,findNetworkPath,applyObjectTransitions,normalizeObjectStates,pickEvidenceAt,InlineJsonStorySource,FetchJsonStorySource,LocalProgressRepository,ApiProgressRepository};
+  global.MetrivaStoryEngine={version:ENGINE_VERSION,spriteWindowStyle,boot,StoryRuntime,validateDefinition,validateSpatial,evaluateCondition,sceneImage,evidenceView,evidenceImageMarkup,documentMarkup,characterFrame,insertSequenceItem,toggleRouteSelection,routeCorrectPrefix,normalizeRouteSelection,findNetworkPath,applyObjectTransitions,normalizeObjectStates,pickEvidenceAt,InlineJsonStorySource,FetchJsonStorySource,LocalProgressRepository,ApiProgressRepository};
 })(window);

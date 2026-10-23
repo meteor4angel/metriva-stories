@@ -1,0 +1,233 @@
+{
+  "sources": {
+    "female": "246f8972-5320-4b3e-b70c-89cb2fb38baf",
+    "male": "df4d1071-c91f-49c0-b2ea-0050c62cfe77",
+    "biscuit": "e80a947e-b997-47cd-8492-f90f08d15a8b",
+    "cat": "661e227e-9343-459d-9f97-b6a1e7e602cb",
+    "bird": "13315b9f-19e7-4a1e-9a3c-b2811405304d",
+    "group": "32cc85b3-b5e8-4a2c-acf0-7fde255b2106"
+  },
+  "individualCanvas": [
+    256,
+    360
+  ],
+  "groupCanvas": [
+    600,
+    660
+  ],
+  "waitingOrder": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "crops": {
+    "female": {
+      "neutral": [
+        15,
+        337,
+        207,
+        641
+      ],
+      "wave": [
+        10,
+        8,
+        206,
+        333
+      ],
+      "happy": [
+        208,
+        25,
+        407,
+        333
+      ],
+      "point": [
+        814,
+        12,
+        1024,
+        333
+      ],
+      "surprised": [
+        416,
+        337,
+        610,
+        641
+      ],
+      "disappointed": [
+        616,
+        337,
+        815,
+        641
+      ],
+      "goodbye": [
+        10,
+        8,
+        206,
+        333
+      ]
+    },
+    "male": {
+      "neutral": [
+        205,
+        344,
+        408,
+        667
+      ],
+      "wave": [
+        0,
+        0,
+        204,
+        344
+      ],
+      "happy": [
+        207,
+        14,
+        405,
+        342
+      ],
+      "point": [
+        817,
+        0,
+        1024,
+        348
+      ],
+      "surprised": [
+        612,
+        344,
+        817,
+        667
+      ],
+      "disappointed": [
+        408,
+        668,
+        624,
+        967
+      ],
+      "goodbye": [
+        814,
+        677,
+        1024,
+        968
+      ]
+    },
+    "biscuit": {
+      "sit": [
+        212,
+        15,
+        409,
+        250
+      ],
+      "excited": [
+        214,
+        251,
+        415,
+        489
+      ],
+      "sad": [
+        214,
+        737,
+        419,
+        966
+      ],
+      "run": [
+        615,
+        30,
+        871,
+        248
+      ],
+      "rest": [
+        0,
+        970,
+        211,
+        1112
+      ]
+    },
+    "cat": {
+      "sit": [
+        0,
+        8,
+        207,
+        221
+      ],
+      "wave": [
+        416,
+        0,
+        618,
+        221
+      ],
+      "unimpressed": [
+        410,
+        863,
+        618,
+        1073
+      ],
+      "stretch": [
+        0,
+        223,
+        233,
+        438
+      ],
+      "sleep": [
+        820,
+        658,
+        1024,
+        864
+      ]
+    },
+    "bird": {
+      "perched": [
+        0,
+        0,
+        213,
+        272
+      ],
+      "flutter": [
+        204,
+        536,
+        466,
+        801
+      ],
+      "curious": [
+        210,
+        274,
+        414,
+        538
+      ],
+      "sleep": [
+        0,
+        1080,
+        214,
+        1362
+      ]
+    },
+    "group-1": [
+      11,
+      94,
+      557,
+      688
+    ],
+    "group-2": [
+      561,
+      79,
+      1111,
+      686
+    ],
+    "group-3": [
+      1120,
+      106,
+      1669,
+      663
+    ],
+    "group-4": [
+      1629,
+      117,
+      2168,
+      668
+    ]
+  },
+  "notes": [
+    "Original supplied expression crops retained; runtime selects generated disappointed-v2 host variants documented in reports/welcome-art-revision.md.",
+    "Groups 3 and 4 are separated at the cat-paw/skirt boundary, preserving all five characters.",
+    "Corrected waiting order is 1,2,3,4. Illustrated oak door is hinged using CSS. Voice clips remain unavailable."
+  ]
+}

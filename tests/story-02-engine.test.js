@@ -112,14 +112,14 @@ test('Story 02 uses the shared definition, existing art, and five original solut
 
 test('Story 02 Chapter 2 uses the ordered-card timeline with fixed side art and configurable icons',async()=>{
   const chapter=story.chapters[1],puzzle=chapter.puzzle,runtime=Object.create(Engine.StoryRuntime.prototype);
-  assert.equal(Engine.validateDefinition(story),story);assert.equal(puzzle.presentation.mode,'timeline-clean');assert.equal(puzzle.presentation.layout,'ordered-list');
+  assert.equal(Engine.validateDefinition(story),story);assert.equal(puzzle.presentation.mode,'timeline-clean');assert.equal(puzzle.presentation.layout,'card-slots');
   assert.equal(puzzle.presentation.sideImage,'assets/library-listening-painted.png');assert.deepEqual(puzzle.items.map(item=>item.icon),['speech','clock','footsteps']);
   runtime.story=story;runtime.state={chapter:1,puzzleDrafts:{}};runtime.sequencePuzzleId=puzzle.id;runtime.sequenceSelected=null;runtime.sequenceFeedback='';runtime.current=()=>chapter;
   runtime.showModal=(title,body,actions)=>{runtime.modal={title,body,actions};};runtime.showCleanTimelinePuzzle(chapter,puzzle);
   assert.match(runtime.modal.body,/s6-clean-timeline-layout/);assert.match(runtime.modal.body,/class="s6-clean-timeline-art"/);assert.match(runtime.modal.body,/library-listening-painted\.png/);
-  assert.match(runtime.modal.body,/s6-sequence-step is-illustrated/);assert.match(runtime.modal.body,/timeline-move/);assert.match(runtime.modal.actions,/timeline-check/);assert.match(runtime.modal.actions,/timeline-reset/);
-  assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],puzzle.items.map(item=>item.id));
-  runtime.save=async()=>{};runtime.showCleanTimelinePuzzle=()=>{};await runtime.moveCleanTimelineEvent(0,1);assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],['chime','whisper','steps']);
+  assert.match(runtime.modal.body,/s6-clean-timeline-thumbnail/);assert.match(runtime.modal.body,/data-timeline-slot/);assert.match(runtime.modal.actions,/timeline-check/);assert.match(runtime.modal.actions,/timeline-reset/);
+  assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],[null,null,null]);
+  runtime.save=async()=>{};runtime.showCleanTimelinePuzzle=()=>{};await runtime.placeCleanTimelineEvent('chime',0);assert.deepEqual(runtime.state.puzzleDrafts[puzzle.id],['chime',null,null]);
   const broken=structuredClone(story);broken.chapters[1].puzzle.items[0].icon='bad-icon';assert.throws(()=>Engine.validateDefinition(broken),/unsupported timeline item icon/);
   const badImage=structuredClone(story);badImage.chapters[1].puzzle.presentation.sideImage='../private.png';assert.throws(()=>Engine.validateDefinition(badImage),/invalid timeline side artwork/);
 });
